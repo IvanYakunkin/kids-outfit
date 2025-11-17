@@ -2,8 +2,10 @@ import { Category } from 'src/modules/categories/entities/category.entity';
 import { ProductChars } from 'src/modules/product-characteristics/entities/product-characteristic.entity';
 import { ProductImage } from 'src/modules/product-images/entities/product-image.entity';
 import { ProductSize } from 'src/modules/product-sizes/entities/product-sizes.entity';
+import { slugify } from 'transliteration';
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -19,6 +21,9 @@ export class Product {
 
   @Column()
   name: string;
+
+  @Column()
+  slug: string;
 
   @Column({ unique: true })
   sku: string;
@@ -61,5 +66,13 @@ export class Product {
   @BeforeInsert()
   generateSku() {
     this.sku = Math.floor(10000000 + Math.random() * 90000000).toString();
+  }
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  generateSlug() {
+    if (this.name) {
+      this.slug = slugify(this.name).toLowerCase();
+    }
   }
 }

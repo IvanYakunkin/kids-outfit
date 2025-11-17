@@ -1,13 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ProductShortDto } from 'src/modules/products/dto/productShort.dto';
 import { SizeResponseDto } from 'src/modules/sizes/dto/size-response.dto';
 
-export class ProductSizeResponseDto {
+export class ProductSizesResponseDto {
   @ApiProperty({ description: 'ID размера товара', example: 1 })
   id: number;
-
-  @ApiProperty({ description: 'ID товара', type: ProductShortDto })
-  product: ProductShortDto;
 
   @ApiProperty({
     description: 'Доступность размера товара',

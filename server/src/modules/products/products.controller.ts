@@ -21,7 +21,6 @@ import {
   ApiQuery,
   ApiResponse,
   ApiTags,
-  getSchemaPath,
 } from '@nestjs/swagger';
 import { AdminGuard } from '../auth/guards/jwt-admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -68,7 +67,7 @@ export class ProductsController {
     required: false,
     style: 'deepObject',
     explode: true,
-    schema: { $ref: getSchemaPath(QueryProductsDto) },
+    type: QueryProductsDto,
   })
   async findAll(@Query() query: QueryProductsDto) {
     return await this.productsService.findAll(query);

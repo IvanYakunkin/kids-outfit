@@ -9,6 +9,9 @@ export class ProductsResponseDto {
   @ApiProperty({ description: 'Название', example: 'Футболка' })
   name: string;
 
+  @ApiProperty({ description: 'Slug товара', example: 'futbolka' })
+  slug: string;
+
   @ApiProperty({ description: 'Артикул', example: '12345678' })
   sku: string;
 

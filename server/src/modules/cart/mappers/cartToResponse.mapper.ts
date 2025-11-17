@@ -10,6 +10,7 @@ export function mapCart(cart: Cart): CartResponseDto {
     product: {
       id: p.id,
       name: p.name,
+      slug: p.slug,
       price: p.price,
       discount: p.discount ?? 0,
       image: (p.images && p.images[0].imageName) || '',

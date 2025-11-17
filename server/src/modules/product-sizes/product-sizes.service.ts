@@ -3,8 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Size } from '../sizes/entities/size.entity';
 import { CreateProductSizeDto } from './dto/create-product-size.dto';
+import { ProductSizeResponseDto } from './dto/product-size-response.dto';
+import { ProductSizesResponseDto } from './dto/product-sizes-response.dto';
 import { UpdateProductSizeDto } from './dto/update-product-size.dto';
 import { ProductSize } from './entities/product-sizes.entity';
+import { ProductSizeToDto } from './mappers/ProductSizeToDto.mapper';
 
 @Injectable()
 export class ProductSizesService {
@@ -13,20 +16,23 @@ export class ProductSizesService {
     private productSizesRepository: Repository<ProductSize>,
   ) {}
 
-  async findByProductId(productId: number) {
+  async findByProductId(productId: number): Promise<ProductSizesResponseDto[]> {
     return this.productSizesRepository.find({
       where: { product: { id: productId } },
       relations: ['size'],
     });
   }
 
-  async findById(id: number) {
-    const productSize = await this.productSizesRepository.findOneBy({ id });
+  async findById(id: number): Promise<ProductSizeResponseDto> {
+    const productSize = await this.productSizesRepository.findOne({
+      where: { id },
+      relations: ['product'],
+    });
     if (!productSize) {
       throw new NotFoundException(`Размер товара с id ${id} не найден`);
     }
 
-    return productSize;
+    return ProductSizeToDto.toResponseDto(productSize);
   }
 
   async create(createProductSizeDto: CreateProductSizeDto) {

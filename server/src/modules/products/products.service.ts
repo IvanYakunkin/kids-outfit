@@ -121,7 +121,9 @@ export class ProductsService {
       })),
     });
 
-    return await this.productsRepository.save(product);
+    const savedProduct = await this.productsRepository.save(product);
+
+    return savedProduct;
   }
 
   async update(

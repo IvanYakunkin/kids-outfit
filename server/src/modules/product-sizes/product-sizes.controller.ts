@@ -23,6 +23,8 @@ import {
 import { AdminGuard } from '../auth/guards/jwt-admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateProductSizeDto } from './dto/create-product-size.dto';
+import { ProductSizeResponseDto } from './dto/product-size-response.dto';
+import { ProductSizesResponseDto } from './dto/product-sizes-response.dto';
 import { UpdateProductSizeDto } from './dto/update-product-size.dto';
 import { ProductSize } from './entities/product-sizes.entity';
 import { ProductSizesService } from './product-sizes.service';
@@ -51,7 +53,7 @@ export class ProductSizesController {
   @ApiResponse({
     status: 200,
     description: 'Размер товара найден.',
-    type: ProductSize,
+    type: ProductSizeResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Размер товара не найден' })
   async getById(@Param('id', ParseIntPipe) id: number) {
@@ -92,7 +94,7 @@ export class ProductSizesController {
   @ApiResponse({
     status: 200,
     description: 'Размеры товара успешно получены',
-    type: [ProductSize],
+    type: [ProductSizesResponseDto],
   })
   @ApiResponse({
     status: 404,

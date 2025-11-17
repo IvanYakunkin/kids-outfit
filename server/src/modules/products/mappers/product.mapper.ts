@@ -6,6 +6,7 @@ export class ProductMapper {
     return {
       id: product.id,
       name: product.name,
+      slug: product.slug,
       sku: product.sku,
       price: product.price,
       category: product.category,

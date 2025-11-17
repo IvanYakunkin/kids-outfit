@@ -1,8 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Category } from 'src/modules/categories/entities/category.entity';
-import { ProductChars } from 'src/modules/product-characteristics/entities/product-characteristic.entity';
-import { ProductImage } from 'src/modules/product-images/entities/product-image.entity';
-import { ProductSize } from 'src/modules/product-sizes/entities/product-sizes.entity';
+import { CategoryResponseDto } from 'src/modules/categories/dto/category-response.dto';
+import { ProductCharsResponseDto } from 'src/modules/product-characteristics/dto/product-chars-response.dto';
+import { ProductImageResponseDto } from 'src/modules/product-images/dto/product-image-response.dto';
 
 export class ProductResponseDto {
   @ApiProperty({ description: 'ID товара', example: 1 })
@@ -11,14 +10,14 @@ export class ProductResponseDto {
   @ApiProperty({ description: 'Название', example: 'Футболка' })
   name: string;
 
+  @ApiProperty({ description: 'Slug товара', example: 'futbolka' })
+  slug: string;
+
   @ApiProperty({ description: 'Артикул', example: '12345678' })
   sku: string;
 
-  @ApiProperty({ description: 'Категория' })
-  category: Category;
-
-  @ApiPropertyOptional({ description: 'Размеры', type: [ProductSize] })
-  sizes?: ProductSize[];
+  @ApiProperty({ description: 'Категория', type: CategoryResponseDto })
+  category: CategoryResponseDto;
 
   @ApiPropertyOptional({ description: 'Описание' })
   description?: string;
@@ -37,15 +36,15 @@ export class ProductResponseDto {
 
   @ApiPropertyOptional({
     description: 'Изображения товара',
-    type: [ProductImage],
+    type: [ProductImageResponseDto],
   })
-  images?: ProductImage[];
+  images?: ProductImageResponseDto[];
 
   @ApiPropertyOptional({
     description: 'Характеристики товара',
-    type: [ProductChars],
+    type: [ProductCharsResponseDto],
   })
-  productCharacteristics?: ProductChars[];
+  productCharacteristics?: ProductCharsResponseDto[];
 
   @ApiProperty({ description: 'Дата создания товара в БД' })
   created_at: Date;

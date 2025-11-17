@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { MetaProductsDto } from './meta-products.dto';
 import { ProductsResponseDto } from './products-response.dto';
 
 export class PaginatedProductsResponseDto {
@@ -10,17 +11,7 @@ export class PaginatedProductsResponseDto {
 
   @ApiProperty({
     description: 'Информация о пагинации',
-    example: {
-      total: 250,
-      page: 1,
-      lastPage: 13,
-      limit: 20,
-    },
+    type: MetaProductsDto,
   })
-  meta: {
-    total: number;
-    page: number;
-    lastPage: number;
-    limit: number;
-  };
+  meta: MetaProductsDto;
 }

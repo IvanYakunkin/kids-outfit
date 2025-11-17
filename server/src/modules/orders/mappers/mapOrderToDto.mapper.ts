@@ -26,6 +26,7 @@ export function mapOrderToDto(order: Order): OrderResponseDto {
         product: {
           id: p.productSize.product.id,
           name: p.productSize.product.name,
+          slug: p.productSize.product.slug,
           sku: p.productSize.product.sku,
           isActive: p.productSize.product.isActive,
           description: p.productSize.product.description,

@@ -45,6 +45,8 @@ export class ProductCharsController {
     return await this.productCharsService.create(productCharsDto);
   }
 
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @ApiBearerAuth()
   @Patch(':id')
   @ApiOperation({ summary: 'Обновить значение характеристики товара по ID' })
   @ApiParam({ name: 'id', description: 'ID продукта', required: true })

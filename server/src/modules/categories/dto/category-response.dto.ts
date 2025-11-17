@@ -18,7 +18,8 @@ export class CategoryResponseDto {
 
   @ApiProperty({
     description: 'Список подкатегорий',
-    type: () => [CategoryResponseDto],
+    type: () => CategoryResponseDto,
+    isArray: true,
   })
   children: CategoryResponseDto[];
 }

@@ -7,6 +7,9 @@ export class ProductShortDto {
   @ApiProperty({ example: 'Футболка Kids Basic' })
   name: string;
 
+  @ApiProperty({ example: 'futbolka-kids-basic' })
+  slug: string;
+
   @ApiProperty({ example: 1290 })
   price: number;
 

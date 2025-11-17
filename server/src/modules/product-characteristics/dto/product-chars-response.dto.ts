@@ -1,19 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Characteristic } from 'src/modules/characteristics/entities/characteristic.entity';
-import { Product } from 'src/modules/products/entities/product.entity';
+import { CharacteristicResponseDto } from 'src/modules/characteristics/dto/characteristic-response.dto';
 
 export class ProductCharsResponseDto {
   @ApiProperty({ description: 'ID характеристики товара' })
   id: number;
 
-  @ApiProperty({ description: 'Выбранный товар', type: Product })
-  product: Product;
-
   @ApiProperty({
     description: 'Выбранная характеристика',
-    type: Characteristic,
+    type: CharacteristicResponseDto,
   })
-  characteristic: Characteristic;
+  characteristic: CharacteristicResponseDto;
 
   @ApiProperty({
     description: 'Значение характеристики товара',
