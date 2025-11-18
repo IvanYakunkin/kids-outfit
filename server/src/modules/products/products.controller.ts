@@ -30,6 +30,7 @@ import { ProductResponseDto } from './dto/product-response.dto';
 import { ProductsResponseDto } from './dto/products-response.dto';
 import { QueryProductsDto } from './dto/query-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ProductMapper } from './mappers/product.mapper';
 import { ProductsService } from './products.service';
 
 @Controller('Products')
@@ -73,6 +74,19 @@ export class ProductsController {
     return await this.productsService.findAll(query);
   }
 
+  @Get('similar/:categorySlug/:limit')
+  async getSimilar(
+    @Param('categorySlug') slug: string,
+    @Param('limit') limit: number,
+  ): Promise<ProductResponseDto[]> {
+    const products = await this.productsService.findSimilarProducts(
+      slug,
+      limit,
+    );
+
+    return products.map(ProductMapper.toResponseDto);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Получить товар по ID' })
   @ApiParam({ name: 'id', type: Number, example: 1 })
@@ -80,32 +94,6 @@ export class ProductsController {
   @ApiResponse({ status: 404, description: 'Товар не найден' })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.productsService.findOne(id);
-  }
-
-  @Get('/popular/:quantity')
-  @ApiOperation({ summary: 'Получить список популярных товаров (хиты продаж)' })
-  @ApiParam({
-    name: 'quantity',
-    type: Number,
-    example: 10,
-    description: 'Количество получаемых товаров',
-  })
-  @ApiOkResponse({ description: 'Товары получены', type: ProductsResponseDto })
-  async findPopular(@Param('quantity', ParseIntPipe) quantity: number) {
-    return await this.productsService.findPopular(quantity);
-  }
-
-  @Get('/last/:quantity')
-  @ApiOperation({ summary: 'Получить список последник товаров (новинки)' })
-  @ApiParam({
-    name: 'quantity',
-    type: Number,
-    example: 10,
-    description: 'Количество получаемых товаров',
-  })
-  @ApiOkResponse({ description: 'Товары получены', type: ProductsResponseDto })
-  async findLast(@Param('quantity', ParseIntPipe) quantity: number) {
-    return await this.productsService.findLast(quantity);
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)

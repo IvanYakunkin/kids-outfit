@@ -1,10 +1,6 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Category } from '../categories/entities/category.entity';
 import { ProductImage } from '../product-images/entities/product-image.entity';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -21,6 +17,8 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productsRepository: Repository<Product>,
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
   ) {}
 
   // TODO: Create and load "mainImage" property
@@ -60,7 +58,93 @@ export class ProductsService {
     };
   }
 
-  async findOne(id: number): Promise<ProductResponseDto | null> {
+  async findSimilarProducts(
+    categorySlug: string,
+    limit = 20,
+  ): Promise<ProductsResponseDto[]> {
+    const category = await this.categoryRepository.findOne({
+      where: { slug: categorySlug },
+      relations: ['parent', 'children'],
+    });
+
+    if (!category) throw new NotFoundException('Category not found');
+
+    const collectedProducts: Product[] = [];
+    const visitedCategories = new Set<number>();
+
+    const loadProductsFromCategory = async (cat: Category) => {
+      if (visitedCategories.has(cat.id)) return;
+      visitedCategories.add(cat.id);
+
+      const products = await this.productsRepository.find({
+        where: { category: { id: cat.id } },
+        take: limit - collectedProducts.length,
+        relations: ['images'],
+        order: { id: 'DESC' },
+      });
+
+      collectedProducts.push(...products);
+    };
+
+    await loadProductsFromCategory(category);
+
+    if (collectedProducts.length >= limit)
+      return collectedProducts.slice(0, limit);
+
+    if (category.parent) {
+      const siblings = await this.categoryRepository.find({
+        where: { parent: { id: category.parent.id } },
+      });
+
+      for (const sibling of siblings) {
+        if (collectedProducts.length >= limit) break;
+        await loadProductsFromCategory(sibling);
+      }
+    }
+
+    if (collectedProducts.length >= limit)
+      return collectedProducts.slice(0, limit);
+
+    let parent = category.parent;
+    while (parent && collectedProducts.length < limit) {
+      await loadProductsFromCategory(parent);
+
+      const children = await this.categoryRepository.find({
+        where: { parent: { id: parent.id } },
+      });
+
+      for (const child of children) {
+        if (collectedProducts.length >= limit) break;
+        await loadProductsFromCategory(child);
+      }
+
+      parent = parent.parent;
+    }
+
+    if (collectedProducts.length < limit) {
+      const rootCategories = await this.categoryRepository.find({
+        where: { parent: IsNull() },
+      });
+
+      for (const rootCat of rootCategories) {
+        if (collectedProducts.length >= limit) break;
+        await loadProductsFromCategory(rootCat);
+      }
+    }
+
+    if (collectedProducts.length < limit) {
+      const rest = await this.productsRepository.find({
+        take: limit - collectedProducts.length,
+        order: { id: 'DESC' },
+        relations: ['images'],
+      });
+      collectedProducts.push(...rest);
+    }
+
+    return collectedProducts.slice(0, limit);
+  }
+
+  async findOne(id: number): Promise<ProductResponseDto> {
     const product = await this.productsRepository.findOne({
       where: { id },
       relations: [
@@ -75,40 +159,6 @@ export class ProductsService {
     }
 
     return product;
-  }
-
-  async findPopular(limit: number): Promise<ProductsResponseDto[]> {
-    if (!Number.isInteger(limit) || limit <= 0) {
-      throw new BadRequestException(
-        'Неверный запрос для получения популярных товаров',
-      );
-    }
-    const products = await this.productsRepository.find({
-      relations: ['images'],
-      order: {
-        sold: 'DESC',
-      },
-      take: limit,
-    });
-    const data = products.map(ProductMapper.toResponseDto);
-
-    return data;
-  }
-
-  async findLast(limit: number): Promise<ProductsResponseDto[]> {
-    if (!Number.isInteger(limit) || limit <= 0) {
-      throw new BadRequestException('Неверный запрос для получения новинок');
-    }
-    const products = await this.productsRepository.find({
-      relations: ['images', 'category'],
-      order: {
-        id: 'DESC',
-      },
-      take: limit,
-    });
-    const data = products.map(ProductMapper.toResponseDto);
-
-    return data;
   }
 
   async create(
