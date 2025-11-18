@@ -10,8 +10,11 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -48,8 +51,12 @@ export class ProductsController {
     description: 'Товар успешно создан',
     type: ProductsResponseDto,
   })
-  async create(@Body() createProductDto: CreateProductDto) {
-    return await this.productsService.create(createProductDto);
+  @UseInterceptors(FilesInterceptor('images', 5))
+  async create(
+    @Body() createProductDto: CreateProductDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    return await this.productsService.create(createProductDto, files);
   }
 
   // URL: products?page=1&limit=20&category=phones&sort=price&order=asc&search=iphone

@@ -5,6 +5,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CartModule } from './modules/cart/cart.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { CharacteristicsModule } from './modules/characteristics/characteristics.module';
+import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ProductCharsModule } from './modules/product-characteristics/product-characteristics.module';
 import { ProductSizesModule } from './modules/product-sizes/product-sizes.module';
@@ -38,6 +39,7 @@ import { UsersModule } from './modules/users/users.module';
     AuthModule,
     SizesModule,
     CartModule,
+    CloudinaryModule,
   ],
 })
 export class AppModule {}

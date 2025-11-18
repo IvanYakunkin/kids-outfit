@@ -13,7 +13,7 @@ export function mapCart(cart: Cart): CartResponseDto {
       slug: p.slug,
       price: p.price,
       discount: p.discount ?? 0,
-      image: (p.images && p.images[0].imageName) || '',
+      image: p.images?.[0],
     },
   };
 }

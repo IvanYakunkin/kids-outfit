@@ -11,7 +11,7 @@ export class ProductSizeToDto {
         slug: pSize.product.slug,
         price: pSize.product.price,
         discount: pSize.product.discount || 0,
-        image: pSize.product.images ? pSize.product.images[0].imageName : '',
+        image: pSize.product.images?.[0],
       },
       isAvailable: pSize.isAvailable,
       size: {

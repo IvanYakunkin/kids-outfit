@@ -1,4 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ProductImageResponseDto } from 'src/modules/product-images/dto/product-image-response.dto';
 
 export class ProductShortDto {
   @ApiProperty({ example: 1 })
@@ -16,10 +17,10 @@ export class ProductShortDto {
   @ApiProperty({ example: '20', description: 'Значение в процентах' })
   discount: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'product1.jpg',
     description: 'Главное изображение товара',
     type: String,
   })
-  image: string;
+  image?: ProductImageResponseDto;
 }

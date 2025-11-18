@@ -42,7 +42,7 @@ export class ProductResponseDto {
   discount?: number;
 
   @ApiPropertyOptional({
-    description: 'Изображения товара',
+    description: 'Список изображений товара',
     type: [ProductImageResponseDto],
   })
   images?: ProductImageResponseDto[];

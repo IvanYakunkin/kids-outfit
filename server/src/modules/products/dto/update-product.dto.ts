@@ -1,14 +1,11 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDecimal,
   IsNumber,
   IsOptional,
   IsString,
-  ValidateNested,
 } from 'class-validator';
-import { CreateProductImageDto } from 'src/modules/product-images/dto/create-product-image.dto';
 
 export class UpdateProductDto {
   @ApiPropertyOptional({ description: 'Название', example: 'Футболка' })
@@ -34,15 +31,6 @@ export class UpdateProductDto {
   @IsNumber()
   @IsOptional()
   categoryId?: number;
-
-  @ApiPropertyOptional({
-    description: 'Изображения товара',
-    type: [CreateProductImageDto],
-  })
-  @Type(() => CreateProductImageDto)
-  @ValidateNested({ each: true })
-  @IsOptional()
-  images?: CreateProductImageDto[];
 
   @ApiPropertyOptional({
     description: 'Активность товара',

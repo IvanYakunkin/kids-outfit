@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 import { Category } from '../categories/entities/category.entity';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { ProductImage } from '../product-images/entities/product-image.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { PaginatedProductsResponseDto } from './dto/paginated-products-response.dto';
@@ -17,8 +18,14 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productsRepository: Repository<Product>,
+
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
+
+    private readonly cloudinaryService: CloudinaryService,
+
+    @InjectRepository(ProductImage)
+    private readonly productImagesRepository: Repository<ProductImage>,
   ) {}
 
   // TODO: Create and load "mainImage" property
@@ -182,17 +189,33 @@ export class ProductsService {
       throw new NotFoundException(`Товар не найден`);
     }
 
-    return product;
+    return ProductMapper.toShortResponseDto(product);
   }
 
   async create(
     createProductDto: CreateProductDto,
+    files: Express.Multer.File[],
   ): Promise<ProductResponseDto> {
+    const uploadedImages: ProductImage[] = [];
+
+    if (files && files.length > 0) {
+      for (const file of files) {
+        const result = await this.cloudinaryService.uploadImage(file);
+
+        const imageEntity = this.productImagesRepository.create({
+          name: `${Date.now()}-${file.originalname}`,
+          url: result.secure_url,
+          publicId: result.public_id,
+        });
+
+        uploadedImages.push(imageEntity);
+      }
+    }
+
     const product = this.productsRepository.create({
       ...createProductDto,
-      images: createProductDto.images?.map((img) => ({
-        imageName: img.imageName,
-      })),
+      category: { id: createProductDto.categoryId },
+      images: uploadedImages,
     });
 
     const savedProduct = await this.productsRepository.save(product);
@@ -200,6 +223,7 @@ export class ProductsService {
     return savedProduct;
   }
 
+  // TODO: Update images
   async update(
     id: number,
     updateProductDto: UpdateProductDto,
@@ -239,13 +263,6 @@ export class ProductsService {
 
     if (updateProductDto.categoryId !== undefined) {
       product.category = { id: updateProductDto.categoryId } as Category;
-    }
-
-    if (updateProductDto.images !== undefined) {
-      product.images = updateProductDto.images.map((img) => ({
-        ...img,
-        product: { id },
-      })) as ProductImage[];
     }
 
     const updated = await this.productsRepository.save(product);

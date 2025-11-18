@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ProductImage } from 'src/modules/product-images/entities/product-image.entity';
+import { ProductImageResponseDto } from 'src/modules/product-images/dto/product-image-response.dto';
 
 export class ProductsResponseDto {
   @ApiProperty({ description: 'ID товара', example: 1 })
@@ -25,9 +25,9 @@ export class ProductsResponseDto {
 
   @ApiPropertyOptional({
     description: 'Изображения товара',
-    type: ProductImage,
+    type: ProductImageResponseDto,
   })
-  image?: ProductImage;
+  image?: ProductImageResponseDto;
 
   @ApiProperty({ description: 'Дата создания товара в БД' })
   created_at: Date;

@@ -3,13 +3,11 @@ import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDecimal,
+  IsInt,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
-  ValidateNested,
 } from 'class-validator';
-import { CreateProductImageDto } from 'src/modules/product-images/dto/create-product-image.dto';
 
 export class CreateProductDto {
   @ApiProperty({ description: 'Название', example: 'Футболка' })
@@ -28,17 +26,10 @@ export class CreateProductDto {
   care?: string;
 
   @ApiProperty({ description: 'Категория', type: Number, example: 1 })
-  @IsNumber()
+  @IsInt()
+  @Type(() => Number)
   @IsNotEmpty({ message: 'Не выбрана категория товара' })
   categoryId: number;
-
-  @ApiPropertyOptional({
-    description: 'Изображения товара',
-    type: [CreateProductImageDto],
-  })
-  @Type(() => CreateProductImageDto)
-  @ValidateNested({ each: true })
-  images?: CreateProductImageDto[];
 
   @ApiPropertyOptional({
     description: 'Активность товара',
@@ -59,7 +50,8 @@ export class CreateProductDto {
     type: Number,
     example: '20',
   })
-  @IsNumber()
+  @IsInt()
   @IsOptional()
+  @Type(() => Number)
   discount?: number;
 }

@@ -32,11 +32,7 @@ export function mapOrderToDto(order: Order): OrderResponseDto {
           description: p.productSize.product.description,
           price: p.productSize.product.price,
           discount: p.productSize.product.discount || 0,
-          image:
-            p.productSize.product.images &&
-            p.productSize.product.images.length > 0
-              ? p.productSize.product.images[0].imageName
-              : '',
+          image: p.productSize.product.images?.[0],
         },
       },
     })),

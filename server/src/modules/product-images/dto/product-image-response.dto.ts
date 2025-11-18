@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ProductImageResponseDto {
-  @ApiProperty({ description: 'ID Изображения', example: 1 })
+  @ApiProperty({ description: 'Уникальный идентификатор изображения' })
   id: number;
 
-  @ApiProperty({ description: 'Путь до изображения', example: 'default.jpg' })
-  imageName: string;
+  @ApiProperty({ description: 'Оригинальное имя файла изображения' })
+  name: string;
+
+  @ApiProperty({ description: 'URL изображения в облаке' })
+  url: string;
 }

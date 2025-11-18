@@ -1,5 +1,6 @@
 import { Expose, Transform } from 'class-transformer';
 import { ProductSize } from 'src/modules/product-sizes/entities/product-sizes.entity';
+import { Product } from 'src/modules/products/entities/product.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import {
   Column,
@@ -37,5 +38,5 @@ export class Cart {
     discount: obj.productSize.product.discount,
     image: obj.productSize.product.image,
   }))
-  product: any;
+  product: Product;
 }
