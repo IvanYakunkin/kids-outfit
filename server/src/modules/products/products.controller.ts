@@ -14,10 +14,10 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiConsumes,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -27,6 +27,7 @@ import {
 } from '@nestjs/swagger';
 import { AdminGuard } from '../auth/guards/jwt-admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ImageFilesInterceptor } from '../product-images/interceptors/product-image.interceptor';
 import { CreateProductDto } from './dto/create-product.dto';
 import { PaginatedProductsResponseDto } from './dto/paginated-products-response.dto';
 import { ProductResponseDto } from './dto/product-response.dto';
@@ -45,13 +46,14 @@ export class ProductsController {
   @ApiBearerAuth()
   @Post()
   @ApiOperation({ summary: 'Создать новый товар' })
+  @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateProductDto })
   @ApiResponse({
     status: 201,
     description: 'Товар успешно создан',
     type: ProductsResponseDto,
   })
-  @UseInterceptors(FilesInterceptor('images', 5))
+  @UseInterceptors(ImageFilesInterceptor('images', 10, 7))
   async create(
     @Body() createProductDto: CreateProductDto,
     @UploadedFiles() files: Express.Multer.File[],
@@ -83,26 +85,26 @@ export class ProductsController {
 
   @ApiOperation({
     summary: 'Получить список похожих товаров',
-    description: `Возвращает список похожих товаров по категории.`,
+    description: `Возвращает список похожих товаров по id категории.`,
   })
-  @ApiParam({ name: 'Slug категории', type: String, example: 'futbolki' })
+  @ApiParam({ name: 'Id категории', type: Number, example: 2 })
   @ApiParam({
     name: 'Количтество получаемых записей',
     type: Number,
     example: 10,
   })
   @ApiOkResponse({
-    description: 'Список товаров получен вместе с мета-информацией о пагинации',
+    description: 'Список товаров получен',
     type: ProductsResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Категория не найдена' })
-  @Get('similar/:categorySlug/:limit')
+  @Get('similar/:categoryId/:limit')
   async getSimilar(
-    @Param('categorySlug') slug: string,
+    @Param('categoryId', ParseIntPipe) categoryId: number,
     @Param('limit', ParseIntPipe) limit: number,
   ): Promise<ProductsResponseDto[]> {
     const products = await this.productsService.findSimilarProducts(
-      slug,
+      categoryId,
       limit,
     );
 

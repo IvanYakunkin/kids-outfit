@@ -90,11 +90,11 @@ export class ProductsService {
   }
 
   async findSimilarProducts(
-    categorySlug: string,
+    categoryId: number,
     limit: number,
   ): Promise<ProductsResponseDto[]> {
     const category = await this.categoryRepository.findOne({
-      where: { slug: categorySlug },
+      where: { id: categoryId },
       relations: ['parent', 'children'],
     });
 
