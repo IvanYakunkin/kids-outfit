@@ -29,10 +29,11 @@ export class QueryProductsDto {
   @Max(100, { message: 'Невозможно получить более 100 записей' })
   limit: number = 20;
 
-  @ApiPropertyOptional({ example: 'clothes', description: 'Slug категории' })
+  @ApiPropertyOptional({ example: 2, description: 'Id категории' })
   @IsOptional()
-  @IsString()
-  category: string;
+  @IsInt()
+  @Type(() => Number)
+  category: number;
 
   @ApiPropertyOptional({
     example: 'футболка',

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, IsNull, Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Category } from '../categories/entities/category.entity';
 import { ProductImage } from '../product-images/entities/product-image.entity';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -36,12 +36,13 @@ export class ProductsService {
         'image.id = (SELECT i.id FROM product_images i WHERE i."productId" = product.id ORDER BY i.id ASC LIMIT 1)',
       );
 
-    let categoryIds: number[] = [];
     if (category) {
-      // Get all category IDs and their children
-      categoryIds = await this.getCategoryAndChildrenIds(category);
+      const categoryIds = await this.getCategoryAndChildrenIds(category);
       qb.andWhere('category.id IN (:...categoryIds)', { categoryIds });
     }
+
+    if (search)
+      qb.andWhere('product.name ILIKE :search', { search: `%${search}%` });
 
     qb.orderBy(`product.${sort}`, order.toUpperCase() as 'ASC' | 'DESC');
     qb.skip((page - 1) * limit).take(limit);
@@ -61,14 +62,23 @@ export class ProductsService {
     };
   }
 
-  async getCategoryAndChildrenIds(categorySlug: string): Promise<number[]> {
-    const category = await this.categoryRepository.findOne({
-      where: { slug: categorySlug },
+  async getCategoryAndChildrenIds(categoryId: number): Promise<number[]> {
+    const categoryRepository = this.categoryRepository;
+    const category = await categoryRepository.findOne({
+      where: { id: categoryId },
       relations: ['children'],
     });
-    if (!category) return [];
+    if (!category) return [categoryId];
 
-    const ids = await this.getChildCategoryIds(category.id);
+    const ids = [category.id];
+
+    if (category.children && category.children.length > 0) {
+      for (const child of category.children) {
+        const childIds = await this.getCategoryAndChildrenIds(child.id);
+        ids.push(...childIds);
+      }
+    }
+
     return ids;
   }
 
@@ -262,32 +272,5 @@ export class ProductsService {
     if (result.affected === 0) {
       throw new NotFoundException('Товар не найден');
     }
-  }
-
-  private async getChildCategoryIds(categoryId: number): Promise<number[]> {
-    const category = await this.categoryRepository.findOne({
-      where: { id: categoryId },
-      relations: ['children'],
-    });
-    if (!category || !category.children || category.children.length === 0) {
-      return [categoryId];
-    }
-
-    const childIds = await Promise.all(
-      category.children.map((child) => this.getChildCategoryIds(child.id)),
-    );
-
-    return [categoryId, ...childIds.flat()];
-  }
-
-  async findProductsByCategory(categoryId: number): Promise<Product[]> {
-    const categoryIds = await this.getChildCategoryIds(categoryId);
-    return this.productsRepository.find({
-      where: {
-        category: {
-          id: In(categoryIds),
-        },
-      },
-    });
   }
 }
