@@ -9,9 +9,8 @@ export class ProductMapper {
       slug: product.slug,
       sku: product.sku,
       price: product.price,
-      category: product.category,
       discount: product.discount,
-      images: product.images,
+      image: product.images ? product.images[0] : undefined,
       created_at: product.created_at,
     };
   }

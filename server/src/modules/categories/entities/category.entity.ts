@@ -1,4 +1,3 @@
-import { randomBytes } from 'crypto';
 import { Product } from 'src/modules/products/entities/product.entity';
 import { transliterate } from 'transliteration';
 import {
@@ -35,12 +34,9 @@ export class Category {
   @BeforeInsert()
   generateSlug() {
     const transliterated = transliterate(this.name);
-    this.slug =
-      transliterated
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w\-]+/g, '') +
-      '-' +
-      randomBytes(3).toString('hex');
+    this.slug = transliterated
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^\w\-]+/g, '');
   }
 }

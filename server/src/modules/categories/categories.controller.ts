@@ -95,7 +95,7 @@ export class CategoriesController {
     type: CategoryResponseDto,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteCategory(@Param('id', ParseIntPipe) id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     await this.categoriesService.delete(id);
   }
 

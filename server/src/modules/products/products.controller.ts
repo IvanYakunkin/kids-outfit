@@ -53,7 +53,6 @@ export class ProductsController {
   }
 
   // URL: products?page=1&limit=20&category=phones&sort=price&order=asc&search=iphone
-  @Get()
   @ApiOperation({
     summary: 'Получить каталог товаров',
     description: `Возвращает список товаров с поддержкой пагинации, фильтрации, сортировки и поиска.  
@@ -70,15 +69,31 @@ export class ProductsController {
     explode: true,
     type: QueryProductsDto,
   })
+  @Get()
   async findAll(@Query() query: QueryProductsDto) {
     return await this.productsService.findAll(query);
   }
 
+  @ApiOperation({
+    summary: 'Получить список похожих товаров',
+    description: `Возвращает список похожих товаров по категории.`,
+  })
+  @ApiParam({ name: 'Slug категории', type: String, example: 'futbolki' })
+  @ApiParam({
+    name: 'Количтество получаемых записей',
+    type: Number,
+    example: 10,
+  })
+  @ApiOkResponse({
+    description: 'Список товаров получен вместе с мета-информацией о пагинации',
+    type: ProductsResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Категория не найдена' })
   @Get('similar/:categorySlug/:limit')
   async getSimilar(
     @Param('categorySlug') slug: string,
-    @Param('limit') limit: number,
-  ): Promise<ProductResponseDto[]> {
+    @Param('limit', ParseIntPipe) limit: number,
+  ): Promise<ProductsResponseDto[]> {
     const products = await this.productsService.findSimilarProducts(
       slug,
       limit,

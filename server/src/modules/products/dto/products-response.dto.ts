@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Category } from 'src/modules/categories/entities/category.entity';
 import { ProductImage } from 'src/modules/product-images/entities/product-image.entity';
 
 export class ProductsResponseDto {
@@ -18,9 +17,6 @@ export class ProductsResponseDto {
   @ApiProperty({ description: 'Цена', example: 1257 })
   price: number;
 
-  @ApiProperty({ description: 'Категория', type: Category })
-  category: Category;
-
   @ApiPropertyOptional({
     description: 'Скидка в процентах',
     example: '20',
@@ -29,9 +25,9 @@ export class ProductsResponseDto {
 
   @ApiPropertyOptional({
     description: 'Изображения товара',
-    type: [ProductImage],
+    type: ProductImage,
   })
-  images?: ProductImage[];
+  image?: ProductImage;
 
   @ApiProperty({ description: 'Дата создания товара в БД' })
   created_at: Date;

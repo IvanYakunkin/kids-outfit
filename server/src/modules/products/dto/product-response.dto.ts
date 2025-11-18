@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { CategoryResponseDto } from 'src/modules/categories/dto/category-response.dto';
 import { ProductCharsResponseDto } from 'src/modules/product-characteristics/dto/product-chars-response.dto';
 import { ProductImageResponseDto } from 'src/modules/product-images/dto/product-image-response.dto';
+import { ProductSizesResponseDto } from 'src/modules/product-sizes/dto/product-sizes-response.dto';
 
 export class ProductResponseDto {
   @ApiProperty({ description: 'ID товара', example: 1 })
@@ -18,6 +19,12 @@ export class ProductResponseDto {
 
   @ApiProperty({ description: 'Категория', type: CategoryResponseDto })
   category: CategoryResponseDto;
+
+  @ApiPropertyOptional({
+    description: 'Размеры товара',
+    type: [ProductSizesResponseDto],
+  })
+  sizes?: ProductSizesResponseDto[];
 
   @ApiPropertyOptional({ description: 'Описание' })
   description?: string;
