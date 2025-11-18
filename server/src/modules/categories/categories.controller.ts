@@ -14,6 +14,7 @@ import {
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -69,6 +70,26 @@ export class CategoriesController {
   })
   async findById(@Param('id', ParseIntPipe) id: number) {
     return await this.categoriesService.findById(id);
+  }
+
+  @Get('/path/*path')
+  @ApiOperation({ summary: 'Получить категорию по пути' })
+  @ApiParam({
+    name: 'path',
+    description: 'Путь slugs категорий',
+    type: String,
+    example: ['malchiki', 'obuv', 'krossovki'],
+  })
+  @ApiOkResponse({
+    description: 'Категория получена по пути',
+    type: CategoryResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Категория не найдена',
+  })
+  async findBySlugPath(@Param('path') path: string[]) {
+    return await this.categoriesService.findByPath(path);
   }
 
   @Get('/hierarchy/:id')

@@ -13,6 +13,33 @@ export class CategoriesService {
     private categoryRepository: Repository<Category>,
   ) {}
 
+  async findByPath(slugs: string[]): Promise<CategoryResponseDto> {
+    let parent: CategoryResponseDto | null = null;
+
+    for (const slug of slugs) {
+      const whereCondition: any = { slug };
+
+      if (parent === null) {
+        whereCondition.parent = null;
+      } else {
+        whereCondition.parent = { id: parent.id };
+      }
+
+      const category = await this.categoryRepository.findOne({
+        where: whereCondition,
+        relations: ['parent'],
+      });
+
+      if (!category) {
+        throw new NotFoundException(`Категория со slug "${slug}" не найдена`);
+      }
+
+      parent = category;
+    }
+
+    return parent!;
+  }
+
   async getRootCategories() {
     const roots = await this.categoryRepository.find({
       where: { parent: IsNull() },
