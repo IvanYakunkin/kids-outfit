@@ -5,16 +5,25 @@ export class CookieService {
   static setRefreshToken(res: Response, token: string) {
     res.cookie('refresh_token', token, {
       httpOnly: true,
-      secure: true,
+      //secure: true,
       sameSite: 'strict',
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+  }
+
+  static setAccessToken(res: Response, token: string) {
+    res.cookie('access_token', token, {
+      httpOnly: true,
+      //secure: true,
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000,
     });
   }
 
   static getRefreshToken(req: Request): string {
     const token = req.cookies['refresh_token'];
     if (!token) {
-      throw new UnauthorizedException('Токен авторизации не обнаружен');
+      throw new UnauthorizedException('Вы не авторизованы');
     }
 
     return token;
@@ -22,5 +31,9 @@ export class CookieService {
 
   static clearRefreshToken(res: Response) {
     res.clearCookie('refresh_token');
+  }
+
+  static clearAccessToken(res: Response) {
+    res.clearCookie('access_token');
   }
 }

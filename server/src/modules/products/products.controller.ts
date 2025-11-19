@@ -87,12 +87,6 @@ export class ProductsController {
     summary: 'Получить список похожих товаров',
     description: `Возвращает список похожих товаров по id категории.`,
   })
-  @ApiParam({ name: 'Id категории', type: Number, example: 2 })
-  @ApiParam({
-    name: 'Количтество получаемых записей',
-    type: Number,
-    example: 10,
-  })
   @ApiOkResponse({
     description: 'Список товаров получен',
     type: ProductsResponseDto,

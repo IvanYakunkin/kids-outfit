@@ -54,4 +54,11 @@ export class CreateProductDto {
   @IsOptional()
   @Type(() => Number)
   discount?: number;
+
+  @ApiProperty({
+    type: 'array',
+    items: { type: 'string', format: 'binary' },
+    description: 'Изображения товара',
+  })
+  images: Express.Multer.File[];
 }

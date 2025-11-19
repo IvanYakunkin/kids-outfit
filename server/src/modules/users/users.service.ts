@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { AuthDto } from './dto/auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 
@@ -35,15 +34,6 @@ export class UsersService {
 
   async findUserById(id: number) {
     return this.usersRepository.findOneBy({ id });
-  }
-
-  async auth(authDto: AuthDto): Promise<User | null> {
-    const user: User | null = await this.usersRepository.findOneBy({
-      phone: authDto.phone,
-      password: authDto.password,
-    });
-
-    return user;
   }
 
   async findUserByPhone(phone: string): Promise<User | null> {

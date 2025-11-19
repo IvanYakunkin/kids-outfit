@@ -1,10 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { Request } from 'express';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { UsersService } from '../../users/users.service';
-import { AuthResponseDto } from '../dto/auth-response.dto';
 import { LoginDto } from '../dto/login.dto';
-import { TokensService } from './token.service';
+import { TokensService } from './tokens.service';
 
 @Injectable()
 export class AuthService {
@@ -13,24 +13,28 @@ export class AuthService {
     private readonly tokensService: TokensService,
   ) {}
 
-  async registration(userData: CreateUserDto): Promise<AuthResponseDto> {
+  async registration(userData: CreateUserDto, req: Request) {
     const user = await this.usersService.create(userData);
     const tokens = this.tokensService.generateTokens({
       id: user.id,
       isAdmin: user.isAdmin,
     });
-    await this.tokensService.saveRefreshToken(user, tokens.refreshToken);
+    await this.tokensService.saveRefreshToken(
+      user,
+      this.tokensService.hashToken(tokens.refreshToken),
+      req.ip,
+      req.headers['user-agent'],
+    );
+
     const { password, ...userWithoutPassword } = user;
 
     return { user: userWithoutPassword, tokens };
   }
 
-  async login(loginDto: LoginDto): Promise<AuthResponseDto> {
+  async login(loginDto: LoginDto, req: Request) {
     const user = await this.usersService.findUserByPhone(loginDto.phone);
     if (!user) {
-      throw new UnauthorizedException(
-        'Пользователь с таким телефоном не найден',
-      );
+      throw new UnauthorizedException('Неверные данные входа');
     }
 
     const isCorrectPassword = await bcrypt.compare(
@@ -45,50 +49,59 @@ export class AuthService {
       id: user.id,
       isAdmin: user.isAdmin,
     });
-    await this.tokensService.saveRefreshToken(user, tokens.refreshToken);
+
+    await this.tokensService.saveRefreshToken(
+      user,
+      this.tokensService.hashToken(tokens.refreshToken),
+      req.ip,
+      req.headers['user-agent'],
+    );
     const { password, ...userWithoutPassword } = user;
 
     return { user: userWithoutPassword, tokens };
   }
 
   async logout(refreshToken: string) {
-    const token = await this.tokensService.removeToken(refreshToken);
-    return token;
+    if (refreshToken) {
+      const hashedToken = this.tokensService.hashToken(refreshToken);
+      const tokenInDb = await this.tokensService.findToken(hashedToken);
+      if (tokenInDb) {
+        await this.tokensService.removeToken(tokenInDb);
+      }
+    }
+
+    return { message: 'Вы успешно вышли из системы' };
   }
 
-  async refresh(refreshToken: string): Promise<AuthResponseDto> {
+  async refreshTokens(req: Request, refreshToken: string) {
     if (!refreshToken) {
-      throw new UnauthorizedException('Ошибка аутентификации');
+      throw new UnauthorizedException('Вы не авторизованы');
     }
 
-    const userData = this.tokensService.validateRefreshToken(refreshToken);
-    const tokenFromDb = await this.tokensService.findToken(refreshToken);
+    const hashedToken = this.tokensService.hashToken(refreshToken);
 
-    if (!userData || !tokenFromDb) {
-      throw new UnauthorizedException('Ошибка аутентификации');
+    const tokenInDb = await this.tokensService.findToken(hashedToken);
+
+    if (!tokenInDb || tokenInDb.expiresAt < new Date()) {
+      throw new UnauthorizedException('Вы не авторизованы');
     }
 
-    if (userData && typeof userData !== 'string') {
-      const user = await this.usersService.findUserById(userData.id);
+    const user = tokenInDb.user;
 
-      if (!user) {
-        throw new UnauthorizedException('Ошибка аутентификации');
-      }
+    await this.tokensService.removeToken(tokenInDb);
 
-      const { password, ...userWithoutPassword } = user;
-      const tokens = this.tokensService.generateTokens({
-        id: user.id,
-        isAdmin: user.isAdmin,
-      });
+    const payload = { id: user.id, isAdmin: user.isAdmin };
+    const tokens = this.tokensService.generateTokens(payload);
 
-      await this.tokensService.saveRefreshToken(user, tokens.refreshToken);
+    const newTokenHash = this.tokensService.hashToken(tokens.refreshToken);
 
-      return {
-        user: userWithoutPassword,
-        tokens,
-      };
-    }
+    this.tokensService.saveRefreshToken(
+      user,
+      newTokenHash,
+      req.ip,
+      req.headers['user-agent'],
+    );
 
-    throw new UnauthorizedException('Ошибка аутентификации');
+    return { user, tokens };
   }
 }

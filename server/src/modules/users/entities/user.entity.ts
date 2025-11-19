@@ -40,7 +40,7 @@ export class User {
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
 
-  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
+  @OneToMany(() => RefreshToken, (token) => token.user)
   refreshTokens: RefreshToken[];
 
   @CreateDateColumn()

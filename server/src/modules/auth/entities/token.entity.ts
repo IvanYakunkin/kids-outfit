@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -12,11 +13,23 @@ export class RefreshToken {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
-  token: string;
-
-  @ManyToOne(() => User, (user) => user.refreshTokens)
+  @ManyToOne(() => User, (user) => user.refreshTokens, {
+    onDelete: 'CASCADE',
+  })
   user: User;
+
+  @Column({ type: 'varchar', length: 255 })
+  @Index()
+  tokenHash: string;
+
+  @Column()
+  expiresAt: Date;
+
+  @Column({ nullable: true })
+  ip: string;
+
+  @Column({ nullable: true })
+  userAgent: string;
 
   @CreateDateColumn()
   createdAt: Date;

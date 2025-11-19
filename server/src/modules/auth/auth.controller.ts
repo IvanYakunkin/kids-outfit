@@ -10,7 +10,7 @@ import {
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { AuthResponseDto } from './dto/auth-response.dto';
+import { UserResponseDto } from '../users/dto/user-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { NoAuthGuard } from './guards/jwt-no-auth.guard';
@@ -30,7 +30,7 @@ export class AuthController {
   @ApiResponse({
     status: 201,
     description: 'Пользователь успешно зарегистрирован',
-    type: AuthResponseDto,
+    type: UserResponseDto,
   })
   @ApiResponse({
     status: 400,
@@ -39,11 +39,13 @@ export class AuthController {
   async registration(
     @Body() createUserDto: CreateUserDto,
     @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
   ) {
-    const userData = await this.authService.registration(createUserDto);
+    const userData = await this.authService.registration(createUserDto, req);
     CookieService.setRefreshToken(res, userData.tokens.refreshToken);
+    CookieService.setAccessToken(res, userData.tokens.accessToken);
 
-    return userData;
+    return userData.user;
   }
 
   @UseGuards(NoAuthGuard)
@@ -51,19 +53,21 @@ export class AuthController {
   @ApiOperation({ summary: 'Авторизация пользователя' })
   @ApiBody({ type: LoginDto })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Успешный вход',
-    type: AuthResponseDto,
+    type: UserResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Неверные данные входа' })
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
   ) {
-    const userData = await this.authService.login(loginDto);
+    const userData = await this.authService.login(loginDto, req);
     CookieService.setRefreshToken(res, userData.tokens.refreshToken);
+    CookieService.setAccessToken(res, userData.tokens.accessToken);
 
-    return userData;
+    return userData.user;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -73,19 +77,22 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Пользователь не авторизован' })
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const refreshToken = CookieService.getRefreshToken(req);
-    const token = await this.authService.logout(refreshToken);
-    CookieService.clearRefreshToken(res);
+    if (refreshToken) {
+      const token = await this.authService.logout(refreshToken);
 
-    return token;
+      CookieService.clearAccessToken(res);
+      CookieService.clearRefreshToken(res);
+
+      return token;
+    }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('refresh')
   @ApiOperation({ summary: 'Обновление токена' })
   @ApiResponse({
     status: 200,
     description: 'Токен обновлен',
-    type: AuthResponseDto,
+    type: UserResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Пользователь не авторизован' })
   async refresh(
@@ -93,9 +100,11 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const refreshToken = CookieService.getRefreshToken(req);
-    const userData = await this.authService.refresh(refreshToken);
-    CookieService.setRefreshToken(res, userData.tokens.refreshToken);
+    const userData = await this.authService.refreshTokens(req, refreshToken);
 
-    return userData;
+    CookieService.setRefreshToken(res, userData.tokens.refreshToken);
+    CookieService.setAccessToken(res, userData.tokens.accessToken);
+
+    return userData.user;
   }
 }

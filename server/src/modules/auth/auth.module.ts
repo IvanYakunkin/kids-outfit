@@ -7,7 +7,7 @@ import { AdminGuard } from './guards/jwt-admin.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { NoAuthGuard } from './guards/jwt-no-auth.guard';
 import { AuthService } from './services/auth.service';
-import { TokensService } from './services/token.service';
+import { TokensService } from './services/tokens.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([RefreshToken]), UsersModule],
