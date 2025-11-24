@@ -18,8 +18,8 @@ export class User {
   @Column()
   firstname: string;
 
-  @Column()
-  middlename: string;
+  @Column({ nullable: true, default: null })
+  middlename?: string;
 
   @Column()
   lastname: string;

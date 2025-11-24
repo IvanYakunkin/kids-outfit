@@ -1,6 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsNotEmpty,
+  IsOptional,
   IsPhoneNumber,
   IsString,
   Matches,
@@ -23,13 +24,13 @@ export class CreateUserDto {
   @MaxLength(50, { message: 'Имя не должно быть больше 50 символов' })
   firstname: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'Отчество пользователя (только русские буквы, дефисы или апострофы)',
     maxLength: 50,
     example: 'Иванович',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @Matches(/^[А-Яа-яЁё'-]+$/, {
     message:

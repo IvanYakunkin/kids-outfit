@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { JwtPayload } from '../interfaces/jwt-payload.interface';
+import { JwtPayload } from 'jsonwebtoken';
 import { TokensService } from '../services/tokens.service';
 
 declare module 'express' {
@@ -20,23 +20,21 @@ export class JwtAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
       .switchToHttp()
-      .getRequest<Request & { user?: any }>();
+      .getRequest<Request & { user?: JwtPayload }>();
 
-    const authHeader = request.headers['authorization'];
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const token = request.cookies['access_token'];
+
+    if (!token) {
       throw new UnauthorizedException('Вы не авторизованы');
     }
 
-    const token = authHeader.split(' ')[1];
-
     const userData = await this.tokenService.validateAccessToken(token);
 
-    if (!userData) {
+    if (!userData || typeof userData === 'string') {
       throw new UnauthorizedException('Пользователь не авторизован');
     }
 
     request.user = userData;
-
     return true;
   }
 }

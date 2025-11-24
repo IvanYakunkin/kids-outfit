@@ -18,7 +18,7 @@ async function bootstrap() {
     }),
   );
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: process.env.CLIENT_ADDRESS ?? 'http://localhost:3000',
     credentials: true,
   });
 

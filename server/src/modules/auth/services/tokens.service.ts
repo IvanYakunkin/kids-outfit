@@ -23,7 +23,6 @@ export class TokensService {
       const userData = jwt.verify(accessToken, accessSecret);
       return userData;
     } catch (error) {
-      console.log(error);
       return null;
     }
   }
@@ -37,27 +36,12 @@ export class TokensService {
       const userData = jwt.verify(refreshToken, refreshSecret);
       return userData;
     } catch (error) {
-      console.log(error);
       return null;
     }
   }
 
   hashToken(token: string) {
     return createHash('sha256').update(token).digest('hex');
-  }
-
-  // Used to refresh access token token
-  generateAccessToken(payload: JwtPayload) {
-    const accessSecret = process.env.JWT_ACCESS_SECRET;
-    if (!accessSecret) {
-      throw new Error('JWT_ACCESS_SECRET не определен');
-    }
-
-    const accessToken = jwt.sign(payload, accessSecret, {
-      expiresIn: '30m',
-    });
-
-    return accessToken;
   }
 
   generateTokens(payload: JwtPayload) {
@@ -72,7 +56,7 @@ export class TokensService {
     });
 
     const accessToken = jwt.sign(payload, accessSecret, {
-      expiresIn: '15m',
+      expiresIn: '1m',
     });
 
     return { accessToken, refreshToken };

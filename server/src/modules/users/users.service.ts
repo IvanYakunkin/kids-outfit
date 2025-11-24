@@ -1,8 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserResponseDto } from './dto/user-response.dto';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -32,8 +37,13 @@ export class UsersService {
     return await this.usersRepository.save(user);
   }
 
-  async findUserById(id: number) {
-    return this.usersRepository.findOneBy({ id });
+  async findUserById(id: number): Promise<UserResponseDto> {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+
+    return user;
   }
 
   async findUserByPhone(phone: string): Promise<User | null> {

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UserResponseDto {
   @ApiProperty({
@@ -10,8 +10,11 @@ export class UserResponseDto {
   @ApiProperty({ example: 'Иван', description: 'Имя пользователя' })
   firstname: string;
 
-  @ApiProperty({ example: 'Иванович', description: 'Отчество пользователя' })
-  middlename: string;
+  @ApiPropertyOptional({
+    example: 'Иванович',
+    description: 'Отчество пользователя',
+  })
+  middlename?: string;
 
   @ApiProperty({ example: 'Иванов', description: 'Фамилия пользователя' })
   lastname: string;

@@ -1,26 +1,33 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UserResponseDto } from '../users/dto/user-response.dto';
+import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { NoAuthGuard } from './guards/jwt-no-auth.guard';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { AuthService } from './services/auth.service';
 import { CookieService } from './services/cookie.service';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @UseGuards(NoAuthGuard)
   @Post('registration')
@@ -70,7 +77,6 @@ export class AuthController {
     return userData.user;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('logout')
   @ApiOperation({ summary: 'Выход из системы' })
   @ApiResponse({ status: 200, description: 'Пользователь вышел' })
@@ -90,7 +96,7 @@ export class AuthController {
   @Post('refresh')
   @ApiOperation({ summary: 'Обновление токена' })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Токен обновлен',
     type: UserResponseDto,
   })
@@ -100,11 +106,24 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const refreshToken = CookieService.getRefreshToken(req);
-    const userData = await this.authService.refreshTokens(req, refreshToken);
+    const newUserData = await this.authService.refreshTokens(req, refreshToken);
 
-    CookieService.setRefreshToken(res, userData.tokens.refreshToken);
-    CookieService.setAccessToken(res, userData.tokens.accessToken);
+    CookieService.setRefreshToken(res, newUserData.tokens.refreshToken);
+    CookieService.setAccessToken(res, newUserData.tokens.accessToken);
 
-    return userData.user;
+    return newUserData.user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async getMe(@Req() req: Request) {
+    const userPayload = req.user as JwtPayload | undefined;
+    if (!userPayload) {
+      throw new UnauthorizedException('Пользователь не авторизован');
+    }
+
+    const user = await this.usersService.findUserById(userPayload.id);
+
+    return user;
   }
 }
