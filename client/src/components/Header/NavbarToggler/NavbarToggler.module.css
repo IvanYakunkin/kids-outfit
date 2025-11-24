@@ -1,0 +1,37 @@
+.navbarToggler {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 36px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 5px;
+}
+
+.navbarToggler > span {
+  display: block;
+  height: 4px;
+  background-color: var(--templatePurple);
+  width: 100%;
+  border-radius: 2px;
+}
+
+@media (max-width: 992px) {
+  .navbarToggler {
+    display: flex;
+    width: 30px;
+    height: 20px;
+  }
+  .navbarToggler > span {
+    height: 3px;
+  }
+}
+
+@media (max-width: 479px) {
+  .navbarToggler {
+    width: 25px;
+    height: 17px;
+  }
+}

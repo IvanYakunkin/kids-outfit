@@ -1,0 +1,88 @@
+@font-face {
+  font-family: "FuturePT";
+  src: url("/fonts/FuturaCyrillicMedium.ttf") format("truetype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "FuturePT";
+  src: url("/fonts/FuturaCyrillicDemi.ttf") format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "FuturePT";
+  src: url("/fonts/FuturaCyrillicBook.ttf") format("truetype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "FuturePT";
+  src: url("/fonts/FuturaCyrillicLight.ttf") format("truetype");
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: "FuturePT";
+  src: url("/fonts/FuturaCyrillicMedium.ttf") format("truetype");
+  font-weight: 600;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  font-family: "FuturePT", sans-serif;
+  overflow-x: hidden;
+  padding-right: 0;
+}
+
+:root {
+  --templatePurple: #7758b3;
+  --templatePurpleHover: #6243a0;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.mainTitle {
+  font-size: 2em;
+  padding-bottom: 20px;
+  padding-top: 50px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+main {
+  min-height: 50vh;
+}
+
+.center {
+  text-align: center;
+}
+
+.desktop {
+  display: block;
+}
+
+.mobile {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .mainTitle {
+    font-size: 1.5em;
+    padding-top: 25px;
+  }
+
+  .desktop {
+    display: none;
+  }
+
+  .mobile {
+    display: block;
+  }
+}

@@ -1,0 +1,167 @@
+.collection {
+  position: relative;
+}
+
+.items {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  row-gap: 30px;
+  column-gap: 10px;
+}
+
+.item {
+  color: black;
+  display: block;
+  text-decoration: none;
+}
+
+.item:hover .image {
+  scale: 1.1;
+}
+.item:hover .name {
+  color: var(--templatePurple);
+}
+
+.info {
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+.imageContainer {
+  max-width: 300px;
+  max-height: 400px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: scale 0.2s ease-out;
+}
+
+.cost {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.costCurrent {
+  font-weight: 700;
+  display: flex;
+  gap: 5px;
+}
+
+.costFull {
+  font-size: 0.8em;
+  color: #757575;
+  position: relative;
+  display: flex;
+  gap: 5px;
+}
+
+.costFull::after {
+  background-color: #e41a2a;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  top: 35%;
+  left: 0px;
+  -webkit-transform: rotate(-3deg);
+  -ms-transform: rotate(-3deg);
+  transform: rotate(-3deg);
+}
+
+.labels {
+  font-size: 0.9em;
+  display: flex;
+  color: white;
+  align-items: center;
+}
+
+.labelNew {
+  padding: 2px 10px;
+  background-color: var(--templatePurple);
+  font-weight: 500;
+  letter-spacing: 0.9px;
+}
+
+.name {
+  font-size: 1.1em;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease-out;
+}
+
+.labelDiscount {
+  background-color: #e41a2a;
+  padding: 2px 5px;
+}
+
+.navigation {
+  position: absolute;
+  top: 50px;
+  right: -20px;
+  display: flex;
+  gap: 25px;
+  z-index: 10;
+}
+
+.buttonPrev,
+.buttonNext {
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  position: relative !important;
+  width: 15px;
+}
+
+.buttonPrev::after,
+.buttonNext::after {
+  font-size: 1.9em !important;
+  font-weight: bold;
+  color: rgb(58, 31, 0);
+}
+
+@media (max-width: 1200px) {
+  .items {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .buttonPrev,
+  .buttonNext {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .items {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .item {
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 479px) {
+  .items {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .item {
+    font-size: 0.9em;
+  }
+}

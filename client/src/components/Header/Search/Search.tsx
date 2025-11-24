@@ -1,0 +1,29 @@
+import styles from "./Search.module.css";
+
+export default function Search() {
+  return (
+    <div className={styles.search}>
+      <input
+        type="text"
+        className={styles.serachField}
+        id="store-search-field"
+        placeholder="Найти в магазине"
+      />
+      <svg
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        width="30"
+        height="30"
+        fill="none"
+        viewBox="0 0 24 30"
+      >
+        <path
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth="2"
+          d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+        />
+      </svg>
+    </div>
+  );
+}

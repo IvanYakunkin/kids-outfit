@@ -1,0 +1,28 @@
+.auth {
+  display: flex;
+  gap: 20px;
+  padding-left: 10px;
+}
+
+.authElement {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.authElement:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 1200px) {
+  .auth {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 992px) {
+  .auth {
+    display: none;
+  }
+}

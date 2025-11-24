@@ -1,0 +1,23 @@
+.product {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.productContent {
+  display: flex;
+  justify-content: center;
+}
+
+.breadcrumbs {
+  width: 88vw;
+}
+
+@media (max-width: 992px) {
+  .productContent {
+    flex-direction: column;
+  }
+
+  .product {
+    margin: 0;
+  }
+}

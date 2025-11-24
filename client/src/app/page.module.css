@@ -1,0 +1,9 @@
+.main {
+  max-width: 1600px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.storeDescription {
+  margin-left: 10px;
+}

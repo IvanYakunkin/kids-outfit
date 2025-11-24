@@ -1,0 +1,45 @@
+.search {
+  position: relative;
+  width: 30%;
+}
+
+.serachField {
+  width: 100%;
+  font-size: 1em;
+  box-sizing: border-box;
+  padding: 12px 32px 12px 10px;
+  border: 1px solid rgb(197, 197, 197);
+  border-radius: 5px;
+  outline: none;
+  letter-spacing: 0.5px;
+}
+
+.serachField:focus {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  border: 1px solid rgb(160, 160, 160);
+}
+
+.search > svg {
+  position: absolute;
+  right: 5px;
+  top: 9px;
+  color: rgb(92, 92, 92);
+  cursor: pointer;
+}
+
+@media (max-width: 992px) {
+  .search {
+    width: -webkit-fill-available;
+  }
+}
+
+@media (max-width: 479px) {
+  .search {
+    font-size: 0.8em;
+  }
+
+  .search > svg {
+    top: 7px;
+  }
+}

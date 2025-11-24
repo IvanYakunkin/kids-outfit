@@ -1,0 +1,50 @@
+.label {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.sizes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.size {
+  padding: 7px 0;
+  text-align: center;
+  border: 1px solid #dbdbdb;
+  margin-left: -1px;
+  margin-bottom: -1px;
+  cursor: pointer;
+  border-radius: 7px;
+  flex: 0 0 calc(24.7%);
+}
+
+.size:hover {
+  font-weight: 600;
+}
+
+.size.selected {
+  -webkit-box-shadow: 0 0 0 2px #000 inset;
+  box-shadow: 0 0 0 2px #000 inset;
+  font-weight: bold;
+}
+
+@media (max-width: 992px) {
+  .sizes {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5px;
+  }
+}
+
+@media (max-width: 767px) {
+  .sizes {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 479px) {
+  .sizes {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
