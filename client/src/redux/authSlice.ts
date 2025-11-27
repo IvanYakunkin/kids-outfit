@@ -4,7 +4,7 @@ import { loginThunk } from "./thunks/loginThunk";
 import { logoutThunk } from "./thunks/logoutThunk";
 import { registrationThunk } from "./thunks/registrationThunk";
 
-type UserType = AuthResponseDto | null | false;
+type UserType = AuthResponseDto | null;
 
 interface AuthState {
   user: UserType;
@@ -65,7 +65,7 @@ const authSlice = createSlice({
       })
       .addCase(logoutThunk.fulfilled, (state) => {
         state.loading = false;
-        state.user = false;
+        state.user = null;
       })
       .addCase(logoutThunk.rejected, (state, action) => {
         state.loading = false;

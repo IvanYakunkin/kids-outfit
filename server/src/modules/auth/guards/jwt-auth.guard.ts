@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
+import { CookieService } from '../services/cookie.service';
 import { TokensService } from '../services/tokens.service';
 
 declare module 'express' {
@@ -22,11 +23,7 @@ export class JwtAuthGuard implements CanActivate {
       .switchToHttp()
       .getRequest<Request & { user?: JwtPayload }>();
 
-    const token = request.cookies['access_token'];
-
-    if (!token) {
-      throw new UnauthorizedException('Вы не авторизованы');
-    }
+    const token = CookieService.getAccessToken(request);
 
     const userData = await this.tokenService.validateAccessToken(token);
 

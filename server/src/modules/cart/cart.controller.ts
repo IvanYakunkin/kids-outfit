@@ -115,16 +115,13 @@ export class CartController {
   })
   @ApiResponse({ status: 404, description: 'Товар не найден' })
   async deleteCartProduct(
-    @Param('productSizeId') productSizeId: string,
+    @Param('productSizeId', ParseIntPipe) productSizeId: number,
     @Req() req: Request,
   ) {
     if (!req.user || !req.user['id']) {
       throw new UnauthorizedException('Пользователь не авторизован');
     }
 
-    return await this.cartService.deleteProduct(
-      +req.user['id'],
-      +productSizeId,
-    );
+    return await this.cartService.deleteProduct(+req.user['id'], productSizeId);
   }
 }

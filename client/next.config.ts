@@ -1,10 +1,10 @@
 import type { NextConfig } from "next";
+import { URL } from "node:url";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
   images: {
-    domains: ["res.cloudinary.com"],
+    remotePatterns: [new URL("https://res.cloudinary.com/**")],
   },
 };
 

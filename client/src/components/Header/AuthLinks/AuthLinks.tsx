@@ -14,8 +14,6 @@ export default function AuthLinks() {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  if (user === null) return;
-
   const handleLogout = async () => {
     const result = await dispatch(logoutThunk());
 

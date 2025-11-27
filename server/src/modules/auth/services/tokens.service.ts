@@ -56,7 +56,7 @@ export class TokensService {
     });
 
     const accessToken = jwt.sign(payload, accessSecret, {
-      expiresIn: '1m',
+      expiresIn: '15m',
     });
 
     return { accessToken, refreshToken };

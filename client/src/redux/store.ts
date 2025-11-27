@@ -2,7 +2,7 @@ import { AuthResponseDto } from "@/types/users";
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer, { initialState as authInitialState } from "./authSlice";
 
-export function makeStore(user?: AuthResponseDto | null) {
+export function makeStore(user?: AuthResponseDto | null | false) {
   return configureStore({
     reducer: {
       auth: authReducer,

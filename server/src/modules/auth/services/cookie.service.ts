@@ -31,6 +31,16 @@ export class CookieService {
     return token;
   }
 
+  static getAccessToken(req: Request): string {
+    const token = req.cookies['access_token'];
+
+    if (!token) {
+      throw new UnauthorizedException('Вы не авторизованы');
+    }
+
+    return token;
+  }
+
   static clearRefreshToken(res: Response) {
     res.clearCookie('refresh_token');
   }

@@ -4,7 +4,7 @@ import {
   ProductQueryParams,
   ProductResponseDto,
 } from "@/types/products";
-import { fetchJson, FetchJsonResult } from "./fetchJson";
+import { fetchJson, FetchJsonResult } from "../fetchJson";
 
 export async function getNewProducts(
   limit = 10

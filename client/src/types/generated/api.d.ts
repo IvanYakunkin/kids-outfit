@@ -810,36 +810,10 @@ export interface components {
              */
             id: number;
             /**
-             * @description Имя пользователя
-             * @example Иван
-             */
-            firstname: string;
-            /**
-             * @description Отчество пользователя
-             * @example Иванович
-             */
-            middlename?: string;
-            /**
-             * @description Фамилия пользователя
-             * @example Иванов
-             */
-            lastname: string;
-            /**
-             * @description Телефон пользователя
-             * @example +79991234567
-             */
-            phone: string;
-            /**
              * @description Флаг администратора
              * @example false
              */
             isAdmin: boolean;
-            /**
-             * Format: date-time
-             * @description Дата создания пользователя
-             * @example 2025-11-19T12:34:56.789Z
-             */
-            created_at: string;
         };
         LoginDto: {
             /**
@@ -2415,7 +2389,7 @@ export interface operations {
             header?: never;
             path: {
                 /** @description ID товара в корзине */
-                productSizeId: string;
+                productSizeId: number;
             };
             cookie?: never;
         };

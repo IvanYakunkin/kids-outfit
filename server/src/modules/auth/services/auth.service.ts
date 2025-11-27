@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
+import { UserResponseDto } from 'src/modules/users/dto/user-response.dto';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { UsersService } from '../../users/users.service';
 import { LoginDto } from '../dto/login.dto';
@@ -15,10 +16,13 @@ export class AuthService {
 
   async registration(userData: CreateUserDto, req: Request) {
     const user = await this.usersService.create(userData);
-    const tokens = this.tokensService.generateTokens({
+    const userResponse: UserResponseDto = {
       id: user.id,
       isAdmin: user.isAdmin,
-    });
+    };
+
+    const tokens = this.tokensService.generateTokens(userResponse);
+
     await this.tokensService.saveRefreshToken(
       user,
       this.tokensService.hashToken(tokens.refreshToken),
@@ -26,9 +30,7 @@ export class AuthService {
       req.headers['user-agent'],
     );
 
-    const { password, ...userWithoutPassword } = user;
-
-    return { user: userWithoutPassword, tokens };
+    return { user: userResponse, tokens };
   }
 
   async login(loginDto: LoginDto, req: Request) {
@@ -56,9 +58,13 @@ export class AuthService {
       req.ip,
       req.headers['user-agent'],
     );
-    const { password, ...userWithoutPassword } = user;
 
-    return { user: userWithoutPassword, tokens };
+    const userResponse: UserResponseDto = {
+      id: user.id,
+      isAdmin: user.isAdmin,
+    };
+
+    return { user: userResponse, tokens };
   }
 
   async logout(refreshToken: string) {
@@ -81,7 +87,6 @@ export class AuthService {
     const hashedToken = this.tokensService.hashToken(refreshToken);
 
     const tokenInDb = await this.tokensService.findToken(hashedToken);
-
     if (!tokenInDb || tokenInDb.expiresAt < new Date()) {
       throw new UnauthorizedException('Вы не авторизованы');
     }
@@ -102,6 +107,11 @@ export class AuthService {
       req.headers['user-agent'],
     );
 
-    return { user, tokens };
+    const userResponse: UserResponseDto = {
+      id: user.id,
+      isAdmin: user.isAdmin,
+    };
+
+    return { user: userResponse, tokens };
   }
 }

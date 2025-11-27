@@ -70,6 +70,7 @@ export default function Navbar({ categories }: NavbarProps) {
     } else {
       console.error("Ошибка выхода:", result.payload);
     }
+    closeNavbar();
   };
 
   if (!render) return null;

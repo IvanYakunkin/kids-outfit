@@ -1,4 +1,4 @@
-import { fetchJson, FetchJsonResult } from "@/shared/api/fetchJson";
+import { fetchJson, FetchJsonResult } from "@/shared/fetchJson";
 import { AuthResponseDto } from "@/types/users";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 

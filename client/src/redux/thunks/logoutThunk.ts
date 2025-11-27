@@ -4,7 +4,7 @@ export const logoutThunk = createAsyncThunk<boolean, void>(
   "auth/logoutThunk",
   async (_, thunkAPI) => {
     try {
-      const res = await fetch("http://localhost:5000/api/auth/logout", {
+      const res = await fetch(`${process.env.API_URL}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });

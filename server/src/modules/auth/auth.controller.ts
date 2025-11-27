@@ -84,12 +84,12 @@ export class AuthController {
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const refreshToken = CookieService.getRefreshToken(req);
     if (refreshToken) {
-      const token = await this.authService.logout(refreshToken);
+      const resultMsg = await this.authService.logout(refreshToken);
 
       CookieService.clearAccessToken(res);
       CookieService.clearRefreshToken(res);
 
-      return token;
+      return resultMsg;
     }
   }
 
@@ -122,8 +122,11 @@ export class AuthController {
       throw new UnauthorizedException('Пользователь не авторизован');
     }
 
-    const user = await this.usersService.findUserById(userPayload.id);
+    const userResponse: UserResponseDto = {
+      id: userPayload.id,
+      isAdmin: userPayload.isAdmin,
+    };
 
-    return user;
+    return userResponse;
   }
 }

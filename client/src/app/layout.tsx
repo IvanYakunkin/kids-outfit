@@ -4,7 +4,6 @@ import { NavbarProvider } from "@/components/Header/Navbar/NavbarContext";
 import { AuthResponseDto } from "@/types/users";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { AppClientWrapper } from "./appClientWrapper";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -18,24 +17,21 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const cookieHeader = cookieStore
-    .getAll()
-    .map(({ name, value }) => `${name}=${value}`)
-    .join("; ");
-
-  const refresh_token = cookieStore.get("refresh_token");
-  const access_token = cookieStore.get("access_token");
-
   let user: AuthResponseDto | null = null;
-  if (access_token) {
-    const isAccessRes = await fetch(`http://localhost:5000/api/auth/me`, {
-      method: "GET",
-      headers: { cookie: cookieHeader },
-    });
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("access_token")?.value;
+  if (accessToken) {
+    const meResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/me`,
+      {
+        method: "GET",
+        headers: { cookie: cookieStore.toString() },
+        cache: "no-store",
+      }
+    );
 
-    if (isAccessRes.ok) {
-      user = await isAccessRes.json();
+    if (meResponse.ok) {
+      user = await meResponse.json();
     }
   }
 
@@ -43,13 +39,11 @@ export default async function RootLayout({
     <html lang="ru">
       <body>
         <Providers user={user}>
-          <AppClientWrapper hasRefreshToken={refresh_token ? true : false}>
-            <NavbarProvider>
-              <Header />
-              {children}
-              <Footer />
-            </NavbarProvider>
-          </AppClientWrapper>
+          <NavbarProvider>
+            <Header />
+            {children}
+            <Footer />
+          </NavbarProvider>
         </Providers>
       </body>
     </html>

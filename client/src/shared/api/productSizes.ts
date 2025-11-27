@@ -1,5 +1,5 @@
 import { ProductSizesDto } from "@/types/productSizes";
-import { fetchJson, FetchJsonResult } from "./fetchJson";
+import { fetchJson, FetchJsonResult } from "../fetchJson";
 
 export async function getProductSizes(
   productId: number

@@ -16,7 +16,7 @@ export function mapAllOrders(order: Order): GetOrdersDto {
     user: {
       id: order.user.id,
       firstname: order.user.firstname,
-      middlename: order.user.middlename,
+      middlename: order.user.middlename || null,
       lastname: order.user.lastname,
       phone: order.user.phone,
       isAdmin: order.user.isAdmin,
