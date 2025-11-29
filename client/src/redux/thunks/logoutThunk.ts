@@ -4,10 +4,13 @@ export const logoutThunk = createAsyncThunk<boolean, void>(
   "auth/logoutThunk",
   async (_, thunkAPI) => {
     try {
-      const res = await fetch(`${process.env.API_URL}/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
 
       if (!res.ok) {
         return thunkAPI.rejectWithValue("Не удалось выйти из аккаунта");

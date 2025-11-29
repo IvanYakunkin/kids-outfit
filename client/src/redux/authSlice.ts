@@ -4,7 +4,7 @@ import { loginThunk } from "./thunks/loginThunk";
 import { logoutThunk } from "./thunks/logoutThunk";
 import { registrationThunk } from "./thunks/registrationThunk";
 
-type UserType = AuthResponseDto | null;
+type UserType = AuthResponseDto | null | false;
 
 interface AuthState {
   user: UserType;

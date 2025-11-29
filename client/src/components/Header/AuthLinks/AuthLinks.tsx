@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import styles from "./AuthLinks.module.css";
 
-export default function AuthLinks() {
+export default function AuthLinks({ isRefresh }: { isRefresh: boolean }) {
   const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function AuthLinks() {
 
   return (
     <div className={styles.auth}>
-      {user ? (
+      {user || isRefresh ? (
         <>
           <Link href="/cart/" className={styles.authElement}>
             <Image
@@ -46,7 +46,7 @@ export default function AuthLinks() {
             />
             Выйти
           </div>
-          {user.isAdmin && (
+          {user && user.isAdmin && (
             <Link href="/admin" className={styles.authElement}>
               <Image
                 src="/images/admin.png"
