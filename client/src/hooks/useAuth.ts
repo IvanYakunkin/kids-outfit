@@ -13,7 +13,7 @@ export function useAuth() {
   useEffect(() => {
     async function checkAuth() {
       const meResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/auth/me`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
         {
           method: "GET",
           credentials: "include",
@@ -28,7 +28,7 @@ export function useAuth() {
       }
 
       const refreshResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/auth/refresh`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
         {
           method: "POST",
           credentials: "include",
