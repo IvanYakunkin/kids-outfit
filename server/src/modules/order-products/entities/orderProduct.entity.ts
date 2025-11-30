@@ -20,6 +20,6 @@ export class OrderProduct {
   @Column({ default: 1 })
   quantity: number;
 
-  @Column('decimal')
+  @Column()
   price: number;
 }

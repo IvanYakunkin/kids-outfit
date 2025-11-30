@@ -2,7 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
-  IsDecimal,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -41,7 +40,7 @@ export class CreateProductDto {
   isActive?: boolean;
 
   @ApiProperty({ description: 'Цена', type: String, example: '1200.25' })
-  @IsDecimal()
+  @IsInt()
   @IsNotEmpty({ message: 'Цена не может отсутствовать' })
   price: number;
 

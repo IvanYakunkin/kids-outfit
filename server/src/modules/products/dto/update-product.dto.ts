@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
-  IsDecimal,
+  IsInt,
   IsNumber,
   IsOptional,
   IsString,
@@ -46,7 +46,7 @@ export class UpdateProductDto {
     type: String,
     example: '1200.25',
   })
-  @IsDecimal()
+  @IsInt()
   @IsOptional()
   price?: number;
 

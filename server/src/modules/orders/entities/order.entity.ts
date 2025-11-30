@@ -27,7 +27,7 @@ export class Order {
   @ManyToOne(() => Status, (status) => status.orders)
   status: Status;
 
-  @Column({ type: 'decimal' })
+  @Column()
   total: number;
 
   @CreateDateColumn()

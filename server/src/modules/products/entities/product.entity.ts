@@ -45,7 +45,7 @@ export class Product {
   @Column({ nullable: true })
   care?: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column()
   price: number;
 
   @Column({ default: 0 })
