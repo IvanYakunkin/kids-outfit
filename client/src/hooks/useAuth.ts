@@ -5,13 +5,15 @@ import { AuthResponseDto } from "@/types/users";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-export function useAuth() {
+export function useAuth({ hasRefresh = true }: { hasRefresh?: boolean }) {
   const dispatch = useDispatch();
   //const user = useSelector((state: RootState) => state.auth.user);
   const [authorized, setAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
     async function checkAuth() {
+      if (!hasRefresh) return;
+
       const meResponse = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
         {
