@@ -3,6 +3,7 @@ import { ProductSizesDto } from "@/types/productSizes";
 import Image from "next/image";
 import { useState } from "react";
 import SizeBox from "../SizeBox/SizeBox";
+import CartButton from "./CartButton";
 import styles from "./ProductSummary.module.css";
 
 interface ProductSummaryProps {
@@ -93,13 +94,7 @@ export default function ProductSummary({
           </div>
         </div>
 
-        {selectedSize && selectedSize.quantity > 0 ? (
-          <button className={styles.cartButton}>Добавить в корзину</button>
-        ) : (
-          <button className={`${styles.cartButton} ${styles.disabled}`}>
-            Добавить в корзину
-          </button>
-        )}
+        <CartButton selectedSize={selectedSize} />
       </div>
     </div>
   );

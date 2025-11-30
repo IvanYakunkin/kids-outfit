@@ -12,6 +12,7 @@ export default async function Product({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  // Find the product by id
   const { slug } = await params;
   const idParam: string | undefined = slug.split("-").at(-1);
 
@@ -31,6 +32,7 @@ export default async function Product({
     return notFound();
   }
 
+  // Find similar products
   const product = productRes.data;
 
   const similarProductsRes = await getSimilarProducts(product.category.id, 5);
@@ -64,10 +66,7 @@ export default async function Product({
         description={product.description}
         characteristics={product.productCharacteristics}
       />
-      <Collection
-        collection={similarProducts}
-        title="Похожие товары"
-      ></Collection>
+      <Collection collection={similarProducts} title="Похожие товары" />
     </main>
   );
 }
