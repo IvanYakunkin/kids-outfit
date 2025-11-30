@@ -145,7 +145,7 @@ export default function Navbar({ categories }: NavbarProps) {
                     onClick={closeNavbar}
                   >
                     <Image
-                      src="/images/settings.png"
+                      src="/images/settings-black.png"
                       width={24}
                       height={24}
                       alt="Админ"
@@ -159,7 +159,7 @@ export default function Navbar({ categories }: NavbarProps) {
                   onClick={closeNavbar}
                 >
                   <Image
-                    src="/images/basket.png"
+                    src="/images/basket-black.png"
                     width={24}
                     height={24}
                     alt="Корзина"
@@ -168,7 +168,7 @@ export default function Navbar({ categories }: NavbarProps) {
                 </Link>
                 <div className={styles.authElement} onClick={logout}>
                   <Image
-                    src="/images/logout.png"
+                    src="/images/logout-black.png"
                     width={24}
                     height={24}
                     alt="Выйти"
@@ -184,7 +184,7 @@ export default function Navbar({ categories }: NavbarProps) {
                   onClick={closeNavbar}
                 >
                   <Image
-                    src="/images/login.png"
+                    src="/images/login-black.png"
                     width={24}
                     height={24}
                     alt="Вход"
