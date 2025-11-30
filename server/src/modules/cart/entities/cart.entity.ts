@@ -8,7 +8,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -17,7 +16,7 @@ export class Cart {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User, (user) => user.cart, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.cart, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: User;
 
