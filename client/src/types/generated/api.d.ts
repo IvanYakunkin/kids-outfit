@@ -881,6 +881,8 @@ export interface components {
             id: number;
             /** @example Футболка Kids Basic */
             name: string;
+            /** @example 12321412 */
+            sku: string;
             /** @example futbolka-kids-basic */
             slug: string;
             /** @example 1290 */
@@ -894,7 +896,7 @@ export interface components {
              * @description Главное изображение товара
              * @example product1.jpg
              */
-            image?: string;
+            image?: components["schemas"]["ProductImageResponseDto"];
         };
         ProductSizeResponseDto: {
             /**
@@ -902,14 +904,14 @@ export interface components {
              * @example 1
              */
             id: number;
-            /** @description ID товара */
+            /** @description Товар */
             product: components["schemas"]["ProductShortDto"];
             /**
              * @description Доступность размера товара
              * @example true
              */
             isAvailable: boolean;
-            /** @description ID размера */
+            /** @description Размер товара */
             size: components["schemas"]["SizeResponseDto"];
             /**
              * @description Количество товара
@@ -1137,7 +1139,7 @@ export interface components {
             id: number;
             /** @example 2 */
             quantity: number;
-            product: components["schemas"]["ProductShortDto"];
+            productSize: components["schemas"]["ProductSizeResponseDto"];
         };
         UpdateCartDto: {
             /**

@@ -1,7 +1,7 @@
 "use client";
 
 import { setUser } from "@/redux/authSlice";
-import { AuthResponseDto } from "@/types/users";
+import { checkAuthRequest } from "@/shared/checkAuthRequest";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -11,34 +11,10 @@ export function useAuth({ hasRefresh = true }: { hasRefresh?: boolean }) {
 
   useEffect(() => {
     async function checkAuth() {
-      if (!hasRefresh) return;
+      const checkAuthResponse = await checkAuthRequest(hasRefresh);
 
-      const meResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-
-      if (meResponse.ok) {
-        const user: AuthResponseDto = await meResponse.json();
-        dispatch(setUser(user));
-        setAuthorized(true);
-        return;
-      }
-
-      const refreshResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
-
-      if (refreshResponse.ok) {
-        const user: AuthResponseDto = await refreshResponse.json();
-        dispatch(setUser(user));
+      if (checkAuthResponse.ok && checkAuthResponse.user) {
+        dispatch(setUser(checkAuthResponse.user));
         setAuthorized(true);
         return;
       }
