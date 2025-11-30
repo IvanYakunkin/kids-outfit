@@ -8,8 +8,7 @@ export async function authRequestWrapper<T>(
 ): Promise<FetchJsonResult<T>> {
   const authResponse = await checkAuthRequest();
   if (!authResponse.ok) {
-    //router.push("/auth/login");
-    console.log("ошибка", authResponse.user);
+    router.push("/auth/login");
   }
 
   const response = await requestFn();
