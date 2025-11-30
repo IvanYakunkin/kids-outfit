@@ -5,7 +5,7 @@ export default function Search() {
     <div className={styles.search}>
       <input
         type="text"
-        className={styles.serachField}
+        className={styles.field}
         id="store-search-field"
         placeholder="Найти в магазине"
       />

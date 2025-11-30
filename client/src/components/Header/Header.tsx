@@ -22,30 +22,31 @@ export default async function Header() {
   const isRefresh = cookieStore.has("refresh_token");
 
   return (
-    <header>
-      <div className={styles.topInfo}>KidsOutfit - Магазин детской одежды</div>
+    <header className={styles.container}>
       <div className={styles.header}>
-        <div className={styles.title}>
-          <NavbarToggler />
-          <Link href="/" className={styles.logo}>
-            KidsOutfit
-          </Link>
+        <div className={styles.headerElements}>
+          <div className={styles.title}>
+            <Link href="/" className={styles.logo}>
+              KidsOutfit
+            </Link>
+            <NavbarToggler />
+          </div>
+          <div className={styles.categories}>
+            <ul className={styles.categoriesList}>
+              <li>
+                <Link href="/catalog/section?type=new">Новинки</Link>
+              </li>
+              <li>
+                <Link href="/catalog/section?type=popular">Хиты продаж</Link>
+              </li>
+              <li>
+                <Link href="/catalog/section?type=sale">Распродажа</Link>
+              </li>
+            </ul>
+          </div>
+          <Search />
+          <AuthLinks isRefresh={isRefresh} />
         </div>
-        <div className={styles.categories}>
-          <ul className={styles.categoriesList}>
-            <li>
-              <Link href="/catalog/section?type=new">Новинки</Link>
-            </li>
-            <li>
-              <Link href="/catalog/section?type=popular">Хиты продаж</Link>
-            </li>
-            <li>
-              <Link href="/catalog/section?type=sale">Распродажа</Link>
-            </li>
-          </ul>
-        </div>
-        <Search />
-        <AuthLinks isRefresh={isRefresh} />
       </div>
 
       <Navbar categories={categoriesList} />

@@ -1,9 +1,9 @@
 .search {
   position: relative;
-  width: 30%;
+  width: 35%;
 }
 
-.serachField {
+.field {
   width: 100%;
   font-size: 1em;
   box-sizing: border-box;
@@ -14,7 +14,7 @@
   letter-spacing: 0.5px;
 }
 
-.serachField:focus {
+.field:focus {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
     rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   border: 1px solid rgb(160, 160, 160);
@@ -28,15 +28,16 @@
   cursor: pointer;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
   .search {
-    width: -webkit-fill-available;
+    width: 60%;
   }
 }
 
 @media (max-width: 479px) {
   .search {
     font-size: 0.8em;
+    width: 55%;
   }
 
   .search > svg {

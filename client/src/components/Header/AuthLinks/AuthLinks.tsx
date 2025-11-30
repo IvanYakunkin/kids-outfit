@@ -28,37 +28,38 @@ export default function AuthLinks({ isRefresh }: { isRefresh: boolean }) {
     <div className={styles.auth}>
       {user || isRefresh ? (
         <>
-          <Link href="/cart/" className={styles.authElement}>
+          <Link href="/cart/" className={styles.link}>
             <Image
               src="/images/basket.png"
               width={24}
               height={24}
               alt="Корзина"
             />
-            Корзина
+            <span>Корзина</span>
           </Link>
-          <div className={styles.authElement} onClick={handleLogout}>
+          <div className={styles.link} onClick={handleLogout}>
             <Image
               src="/images/logout.png"
               width={24}
               height={24}
               alt="Выйти"
             />
-            Выйти
+            <span>Выйти</span>
           </div>
           {user && user.isAdmin && (
-            <Link href="/admin" className={styles.authElement}>
+            <Link href="/admin" className={styles.link}>
               <Image
-                src="/images/admin.png"
+                src="/images/settings.png"
                 width={24}
                 height={24}
                 alt="Админ"
               />
+              <span>Админ</span>
             </Link>
           )}
         </>
       ) : (
-        <Link href="/auth/login/" className={styles.authElement}>
+        <Link href="/auth/login/" className={styles.link}>
           <Image src="/images/login.png" width={24} height={24} alt="Вход" />
           Войти
         </Link>

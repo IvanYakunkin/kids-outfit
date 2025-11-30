@@ -46,7 +46,14 @@ export default function Navbar({ categories }: NavbarProps) {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      const headerMenuTogglerBtn = document.getElementById(
+        "headerMenuTogglerBtn"
+      );
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        !headerMenuTogglerBtn?.contains(event.target as Node)
+      ) {
         closeNavbar();
       }
     };
@@ -138,7 +145,7 @@ export default function Navbar({ categories }: NavbarProps) {
                     onClick={closeNavbar}
                   >
                     <Image
-                      src="/images/admin.png"
+                      src="/images/settings.png"
                       width={24}
                       height={24}
                       alt="Админ"
