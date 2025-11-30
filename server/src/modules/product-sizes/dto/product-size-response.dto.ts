@@ -6,7 +6,7 @@ export class ProductSizeResponseDto {
   @ApiProperty({ description: 'ID размера товара', example: 1 })
   id: number;
 
-  @ApiProperty({ description: 'ID товара', type: ProductShortDto })
+  @ApiProperty({ description: 'Товар', type: ProductShortDto })
   product: ProductShortDto;
 
   @ApiProperty({
@@ -15,7 +15,7 @@ export class ProductSizeResponseDto {
   })
   isAvailable: boolean;
 
-  @ApiProperty({ description: 'ID размера', type: SizeResponseDto })
+  @ApiProperty({ description: 'Размер товара', type: SizeResponseDto })
   size: SizeResponseDto;
 
   @ApiProperty({ description: 'Количество товара', example: 12 })

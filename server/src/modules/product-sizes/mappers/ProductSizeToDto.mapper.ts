@@ -8,10 +8,17 @@ export class ProductSizeToDto {
       product: {
         id: pSize.product.id,
         name: pSize.product.name,
+        sku: pSize.product.sku,
         slug: pSize.product.slug,
         price: pSize.product.price,
         discount: pSize.product.discount || 0,
-        image: pSize.product.images?.[0],
+        image: pSize.product.images?.[0]
+          ? {
+              id: pSize.product.images[0].id,
+              name: pSize.product.images[0].name,
+              url: pSize.product.images[0].url,
+            }
+          : undefined,
       },
       isAvailable: pSize.isAvailable,
       size: {

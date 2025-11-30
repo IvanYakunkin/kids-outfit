@@ -8,6 +8,9 @@ export class ProductShortDto {
   @ApiProperty({ example: 'Футболка Kids Basic' })
   name: string;
 
+  @ApiProperty({ example: '12321412', type: String })
+  sku: string;
+
   @ApiProperty({ example: 'futbolka-kids-basic' })
   slug: string;
 
@@ -20,7 +23,7 @@ export class ProductShortDto {
   @ApiPropertyOptional({
     example: 'product1.jpg',
     description: 'Главное изображение товара',
-    type: String,
+    type: ProductImageResponseDto,
   })
   image?: ProductImageResponseDto;
 }

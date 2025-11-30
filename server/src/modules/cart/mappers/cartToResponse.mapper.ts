@@ -7,13 +7,26 @@ export function mapCart(cart: Cart): CartResponseDto {
   return {
     id: cart.id,
     quantity: cart.quantity,
-    product: {
-      id: p.id,
-      name: p.name,
-      slug: p.slug,
-      price: p.price,
-      discount: p.discount ?? 0,
-      image: p.images?.[0],
+    productSize: {
+      id: cart.productSize.id,
+      isAvailable: cart.productSize.isAvailable,
+      product: {
+        id: p.id,
+        name: p.name,
+        sku: p.sku,
+        price: p.price,
+        discount: p.discount || 0,
+        slug: p.slug,
+        image: p.images
+          ? {
+              id: p.images[0].id,
+              name: p.images[0].name,
+              url: p.images[0].url,
+            }
+          : undefined,
+      },
+      size: cart.productSize.size,
+      quantity: cart.productSize.quantity,
     },
   };
 }
