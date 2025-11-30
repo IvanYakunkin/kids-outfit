@@ -7,7 +7,6 @@ import { useDispatch } from "react-redux";
 
 export function useAuth({ hasRefresh = true }: { hasRefresh?: boolean }) {
   const dispatch = useDispatch();
-  //const user = useSelector((state: RootState) => state.auth.user);
   const [authorized, setAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -47,7 +46,7 @@ export function useAuth({ hasRefresh = true }: { hasRefresh?: boolean }) {
       setAuthorized(false);
     }
     checkAuth();
-  }, [dispatch]);
+  }, [dispatch, hasRefresh]);
 
   return authorized;
 }
