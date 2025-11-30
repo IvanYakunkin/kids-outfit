@@ -1,0 +1,41 @@
+.summary {
+  width: 26%;
+}
+
+.params {
+  border-bottom: 1px solid rgb(224, 224, 224);
+  padding-bottom: 15px;
+}
+
+.param {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.param > span:first-child {
+  color: rgb(100, 100, 100);
+}
+
+.param > span:last-child {
+  font-weight: bold;
+}
+
+.price {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--templatePurple);
+  padding: 20px 0;
+}
+
+.red {
+  color: red;
+}
+
+@media (max-width: 1200px) {
+  .summary {
+    width: 100%;
+  }
+}

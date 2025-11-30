@@ -1,0 +1,43 @@
+.cart {
+  max-width: 1600px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.content {
+  display: flex;
+  gap: 50px;
+}
+
+.title {
+  font-size: 1.8em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.products {
+  width: 70%;
+  padding-top: 50px;
+}
+
+.empty {
+  font-size: 1.2em;
+  padding-top: 30px;
+}
+
+.buttonContainer {
+  text-align: center;
+}
+
+@media (max-width: 1200px) {
+  .content {
+    flex-direction: column;
+  }
+  .products {
+    width: 100%;
+  }
+
+  .total {
+    width: 100%;
+  }
+}
