@@ -58,7 +58,6 @@ export class CartService {
       },
     });
 
-    // TODO: Possibly, increase the quantity if the product is already in the cart
     if (existingProduct) {
       throw new ConflictException('Выбранный товар уже находится в корзине');
     }
@@ -71,6 +70,10 @@ export class CartService {
 
     const saved = await this.cartRepository.save(cartProduct);
     return mapCart(saved);
+  }
+
+  async clearCart(userId: number) {
+    await this.cartRepository.delete({ user: { id: userId } });
   }
 
   async deleteProduct(userId: number, productSizeId: number) {

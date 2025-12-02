@@ -78,6 +78,7 @@ export class CartController {
     example: 5,
     description: 'ID варианта товара',
   })
+  @ApiBody({ description: 'Измененное количество товара', type: UpdateCartDto })
   @ApiResponse({
     status: 200,
     description: 'Количество успешно обновлено',
