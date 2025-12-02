@@ -153,6 +153,7 @@ export class OrdersService {
       where: { user: { id: userId } },
       relations: [
         'status',
+        'user',
         'products',
         'products.productSize',
         'products.productSize.product',

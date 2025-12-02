@@ -13,5 +13,5 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/cart"],
+  matcher: ["/cart", "/orders", "/checkout"],
 };

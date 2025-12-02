@@ -47,7 +47,7 @@ export default function Checkout() {
 
     if (user && user.id) {
       const addOrderRes = await authRequestWrapper(
-        () => addOrder(user.id, addressString, orderProducts),
+        () => addOrder(addressString, orderProducts),
         router
       );
       if (addOrderRes.ok) {
