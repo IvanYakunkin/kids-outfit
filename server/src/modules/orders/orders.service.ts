@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductSize } from '../product-sizes/entities/product-sizes.entity';
@@ -29,12 +33,20 @@ export class OrdersService {
     private usersRepo: Repository<User>,
   ) {}
 
-  async create(
-    userId: number,
-    createOrderDto: CreateOrderDto,
-  ): Promise<OrderResponseDto> {
+  async create(userId: number, createOrderDto: CreateOrderDto) {
     const user = await this.usersRepo.findOneBy({ id: userId });
     if (!user) throw new NotFoundException('Пользователь не найден');
+
+    const activeOrdersCount = await this.ordersRepository.count({
+      where: {
+        user: { id: userId },
+        status: { id: Number(process.env.ACTIVE_ORDER_STATUS_ID) || 1 },
+      },
+    });
+
+    if (activeOrdersCount >= Number(process.env.ACTIVE_ORDER_LIMIT)) {
+      throw new ForbiddenException('Достигнут лимит активных заказов');
+    }
 
     const orderProducts = await Promise.all(
       createOrderDto.products.map(async (p) => {
@@ -61,6 +73,12 @@ export class OrdersService {
           p.quantity,
         );
 
+        await this.productSizeRepo.decrement(
+          { id: productSize.id },
+          'quantity',
+          p.quantity,
+        );
+
         return {
           product,
           productSize,
@@ -83,9 +101,7 @@ export class OrdersService {
       status: { id: 1 },
     });
 
-    const savedOrder = await this.ordersRepository.save(order);
-
-    return mapOrderToDto(savedOrder);
+    await this.ordersRepository.save(order);
   }
 
   async findOrderById(id: number): Promise<OrderResponseDto> {

@@ -6,7 +6,7 @@ export class OrderProductResponseDto {
   id: number;
 
   @ApiProperty({
-    description: 'Информация о товаре',
+    description: 'ID Размера товара',
     type: () => ProductSizeResponseDto,
   })
   productSize: ProductSizeResponseDto;
@@ -14,6 +14,6 @@ export class OrderProductResponseDto {
   @ApiProperty({ description: 'Количество', example: 2 })
   quantity: number;
 
-  @ApiProperty({ description: 'Цена за единицу товара', example: '4000.00' })
+  @ApiProperty({ description: 'Итоговая цена заказа', example: '4000.00' })
   price: number;
 }

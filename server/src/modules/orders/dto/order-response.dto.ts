@@ -1,7 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { OrderProductResponseDto } from 'src/modules/order-products/dto/order-products-response.dto';
 import { StatusResponseDto } from 'src/modules/statuses/dto/status-response.dto';
-import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
 
 export class OrderResponseDto {
   @ApiProperty({ description: 'ID заказа' })
@@ -12,7 +11,7 @@ export class OrderResponseDto {
     type: Number,
     example: 12,
   })
-  user?: CreateUserDto;
+  user: number;
 
   @ApiProperty({ description: 'Адрес доставки' })
   address: string;

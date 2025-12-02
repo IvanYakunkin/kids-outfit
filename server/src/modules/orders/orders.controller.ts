@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -12,8 +14,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiBody,
+  ApiCookieAuth,
+  ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -24,6 +27,7 @@ import {
 import { Request } from 'express';
 import { AdminGuard } from '../auth/guards/jwt-admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CartService } from '../cart/cart.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderResponseDto } from './dto/order-response.dto';
 import { PaginatedOrdersDto } from './dto/paginated-orders.dto';
@@ -35,29 +39,37 @@ import { OrdersService } from './orders.service';
 @ApiTags('Orders')
 @Controller('orders')
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+  constructor(
+    private readonly ordersService: OrdersService,
+    private readonly cartService: CartService,
+  ) {}
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
-  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Оформить заказ' })
   @ApiBody({ description: 'Данные заказа', type: CreateOrderDto })
   @ApiResponse({
     status: 201,
     description: 'Заказ успешно оформлен',
-    type: OrderResponseDto,
   })
+  @ApiForbiddenResponse({ description: 'Достигнут лимит активных заказов.' })
   @ApiResponse({ status: 404, description: 'Ошибка запроса' })
+  @HttpCode(HttpStatus.CREATED)
   @Post()
   async create(@Body() createOrderDto: CreateOrderDto, @Req() req: Request) {
     if (!req.user) {
       throw new UnauthorizedException('Пользователь не авторизован');
     }
 
-    return this.ordersService.create(+req.user['id'], createOrderDto);
+    const userId = +req.user['id'];
+    const newOrder = this.ordersService.create(userId, createOrderDto);
+    await this.cartService.clearCart(userId);
+
+    return newOrder;
   }
 
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Получить заказы текущего пользователя' })
   @ApiResponse({
     status: 200,
@@ -74,7 +86,7 @@ export class OrdersController {
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOperation({
     summary: 'Получить список всех заказов с пагинацией и фильтрами',
   })
@@ -89,7 +101,7 @@ export class OrdersController {
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Получить заказ по ID' })
   @ApiOkResponse({ description: 'Заказ получен по ID', type: OrderResponseDto })
   @ApiResponse({ status: 404, description: 'Заказ не найден по ID' })
@@ -99,7 +111,7 @@ export class OrdersController {
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Изменить данные заказа' })
   @ApiParam({ name: 'ID заказа', type: Number, example: 2 })
   @ApiBody({ description: 'Измененные поля заказа', type: UpdateOrderDto })

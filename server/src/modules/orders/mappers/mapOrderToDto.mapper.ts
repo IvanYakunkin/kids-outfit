@@ -11,6 +11,7 @@ export function mapOrderToDto(order: Order): OrderResponseDto {
       id: order.status.id,
       name: order.status.name,
     },
+    user: order.user.id,
     products: order.products.map((p) => ({
       id: p.id,
       quantity: p.quantity,
