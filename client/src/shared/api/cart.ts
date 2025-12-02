@@ -25,6 +25,16 @@ export async function removeProductFromCart(
   return fetchJson(`cart/${productSizeId}`, {
     method: "DELETE",
     credentials: "include",
-    body: JSON.stringify({ productSizeId }),
+  });
+}
+
+export async function updateQuantityInCart(
+  productSizeId: number,
+  quantity: number
+): Promise<FetchJsonResult<CartDto>> {
+  return fetchJson(`cart/${productSizeId}`, {
+    method: "PATCH",
+    credentials: "include",
+    body: JSON.stringify({ quantity }),
   });
 }

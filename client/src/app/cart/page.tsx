@@ -4,7 +4,7 @@ import { getCart } from "@/shared/api/cart";
 import { authRequestWrapper } from "@/shared/authRequestWrapper";
 import { getDiscountedPrice } from "@/shared/getDiscountedPrice";
 import { CartDto } from "@/types/cart";
-import { CircularProgress } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CartProducts from "./components/CartProducts/CartProduct";
@@ -54,6 +54,10 @@ export default function Cart() {
     );
   };
 
+  const toCheckout = async () => {
+    // TODO: Update quantity in cartProduct
+    router.push("/checkout");
+  };
   return (
     <main className={styles.cart}>
       {isCartLoading ? (
@@ -83,11 +87,29 @@ export default function Cart() {
             </div>
 
             {cartProducts.length > 0 && (
-              <CartSummary
-                totalDiscount={totalDiscount}
-                totalPrice={totalPrice}
-                totalQuantity={totalQuantity}
-              />
+              <div className={styles.rightSidebar}>
+                <CartSummary
+                  totalDiscount={totalDiscount}
+                  totalPrice={totalPrice}
+                  totalQuantity={totalQuantity}
+                />
+
+                <div className={styles.buttonContainer}>
+                  <Button
+                    onClick={toCheckout}
+                    variant="contained"
+                    sx={{
+                      background: "var(--templatePurple)",
+                      "&:hover": {
+                        backgroundColor: "var(--templatePurpleHover)",
+                      },
+                    }}
+                    fullWidth
+                  >
+                    Оформить
+                  </Button>
+                </div>
+              </div>
             )}
           </div>
         </>

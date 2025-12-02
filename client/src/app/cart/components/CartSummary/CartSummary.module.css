@@ -1,5 +1,5 @@
 .summary {
-  width: 26%;
+  width: 100%;
 }
 
 .params {
@@ -32,10 +32,4 @@
 
 .red {
   color: red;
-}
-
-@media (max-width: 1200px) {
-  .summary {
-    width: 100%;
-  }
 }

@@ -1,4 +1,3 @@
-import { Button } from "@mui/material";
 import styles from "./CartSummary.module.css";
 
 interface CartSummaryProps {
@@ -33,19 +32,6 @@ export default function CartSummary({
       <div className={styles.price}>
         <span>Итого</span>
         <span>{resultPrice} Руб.</span>
-      </div>
-
-      <div className={styles.buttonContainer}>
-        <Button
-          variant="contained"
-          sx={{
-            background: "var(--templatePurple)",
-            "&:hover": { backgroundColor: "var(--templatePurpleHover)" },
-          }}
-          fullWidth
-        >
-          Оформить за {resultPrice} Руб.
-        </Button>
       </div>
     </aside>
   );

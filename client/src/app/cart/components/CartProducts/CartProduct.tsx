@@ -86,7 +86,7 @@ export default function CartProduct({
           className={styles.delete}
           onClick={() => deleteBtnClick(cartProduct.productSize.id)}
         >
-          <Image src="/images/delete.png" width={28} height={28} alt="delete" />
+          <Image src="/images/close.png" width={12} height={12} alt="delete" />
         </div>
       </div>
     </div>

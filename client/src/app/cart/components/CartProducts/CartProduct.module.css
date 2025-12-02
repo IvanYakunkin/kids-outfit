@@ -85,8 +85,7 @@
 }
 
 .delete > img {
-  width: 28px;
-  margin-top: 4px;
+  margin-top: 12px;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
@@ -96,5 +95,5 @@
 }
 
 .delete > img:hover {
-  opacity: 0.9;
+  opacity: 0.8;
 }

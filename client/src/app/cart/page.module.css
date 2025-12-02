@@ -25,6 +25,12 @@
   padding-top: 30px;
 }
 
+.rightSidebar {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+}
+
 .buttonContainer {
   text-align: center;
 }
@@ -33,11 +39,16 @@
   .content {
     flex-direction: column;
   }
+
   .products {
     width: 100%;
   }
 
   .total {
+    width: 100%;
+  }
+
+  .rightSidebar {
     width: 100%;
   }
 }
