@@ -35,6 +35,9 @@ export async function updateQuantityInCart(
   return fetchJson(`cart/${productSizeId}`, {
     method: "PATCH",
     credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ quantity }),
   });
 }

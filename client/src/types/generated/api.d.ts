@@ -962,15 +962,10 @@ export interface components {
             quantity: number;
         };
         CreateOrderDto: {
-            /**
-             * @description ID Пользователя
-             * @example 1
-             */
-            userId: number;
             /** @description Адрес доставки */
             address: string;
             /** @description Состав заказа */
-            products: components["schemas"]["OrderProductsDto"];
+            products: components["schemas"]["OrderProductsDto"][];
         };
         OrderProductResponseDto: {
             /**
@@ -978,7 +973,7 @@ export interface components {
              * @example 1
              */
             id: number;
-            /** @description Информация о товаре */
+            /** @description ID Размера товара */
             productSize: components["schemas"]["ProductSizeResponseDto"];
             /**
              * @description Количество
@@ -986,7 +981,7 @@ export interface components {
              */
             quantity: number;
             /**
-             * @description Цена за единицу товара
+             * @description Итоговая цена заказа
              * @example 4000.00
              */
             price: number;

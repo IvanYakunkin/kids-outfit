@@ -1,8 +1,8 @@
 "use client";
 
-import { getCart } from "@/shared/api/cart";
+import { getCart, updateQuantityInCart } from "@/shared/api/cart";
 import { authRequestWrapper } from "@/shared/authRequestWrapper";
-import { getDiscountedPrice } from "@/shared/getDiscountedPrice";
+import { getCartSummary } from "@/shared/getCartSummary";
 import { CartDto } from "@/types/cart";
 import { Button, CircularProgress } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -16,24 +16,6 @@ export default function Cart() {
   const [cartProducts, setCartProducts] = useState<CartDto[]>([]);
   const [isCartLoading, setIsCartLoading] = useState(true);
 
-  let totalQuantity = 0;
-  let totalPrice = 0;
-  let totalDiscount = 0;
-
-  for (const cProduct of cartProducts) {
-    const product = cProduct.productSize.product;
-
-    totalQuantity += cProduct.quantity;
-    totalPrice += product.price * cProduct.quantity;
-
-    totalDiscount +=
-      product.price * cProduct.quantity -
-      getDiscountedPrice(product.price, product.discount) * cProduct.quantity;
-  }
-
-  totalPrice = Math.round(totalPrice);
-  totalDiscount = Math.round(totalDiscount);
-
   useEffect(() => {
     const getCartData = async () => {
       const cartResponse = await authRequestWrapper(() => getCart(), router);
@@ -46,6 +28,9 @@ export default function Cart() {
     getCartData();
   }, [router]);
 
+  const { totalQuantity, totalPrice, totalDiscount } =
+    getCartSummary(cartProducts);
+
   const changeQuantity = (e: number, cartProduct: CartDto) => {
     setCartProducts((prevItems) =>
       prevItems.map((item) =>
@@ -55,9 +40,29 @@ export default function Cart() {
   };
 
   const toCheckout = async () => {
-    // TODO: Update quantity in cartProduct
+    updateAllCartProducts();
     router.push("/checkout");
   };
+
+  async function updateProductQuantity(cartProduct: CartDto) {
+    return await authRequestWrapper(
+      () =>
+        updateQuantityInCart(cartProduct.productSize.id, cartProduct.quantity),
+      router
+    );
+  }
+
+  async function updateAllCartProducts() {
+    const updatePromises = cartProducts.map((product) =>
+      updateProductQuantity(product)
+    );
+    try {
+      await Promise.all(updatePromises);
+    } catch (error) {
+      console.error("Ошибка при обновлении корзины:", error);
+    }
+  }
+
   return (
     <main className={styles.cart}>
       {isCartLoading ? (
