@@ -1,5 +1,6 @@
 "use client";
 
+import { setUser } from "@/redux/authSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { logoutThunk } from "@/redux/thunks/logoutThunk";
@@ -71,6 +72,7 @@ export default function Navbar({ categories }: NavbarProps) {
 
   const logout = async () => {
     const result = await dispatch(logoutThunk());
+    dispatch(setUser(null));
 
     if (logoutThunk.fulfilled.match(result)) {
       router.push("/auth/login");
@@ -165,6 +167,15 @@ export default function Navbar({ categories }: NavbarProps) {
                     alt="Корзина"
                   />
                   Корзина
+                </Link>
+                <Link href="/orders" className={styles.authElement}>
+                  <Image
+                    src="/images/cube-black.png"
+                    width={24}
+                    height={24}
+                    alt="Заказы"
+                  />
+                  <span>Заказы</span>
                 </Link>
                 <div className={styles.authElement} onClick={logout}>
                   <Image

@@ -1,5 +1,6 @@
 "use client";
 
+import { setUser } from "@/redux/authSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { logoutThunk } from "@/redux/thunks/logoutThunk";
@@ -16,6 +17,7 @@ export default function AuthLinks({ isRefresh }: { isRefresh: boolean }) {
 
   const handleLogout = async () => {
     const result = await dispatch(logoutThunk());
+    dispatch(setUser(null));
 
     if (logoutThunk.fulfilled.match(result)) {
       router.push("/auth/login");
@@ -28,7 +30,7 @@ export default function AuthLinks({ isRefresh }: { isRefresh: boolean }) {
     <div className={styles.auth}>
       {user || isRefresh ? (
         <>
-          <Link href="/cart/" className={styles.link}>
+          <Link href="/cart" className={styles.link}>
             <Image
               src="/images/basket.png"
               width={24}
@@ -36,6 +38,10 @@ export default function AuthLinks({ isRefresh }: { isRefresh: boolean }) {
               alt="Корзина"
             />
             <span>Корзина</span>
+          </Link>
+          <Link href="/orders" className={styles.link}>
+            <Image src="/images/cube.png" width={24} height={24} alt="Заказы" />
+            <span>Заказы</span>
           </Link>
           <div className={styles.link} onClick={handleLogout}>
             <Image

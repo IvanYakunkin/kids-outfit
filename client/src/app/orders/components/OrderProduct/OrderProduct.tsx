@@ -1,5 +1,6 @@
 import { OrderProductResponseDto } from "@/types/order";
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./OrderProduct.module.css";
 
 interface OrderProductProps {
@@ -10,8 +11,8 @@ export default function OrderProduct({ orderProduct }: OrderProductProps) {
   return (
     <div className={styles.product} key={orderProduct.productSize.id}>
       <div className={styles.flexPart}>
-        <a
-          href={"/product/" + orderProduct.id}
+        <Link
+          href={`/product/${orderProduct.productSize.product.slug}-${orderProduct.productSize.product.id}`}
           className={styles.product__image}
         >
           <Image
@@ -23,14 +24,14 @@ export default function OrderProduct({ orderProduct }: OrderProductProps) {
             height={60}
             alt="Product"
           />
-        </a>
+        </Link>
         <div className={styles.product__description}>
-          <a
-            href={"/product/" + orderProduct.id}
+          <Link
+            href={`/product/${orderProduct.productSize.product.slug}-${orderProduct.productSize.product.id}`}
             className={styles.product__name}
           >
             {orderProduct.productSize.product.name}
-          </a>
+          </Link>
           <div className={styles.product__additionalInfo}>
             Размер: <span>{orderProduct.productSize.size.name}</span>
           </div>
