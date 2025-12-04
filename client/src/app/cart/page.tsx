@@ -18,7 +18,8 @@ export default function Cart() {
 
   useEffect(() => {
     const getCartData = async () => {
-      const cartResponse = await authRequestWrapper(() => getCart(), router);
+      const cartResponse = await getCart();
+
       setIsCartLoading(false);
       if (cartResponse.ok && cartResponse.data) {
         setCartProducts(cartResponse.data);

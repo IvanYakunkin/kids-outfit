@@ -1,7 +1,6 @@
 "use client";
 
 import { getUserOrders } from "@/shared/api/orders";
-import { authRequestWrapper } from "@/shared/authRequestWrapper";
 import { OrderResponseDto } from "@/types/order";
 import { CircularProgress } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -16,13 +15,12 @@ export default function Orders() {
 
   useEffect(() => {
     const getOrders = async () => {
-      const ordersResponse = await authRequestWrapper(
-        () => getUserOrders(),
-        router
-      );
-      if (ordersResponse.status === 401) {
-        router.push("/");
+      const ordersResponse = await getUserOrders();
+      if (!ordersResponse.ok) {
+        console.log(ordersResponse.error);
+        alert("Ошибка получения заказов");
       }
+
       if (ordersResponse.ok && ordersResponse.data) {
         setOrders(ordersResponse.data);
       }

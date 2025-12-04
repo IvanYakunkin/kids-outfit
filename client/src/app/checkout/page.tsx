@@ -65,7 +65,11 @@ export default function Checkout() {
 
   useEffect(() => {
     const getCartData = async () => {
-      const cartResponse = await authRequestWrapper(() => getCart(), router);
+      const cartResponse = await getCart();
+      if (!cartResponse.ok) {
+        console.log(cartResponse.error);
+        alert("Ошибка получения данных корзины");
+      }
       setIsCartLoading(false);
       if (
         cartResponse.ok &&
