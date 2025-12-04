@@ -26,7 +26,7 @@ export default async function RootLayout({
         <Providers>
           <AppClientWrapper hasRefresh={hasRefresh}>
             <NavbarProvider>
-              <Header />
+              <Header hasRefresh={hasRefresh} />
               {children}
               <Footer />
             </NavbarProvider>

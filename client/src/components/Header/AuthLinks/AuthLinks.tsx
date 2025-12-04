@@ -7,17 +7,20 @@ import { logoutThunk } from "@/redux/thunks/logoutThunk";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./AuthLinks.module.css";
 
-export default function AuthLinks({ isRefresh }: { isRefresh: boolean }) {
+export default function AuthLinks({ hasRefresh }: { hasRefresh: boolean }) {
   const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const [isRefresh, setIsRefresh] = useState(hasRefresh);
 
   const handleLogout = async () => {
     const result = await dispatch(logoutThunk());
     dispatch(setUser(null));
+    setIsRefresh(false);
 
     if (logoutThunk.fulfilled.match(result)) {
       router.push("/auth/login");

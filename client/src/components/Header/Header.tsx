@@ -1,6 +1,5 @@
 import { getCategories } from "@/shared/api/categories";
 import { CategoryDto } from "@/types/categories";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import AuthLinks from "./AuthLinks/AuthLinks";
 import styles from "./Header.module.css";
@@ -8,7 +7,7 @@ import Navbar from "./Navbar/Navbar";
 import NavbarToggler from "./NavbarToggler/NavbarToggler";
 import Search from "./Search/Search";
 
-export default async function Header() {
+export default async function Header({ hasRefresh }: { hasRefresh: boolean }) {
   const res = await getCategories();
   let categoriesList: CategoryDto[] = [];
 
@@ -17,9 +16,6 @@ export default async function Header() {
   } else {
     categoriesList = res.data ?? [];
   }
-
-  const cookieStore = await cookies();
-  const isRefresh = cookieStore.has("refresh_token");
 
   return (
     <header className={styles.container}>
@@ -45,7 +41,7 @@ export default async function Header() {
             </ul>
           </div>
           <Search />
-          <AuthLinks isRefresh={isRefresh} />
+          <AuthLinks hasRefresh={hasRefresh} />
         </div>
       </div>
 
