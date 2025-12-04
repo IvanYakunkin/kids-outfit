@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { AuthResponseDto } from "./types/users";
 
 export async function proxy(req: NextRequest) {
   const response = NextResponse.next();
@@ -16,6 +17,10 @@ export async function proxy(req: NextRequest) {
   });
 
   if (meResponse.ok) {
+    const meResponseData: AuthResponseDto = await meResponse.json();
+    if (req.nextUrl.pathname.startsWith("/admin") && !meResponseData.isAdmin) {
+      return NextResponse.redirect(new URL("/404", req.url));
+    }
     return response;
   }
 
@@ -31,6 +36,10 @@ export async function proxy(req: NextRequest) {
   );
 
   if (refreshResponse.ok) {
+    const refreshData: AuthResponseDto = await refreshResponse.json();
+    if (req.nextUrl.pathname.startsWith("/admin") && !refreshData.isAdmin) {
+      return NextResponse.redirect(new URL("/404", req.url));
+    }
     const setCookieHeader = refreshResponse.headers.get("set-cookie");
     if (setCookieHeader) {
       const cookies = setCookieHeader.split(/,(?=\s*[a-zA-Z0-9_]+=)/);
@@ -51,5 +60,5 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/cart", "/orders", "/checkout"],
+  matcher: ["/cart", "/orders", "/checkout", "/admin/:path*"],
 };
