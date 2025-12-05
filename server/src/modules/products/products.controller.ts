@@ -34,7 +34,6 @@ import { ProductResponseDto } from './dto/product-response.dto';
 import { ProductsResponseDto } from './dto/products-response.dto';
 import { QueryProductsDto } from './dto/query-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductMapper } from './mappers/product.mapper';
 import { ProductsService } from './products.service';
 
 @Controller('Products')
@@ -97,12 +96,7 @@ export class ProductsController {
     @Param('categoryId', ParseIntPipe) categoryId: number,
     @Param('limit', ParseIntPipe) limit: number,
   ): Promise<ProductsResponseDto[]> {
-    const products = await this.productsService.findSimilarProducts(
-      categoryId,
-      limit,
-    );
-
-    return products.map(ProductMapper.toResponseDto);
+    return await this.productsService.findSimilarProducts(categoryId, limit);
   }
 
   @Get(':id')

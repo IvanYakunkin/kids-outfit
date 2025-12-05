@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { LastCategoryDto } from 'src/modules/categories/dto/last-category.dto';
 import { ProductImageResponseDto } from 'src/modules/product-images/dto/product-image-response.dto';
 
 export class ProductsResponseDto {
@@ -11,7 +12,21 @@ export class ProductsResponseDto {
   @ApiProperty({ description: 'Slug товара', example: 'futbolka' })
   slug: string;
 
-  @ApiProperty({ description: 'Артикул', example: '12345678' })
+  @ApiProperty({ description: 'Число продаж', example: 100, default: 0 })
+  sold: number;
+
+  @ApiProperty({ description: 'Категория товара', type: LastCategoryDto })
+  category?: LastCategoryDto;
+
+  @ApiProperty({
+    description: 'Активность товара',
+    type: Boolean,
+    example: false,
+    default: true,
+  })
+  isActive: boolean;
+
+  @ApiProperty({ description: 'Артикул товара', type: String })
   sku: string;
 
   @ApiProperty({ description: 'Цена', example: 1257 })

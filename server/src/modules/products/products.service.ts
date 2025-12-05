@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
+import { CategoriesService } from '../categories/categories.service';
 import { Category } from '../categories/entities/category.entity';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { ProductImage } from '../product-images/entities/product-image.entity';
@@ -24,6 +25,8 @@ export class ProductsService {
 
     private readonly cloudinaryService: CloudinaryService,
 
+    private readonly categoriesService: CategoriesService,
+
     @InjectRepository(ProductImage)
     private readonly productImagesRepository: Repository<ProductImage>,
   ) {}
@@ -36,7 +39,7 @@ export class ProductsService {
 
     const qb = this.productsRepository
       .createQueryBuilder('product')
-      .leftJoin('product.category', 'category')
+      .leftJoinAndSelect('product.category', 'category')
       .leftJoinAndSelect(
         'product.images',
         'image',
@@ -49,14 +52,26 @@ export class ProductsService {
     }
 
     if (search)
-      qb.andWhere('product.name ILIKE :search', { search: `%${search}%` });
+      qb.andWhere(
+        'product.name ILIKE :search OR product.sku ILIKE :search OR CAST(product.price AS TEXT) ILIKE :search OR CAST(product.id AS TEXT) ILIKE :search',
+        { search: `%${search}%` },
+      );
 
-    qb.orderBy(`product.${sort}`, order.toUpperCase() as 'ASC' | 'DESC');
+    if (sort === 'category') {
+      qb.orderBy(`category.name`, order.toUpperCase() as 'ASC' | 'DESC');
+    } else {
+      qb.orderBy(`product.${sort}`, order.toUpperCase() as 'ASC' | 'DESC');
+    }
     qb.skip((page - 1) * limit).take(limit);
 
     const [products, total] = await qb.getManyAndCount();
 
-    const data = products.map(ProductMapper.toResponseDto);
+    const data = products.map((product) => {
+      const lastCategory = this.categoriesService.getLastCategory(
+        product.category,
+      );
+      return ProductMapper.toResponseDto(product, lastCategory);
+    });
 
     return {
       data,
@@ -172,7 +187,9 @@ export class ProductsService {
       collectedProducts.push(...rest);
     }
 
-    return collectedProducts.slice(0, limit);
+    const products = collectedProducts.slice(0, limit);
+
+    return products.map((product) => ProductMapper.toResponseDto(product));
   }
 
   async findOne(id: number): Promise<ProductResponseDto> {

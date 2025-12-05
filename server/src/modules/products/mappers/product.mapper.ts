@@ -1,15 +1,28 @@
+import { Category } from 'src/modules/categories/entities/category.entity';
 import { ProductsResponseDto } from '../dto/products-response.dto';
 import { Product } from '../entities/product.entity';
 
 export class ProductMapper {
-  static toResponseDto(product: Product): ProductsResponseDto {
+  static toResponseDto(
+    product: Product,
+    lastCategory?: Category,
+  ): ProductsResponseDto {
     return {
       id: product.id,
       name: product.name,
       slug: product.slug,
+      sold: product.sold,
       sku: product.sku,
+      isActive: product.isActive,
       price: product.price,
       discount: product.discount,
+      category: lastCategory
+        ? {
+            id: lastCategory.id,
+            name: lastCategory.name,
+            slug: lastCategory.slug,
+          }
+        : undefined,
       image: product.images?.[0],
       created_at: product.created_at,
     };

@@ -51,8 +51,9 @@ export class QueryProductsDto {
   @ApiPropertyOptional({
     example: 'ASC',
     description: 'Порядок сортировки (ASC или DESC)',
+    type: String,
+    enum: ['ASC', 'DESC'],
   })
-  @IsOptional()
   @Transform(({ value }) =>
     typeof value === 'string' ? value.toUpperCase() : value,
   )

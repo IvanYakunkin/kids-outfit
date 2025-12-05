@@ -97,6 +97,16 @@ export class CategoriesService {
     return hierarchy;
   }
 
+  getLastCategory(category: Category): Category {
+    if (category.children && category.children.length > 0) {
+      return this.getLastCategory(
+        category.children[category.children.length - 1],
+      );
+    }
+
+    return category;
+  }
+
   async findById(id: number): Promise<CategoryResponseDto> {
     const category = await this.categoryRepository.findOneBy({ id });
     if (!category) {
