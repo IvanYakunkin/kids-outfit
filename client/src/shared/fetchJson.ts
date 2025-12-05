@@ -21,7 +21,7 @@ export interface ServerError {
   statusCode: number;
 }
 
-const BASE_URL = process.env.API_URL || "http://localhost:5000/api/";
+const BASE_URL = process.env.API_URL || "http://localhost:5000/api";
 
 export async function fetchJson<T>(
   path: string,
@@ -42,7 +42,7 @@ export async function fetchJson<T>(
   let response: Response;
 
   try {
-    response = await fetch(`${BASE_URL}${path}`, fetchParams);
+    response = await fetch(`${BASE_URL}/${path}`, fetchParams);
   } catch {
     return {
       ok: false,
