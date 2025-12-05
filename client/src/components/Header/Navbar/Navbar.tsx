@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import AdminMenu from "./AdminMenu/AdminMenu";
 import styles from "./Navbar.module.css";
 import { useNavbarContext } from "./NavbarContext";
 import NavbarListElement from "./NavbarListElement";
@@ -140,21 +141,8 @@ export default function Navbar({ categories }: NavbarProps) {
           <div className={styles.auth}>
             {user ? (
               <>
-                {user.isAdmin && (
-                  <Link
-                    href="/admin"
-                    className={styles.authElement}
-                    onClick={closeNavbar}
-                  >
-                    <Image
-                      src="/images/settings-black.png"
-                      width={24}
-                      height={24}
-                      alt="Админ"
-                    />
-                    Админ-панель
-                  </Link>
-                )}
+                {user.isAdmin && <AdminMenu closeNavbar={closeNavbar} />}
+
                 <Link
                   href="/cart/"
                   className={styles.authElement}

@@ -1,0 +1,64 @@
+.authElement {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.authElement.secondary {
+  padding-left: 35px;
+}
+
+.authElement.secondary:hover {
+  text-decoration: underline;
+}
+
+.adminToggler {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.adminLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adminMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.2s ease, opacity 0.2s ease;
+}
+
+.adminMenu.show {
+  max-height: 400px;
+  opacity: 1;
+}
+
+.toggleIcon {
+  background-size: contain;
+  width: 22px;
+  height: 22px;
+  background-image: url("/images/bottom-arrow.png");
+  transition: background-image 0.3s ease;
+  background-repeat: no-repeat;
+  transition: transform 0.2s ease;
+  transform: scaleY(1);
+}
+
+.toggleIcon.reverse {
+  transform: scaleY(-1);
+}
+
+.rotator {
+  transition: all 0.2s ease;
+}
+
+.rotate {
+  transform: rotate(120deg);
+}
