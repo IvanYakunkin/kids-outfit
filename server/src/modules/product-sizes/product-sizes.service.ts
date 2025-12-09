@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Size } from '../sizes/entities/size.entity';
+import { Product } from '../products/entities/product.entity';
 import { CreateProductSizeDto } from './dto/create-product-size.dto';
 import { ProductSizeResponseDto } from './dto/product-size-response.dto';
 import { ProductSizesResponseDto } from './dto/product-sizes-response.dto';
@@ -14,6 +14,8 @@ export class ProductSizesService {
   constructor(
     @InjectRepository(ProductSize)
     private productSizesRepository: Repository<ProductSize>,
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
   ) {}
 
   async findByProductId(productId: number): Promise<ProductSizesResponseDto[]> {
@@ -35,37 +37,61 @@ export class ProductSizesService {
     return ProductSizeToDto.toResponseDto(productSize);
   }
 
-  async create(createProductSizeDto: CreateProductSizeDto) {
-    const productSize = this.productSizesRepository.create({
-      ...createProductSizeDto,
-      size: { id: createProductSizeDto.sizeId },
-    });
-    return await this.productSizesRepository.save(productSize);
+  async createAll(
+    productId: number,
+    createProductSizeDto: CreateProductSizeDto[],
+  ) {
+    const productSizes: ProductSizeResponseDto[] = [];
+    for (const pSize of createProductSizeDto) {
+      const createdPSize = this.productSizesRepository.create({
+        size: { id: pSize.sizeId },
+        quantity: pSize.quantity,
+        product: { id: productId },
+      });
+      productSizes.push(ProductSizeToDto.toResponseDto(createdPSize));
+    }
+    await this.productSizesRepository.save(productSizes);
+
+    return productSizes;
   }
 
-  async update(id: number, updateProductSizeDto: UpdateProductSizeDto) {
-    const productSize = await this.productSizesRepository.findOne({
-      where: { id },
-      relations: ['product', 'size'],
+  // If ID is not undefined - need to update quantity. Otherwise - create a new pSize
+  async update(
+    productId: number,
+    updateProductSizeDto: UpdateProductSizeDto[],
+  ) {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+      relations: ['sizes'],
+    });
+    if (!product) {
+      throw new NotFoundException('Товар не найден');
+    }
+
+    for (const size of updateProductSizeDto) {
+      if (size.id && product.sizes) {
+        const existingSize = product.sizes.find((p) => p.id === size.id);
+        if (existingSize && size.quantity != null) {
+          existingSize.quantity = size.quantity;
+          existingSize.product = product;
+          await this.productSizesRepository.save(existingSize);
+        }
+      } else {
+        const newSize = this.productSizesRepository.create({
+          size: { id: size.sizeId },
+          quantity: size.quantity,
+          product: { id: productId },
+        });
+        await this.productSizesRepository.save(newSize);
+      }
+    }
+
+    const updatedSizes = await this.productSizesRepository.find({
+      where: { product: { id: productId } },
+      relations: ['size', 'product'],
     });
 
-    if (!productSize) {
-      throw new NotFoundException('Размер товара не найден');
-    }
-
-    if (updateProductSizeDto.sizeId !== undefined) {
-      productSize.size = { id: updateProductSizeDto.sizeId } as Size;
-    }
-
-    if (updateProductSizeDto.isAvailable !== undefined) {
-      productSize.isAvailable = updateProductSizeDto.isAvailable;
-    }
-
-    if (updateProductSizeDto.quantity !== undefined) {
-      productSize.quantity = updateProductSizeDto.quantity;
-    }
-
-    return await this.productSizesRepository.save(productSize);
+    return updatedSizes.map((pSize) => ProductSizeToDto.toResponseDto(pSize));
   }
 
   async delete(id: number) {

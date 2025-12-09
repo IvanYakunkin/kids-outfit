@@ -36,16 +36,23 @@ export class ProductSizesController {
 
   @UseGuards(JwtAuthGuard, AdminGuard)
   @ApiBearerAuth()
-  @Post()
-  @ApiOperation({ summary: 'Создать размер товара' })
-  @ApiBody({ type: CreateProductSizeDto })
+  @Post(':productId')
+  @ApiOperation({ summary: 'Создать размеры для товара' })
+  @ApiParam({ name: 'ID товара', type: Number })
+  @ApiBody({ type: [CreateProductSizeDto] })
   @ApiResponse({
     status: 201,
-    description: 'Размер товара успешно создан',
-    type: CreateProductSizeDto,
+    description: 'Размеры добавлены для товара',
+    type: [ProductSizeResponseDto],
   })
-  async create(@Body() CreateProductSizeDto: CreateProductSizeDto) {
-    return await this.productSizesService.create(CreateProductSizeDto);
+  async create(
+    @Param('productId', ParseIntPipe) productId: number,
+    @Body() createProductSizeDto: CreateProductSizeDto[],
+  ) {
+    return await this.productSizesService.createAll(
+      productId,
+      createProductSizeDto,
+    );
   }
 
   @Get(':id')
@@ -62,20 +69,26 @@ export class ProductSizesController {
 
   @UseGuards(JwtAuthGuard, AdminGuard)
   @ApiBearerAuth()
-  @Patch(':id')
+  @Patch(':productId')
   @ApiOperation({ summary: 'Обновить данные размера товара' })
-  @ApiParam({ name: 'ID Размера товара', type: Number, example: 2 })
-  @ApiBody({ description: 'Данные для обновления', type: UpdateProductSizeDto })
+  @ApiParam({ name: 'ID товара', type: Number, example: 2 })
+  @ApiBody({
+    description: 'Данные для обновления',
+    type: [UpdateProductSizeDto],
+  })
   @ApiOkResponse({
     description: 'Данные размера товара изменены',
     type: ProductSize,
   })
   @ApiResponse({ status: 404, description: 'Размер товара не найден' })
   async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateProductSizeDto: UpdateProductSizeDto,
+    @Param('productId', ParseIntPipe) productId: number,
+    @Body() updateProductSizeDto: UpdateProductSizeDto[],
   ) {
-    return await this.productSizesService.update(id, updateProductSizeDto);
+    return await this.productSizesService.update(
+      productId,
+      updateProductSizeDto,
+    );
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)

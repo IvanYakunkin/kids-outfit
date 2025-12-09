@@ -2,11 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateProductSizeDto {
-  @ApiProperty({ example: 1, description: 'ID товара' })
-  @IsNumber()
-  @IsNotEmpty({ message: 'Товар не выбран' })
-  productId: number;
-
   @ApiProperty({ example: 2, description: 'ID размера' })
   @IsNumber()
   @IsNotEmpty({ message: 'Не указан размер' })
@@ -19,7 +14,7 @@ export class CreateProductSizeDto {
     default: true,
   })
   @IsBoolean()
-  isAvailable: boolean = true;
+  isAvailable?: boolean = true;
 
   @ApiProperty({
     example: 10,
