@@ -15,3 +15,32 @@ export interface IAddress {
   house: string;
   apartment?: string;
 }
+
+export interface ICreateProductSize {
+  // If this is an old record, then use the id, otherwise - no
+  id?: number;
+  sizeId: number;
+  quantity: number;
+}
+
+export interface ICreatePCharacteristic {
+  characteristicId: number;
+  value: string;
+}
+
+export interface CategorySelect {
+  id: number;
+  label: string;
+}
+
+export interface LoadedImage {
+  file: File;
+  width: number;
+  height: number;
+  url: string;
+}
+
+export interface ImageFromDB {
+  url: string;
+  name: string;
+}

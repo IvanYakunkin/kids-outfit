@@ -1,6 +1,6 @@
 import Collection from "@/components/Collection/Collection";
 import { getProducts } from "@/shared/api/products";
-import { ProductQueryParams } from "@/types/products";
+import { PaginatedProductsDto, ProductQueryParams } from "@/types/products";
 import { notFound } from "next/navigation";
 import styles from "../catalog.module.css";
 
@@ -36,12 +36,12 @@ export default async function SectionPage({
     return notFound();
   }
 
-  const productsRes = await getProducts(params);
+  const productsRes = await getProducts<PaginatedProductsDto>(params);
   if (!productsRes.ok || productsRes.data === undefined) {
     return notFound();
   }
 
-  const products = productsRes.data;
+  const products: PaginatedProductsDto = productsRes.data;
 
   return (
     <main className={styles.main}>

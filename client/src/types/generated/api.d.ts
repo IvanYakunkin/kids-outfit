@@ -220,7 +220,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/product-sizes": {
+    "/api/product-sizes/{productId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -229,7 +229,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Создать размер товара */
+        /** Создать размеры для товара */
         post: operations["ProductSizesController_create"];
         delete?: never;
         options?: never;
@@ -363,7 +363,25 @@ export interface paths {
         patch: operations["OrdersController_update"];
         trace?: never;
     };
-    "/api/product-characteristics": {
+    "/api/cart": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Получить корзину пользователя */
+        get: operations["CartController_getCart"];
+        put?: never;
+        /** Добавить товар выбранного размера в корзину */
+        post: operations["CartController_createProduct"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/cart/{productSizeId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -372,7 +390,26 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Создать характеристику для товара */
+        post?: never;
+        /** Удалить товар из корзины */
+        delete: operations["CartController_deleteCartProduct"];
+        options?: never;
+        head?: never;
+        /** Изменить количество товара в корзине */
+        patch: operations["CartController_updateQuantity"];
+        trace?: never;
+    };
+    "/api/product-characteristics/{productId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Заменить все характеристики товара на новые */
+        put: operations["ProductCharsController_replaceAllChars"];
+        /** Добавить характеристики для товара */
         post: operations["ProductCharsController_create"];
         delete?: never;
         options?: never;
@@ -394,8 +431,7 @@ export interface paths {
         delete: operations["ProductCharsController_delete"];
         options?: never;
         head?: never;
-        /** Обновить значение характеристики товара по ID */
-        patch: operations["ProductCharsController_update"];
+        patch?: never;
         trace?: never;
     };
     "/api/statuses": {
@@ -469,42 +505,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/cart": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Получить корзину пользователя */
-        get: operations["CartController_getCart"];
-        put?: never;
-        /** Добавить товар выбранного размера в корзину */
-        post: operations["CartController_createProduct"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/cart/{productSizeId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Удалить товар из корзины */
-        delete: operations["CartController_deleteCartProduct"];
-        options?: never;
-        head?: never;
-        /** Изменить количество товара в корзине */
-        patch: operations["CartController_updateQuantity"];
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -533,14 +533,29 @@ export interface components {
              * @description Цена
              * @example 1200.25
              */
-            price: string;
+            price: number;
             /**
              * @description Процент скидки на цену товара
              * @example 20
              */
             discount?: number;
-            /** @description Изображения товара */
-            images: string[];
+        };
+        LastCategoryDto: {
+            /**
+             * @description ID категории
+             * @example 3
+             */
+            id: number;
+            /**
+             * @description Название категории
+             * @example Обувь
+             */
+            name: string;
+            /**
+             * @description Slug категории
+             * @example Obuv
+             */
+            slug: string;
         };
         ProductImageResponseDto: {
             /** @description Уникальный идентификатор изображения */
@@ -567,9 +582,20 @@ export interface components {
              */
             slug: string;
             /**
-             * @description Артикул
-             * @example 12345678
+             * @description Число продаж
+             * @default 0
+             * @example 100
              */
+            sold: number;
+            /** @description Категория товара */
+            category: components["schemas"]["LastCategoryDto"];
+            /**
+             * @description Активность товара
+             * @default true
+             * @example false
+             */
+            isActive: boolean;
+            /** @description Артикул товара */
             sku: string;
             /**
              * @description Цена
@@ -618,8 +644,9 @@ export interface components {
             /**
              * @description Порядок сортировки (ASC или DESC)
              * @example ASC
+             * @enum {string}
              */
-            order?: string;
+            order?: "ASC" | "DESC";
         };
         MetaProductsDto: {
             /**
@@ -776,6 +803,37 @@ export interface components {
              */
             created_at: string;
         };
+        UpdateProductDto: {
+            /**
+             * @description Название
+             * @example Футболка
+             */
+            name?: string;
+            /** @description Описание */
+            description?: string;
+            /** @description Информация об уходе */
+            care?: string;
+            /**
+             * @description Категория (ID)
+             * @example 1
+             */
+            categoryId?: number;
+            /**
+             * @description Активность товара
+             * @example true
+             */
+            isActive?: boolean;
+            /**
+             * @description Цена
+             * @example 1200.25
+             */
+            price?: string;
+            /**
+             * @description Процент скидки
+             * @example 20
+             */
+            discount?: number;
+        };
         CreateUserDto: {
             /**
              * @description Имя пользователя (только русские буквы, дефисы или апострофы)
@@ -854,11 +912,6 @@ export interface components {
         };
         CreateProductSizeDto: {
             /**
-             * @description ID товара
-             * @example 1
-             */
-            productId: number;
-            /**
              * @description ID размера
              * @example 2
              */
@@ -920,6 +973,11 @@ export interface components {
             quantity: number;
         };
         UpdateProductSizeDto: {
+            /**
+             * @description ID размера товара. Если присутствует, значит данные у этого размера нужно обновить только поле quantity
+             * @example 2
+             */
+            id?: number;
             /**
              * @description ID размера
              * @example 2
@@ -1087,36 +1145,6 @@ export interface components {
              */
             createdAt: string;
         };
-        Product: Record<string, never>;
-        CreateProductCharsDto: {
-            /**
-             * @description ID товара
-             * @example Футболка
-             */
-            product: components["schemas"]["Product"];
-        };
-        UpdateProductCharsDto: {
-            /**
-             * @description Значение характеристики товара
-             * @example Красный
-             */
-            value?: string;
-        };
-        CreateStatusDto: {
-            /**
-             * @description Наименование статуса
-             * @example Размер
-             */
-            name: string;
-        };
-        Status: Record<string, never>;
-        CreateSizeDto: {
-            /**
-             * @description Название размера
-             * @example 134
-             */
-            name: string;
-        };
         CreateCartDto: {
             /**
              * @description Количество товара
@@ -1143,6 +1171,46 @@ export interface components {
              */
             quantity?: number;
         };
+        CreateProductCharsDto: {
+            /**
+             * @description ID характеристики
+             * @example 5
+             */
+            characteristic: number;
+            /**
+             * @description Значение характеристики
+             * @example Белый
+             */
+            value: string;
+        };
+        Characteristic: Record<string, never>;
+        ReplaceProductCharsDto: {
+            /**
+             * @description ID характеристики
+             * @example 5
+             */
+            characteristic: components["schemas"]["Characteristic"];
+            /**
+             * @description Значение характеристики
+             * @example Белый
+             */
+            value: string;
+        };
+        CreateStatusDto: {
+            /**
+             * @description Наименование статуса
+             * @example Размер
+             */
+            name: string;
+        };
+        Status: Record<string, never>;
+        CreateSizeDto: {
+            /**
+             * @description Название размера
+             * @example 134
+             */
+            name: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -1166,7 +1234,7 @@ export interface operations {
                 /** @description Поле для сортировки */
                 sort?: string;
                 /** @description Порядок сортировки (ASC или DESC) */
-                order?: string;
+                order?: "ASC" | "DESC";
                 query?: components["schemas"]["QueryProductsDto"];
             };
             header?: never;
@@ -1308,7 +1376,7 @@ export interface operations {
         /** @description Данные товара */
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateProductDto"];
+                "application/json": components["schemas"]["UpdateProductDto"];
             };
         };
         responses: {
@@ -1638,22 +1706,25 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                productId: number;
+                "ID \u0442\u043E\u0432\u0430\u0440\u0430": number;
+            };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateProductSizeDto"];
+                "application/json": components["schemas"]["CreateProductSizeDto"][];
             };
         };
         responses: {
-            /** @description Размер товара успешно создан */
+            /** @description Размеры добавлены для товара */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreateProductSizeDto"];
+                    "application/json": components["schemas"]["ProductSizeResponseDto"][];
                 };
             };
         };
@@ -1963,9 +2034,14 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["OrderResponseDto"];
+                content?: never;
+            };
+            /** @description Достигнут лимит активных заказов. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
                 };
+                content?: never;
             };
             /** @description Ошибка запроса */
             404: {
@@ -2067,7 +2143,27 @@ export interface operations {
             };
         };
     };
-    ProductCharsController_create: {
+    CartController_getCart: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Корзина успешно получена */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CartResponseDto"][];
+                };
+            };
+        };
+    };
+    CartController_createProduct: {
         parameters: {
             query?: never;
             header?: never;
@@ -2076,17 +2172,151 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateProductCharsDto"];
+                "application/json": components["schemas"]["CreateCartDto"];
             };
         };
         responses: {
-            /** @description Характеристика товара успешно создана */
+            /** @description Товар добавлен в корзину */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ProductCharsResponseDto"];
+                    "application/json": components["schemas"]["CartResponseDto"];
+                };
+            };
+            /** @description Товар не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Товар уже есть в корзине */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CartController_deleteCartProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID товара в корзине */
+                productSizeId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Товар удалён */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CartResponseDto"];
+                };
+            };
+            /** @description Товар не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CartController_updateQuantity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID варианта товара */
+                productSizeId: number;
+            };
+            cookie?: never;
+        };
+        /** @description Измененное количество товара */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCartDto"];
+            };
+        };
+        responses: {
+            /** @description Количество успешно обновлено */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CartResponseDto"];
+                };
+            };
+            /** @description Товар не найден в корзине */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProductCharsController_replaceAllChars: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID товара */
+                productId: number;
+            };
+            cookie?: never;
+        };
+        /** @description Объект с ID товара и массивом характеристик */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReplaceProductCharsDto"][];
+            };
+        };
+        responses: {
+            /** @description Все характеристики товара успешно заменены */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductCharsResponseDto"][];
+                };
+            };
+        };
+    };
+    ProductCharsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: number;
+                "ID \u0442\u043E\u0432\u0430\u0440\u0430": number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateProductCharsDto"][];
+            };
+        };
+        responses: {
+            /** @description Характеристики для товара успешно добавлены */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductCharsResponseDto"][];
                 };
             };
         };
@@ -2109,41 +2339,6 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
-            };
-            /** @description Характеристика товара не найдена */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ProductCharsController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID продукта */
-                id: string;
-            };
-            cookie?: never;
-        };
-        /** @description Объект с новым значением характеристики */
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateProductCharsDto"];
-            };
-        };
-        responses: {
-            /** @description Обновленная характеристика товара */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProductCharsResponseDto"];
-                };
             };
             /** @description Характеристика товара не найдена */
             404: {
@@ -2315,128 +2510,6 @@ export interface operations {
         responses: {
             /** @description Размер успешно удален. */
             204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CartController_getCart: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Корзина успешно получена */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CartResponseDto"][];
-                };
-            };
-        };
-    };
-    CartController_createProduct: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCartDto"];
-            };
-        };
-        responses: {
-            /** @description Товар добавлен в корзину */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CartResponseDto"];
-                };
-            };
-            /** @description Товар не найден */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Товар уже есть в корзине */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CartController_deleteCartProduct: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID товара в корзине */
-                productSizeId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Товар удалён */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CartResponseDto"];
-                };
-            };
-            /** @description Товар не найден */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CartController_updateQuantity: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID варианта товара */
-                productSizeId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateCartDto"];
-            };
-        };
-        responses: {
-            /** @description Количество успешно обновлено */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CartResponseDto"];
-                };
-            };
-            /** @description Товар не найден в корзине */
-            404: {
                 headers: {
                     [name: string]: unknown;
                 };

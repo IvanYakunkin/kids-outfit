@@ -48,7 +48,6 @@ export async function getProductById(
   id: number
 ): Promise<FetchJsonResult<ProductInfoDto>> {
   return fetchJson<ProductInfoDto>(`products/${id}`, {
-    revalidate: 120,
     handle404: true,
   });
 }
@@ -57,4 +56,34 @@ export async function getProductsByCategory(
   categoryId: number
 ): Promise<FetchJsonResult<PaginatedProductsDto>> {
   return fetchJson<PaginatedProductsDto>(`products?category=${categoryId}`);
+}
+
+export async function createProduct(
+  formData: FormData
+): Promise<FetchJsonResult<ProductResponseDto>> {
+  return fetchJson<ProductResponseDto>(`products`, {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+}
+
+export async function editProduct(
+  productId: number,
+  formData: FormData
+): Promise<FetchJsonResult<ProductResponseDto>> {
+  return fetchJson<ProductResponseDto>(`products/${productId}`, {
+    method: "PATCH",
+    body: formData,
+    credentials: "include",
+  });
+}
+
+export async function deleteProduct(
+  productId: number
+): Promise<FetchJsonResult<null>> {
+  return fetchJson<null>(`products/${productId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
 }

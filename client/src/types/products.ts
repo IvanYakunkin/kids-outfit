@@ -14,3 +14,5 @@ export type ProductImageDto = components["schemas"]["ProductImageResponseDto"];
 export type ProductInfoDto = components["schemas"]["ProductResponseDto"];
 
 export type ProductQueryParams = components["schemas"]["QueryProductsDto"];
+
+export type CreateProductDto = components["schemas"]["CreateProductDto"];

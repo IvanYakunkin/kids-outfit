@@ -1,0 +1,63 @@
+.dropArea {
+  padding: 20px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 20px;
+  background: #fafafa;
+}
+
+.previewElement {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.previewImageContainer {
+  width: 120px;
+  cursor: zoom-in;
+  margin-right: 10px;
+}
+
+.image {
+  width: 100px;
+  height: auto;
+  margin-right: 10px;
+  border-radius: 8px;
+}
+
+.deleteBtn {
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  cursor: zoom-out;
+}
+
+.fullscreenImgContainer {
+  position: relative;
+  width: 90vw;
+  height: 90vh;
+}
+
+.dragged {
+  border-color: var(--templatePurple);
+  background-color: rgb(231, 231, 231);
+}
