@@ -17,7 +17,10 @@ import {
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiConflictResponse,
   ApiConsumes,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -90,7 +93,7 @@ export class ProductsController {
     description: 'Список товаров получен',
     type: ProductsResponseDto,
   })
-  @ApiResponse({ status: 404, description: 'Категория не найдена' })
+  @ApiNotFoundResponse({ description: 'Категория не найдена' })
   @Get('similar/:categoryId/:limit')
   async getSimilar(
     @Param('categoryId', ParseIntPipe) categoryId: number,
@@ -113,12 +116,13 @@ export class ProductsController {
   @Patch(':id')
   @ApiOperation({ summary: 'Изменить информацию о товаре' })
   @ApiParam({ name: 'id', type: Number, example: 1 })
-  @ApiBody({ description: 'Данные товара', type: CreateProductDto })
+  @ApiBody({ description: 'Данные товара', type: UpdateProductDto })
   @ApiOkResponse({
     description: 'Данные товара изменены',
     type: ProductResponseDto,
   })
-  @ApiResponse({ status: 404, description: 'Товар не найден' })
+  @ApiNotFoundResponse({ description: 'Товар не найден' })
+  @UseInterceptors(ImageFilesInterceptor('images', 10, 7))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductDto: UpdateProductDto,
@@ -131,8 +135,11 @@ export class ProductsController {
   @Delete(':id')
   @ApiOperation({ summary: 'Удалить товар по ID' })
   @ApiParam({ name: 'id', type: Number, example: 1 })
-  @ApiResponse({ status: 204, description: 'Товар удален' })
-  @ApiResponse({ status: 404, description: 'Товар не найден' })
+  @ApiNoContentResponse({ description: 'Товар удален' })
+  @ApiNotFoundResponse({ description: 'Товар не найден' })
+  @ApiConflictResponse({
+    description: 'Этот товар уже связан с другими таблицами.',
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseIntPipe) id: number) {
     return await this.productsService.delete(id);

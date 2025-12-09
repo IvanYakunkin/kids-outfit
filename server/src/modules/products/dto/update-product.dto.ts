@@ -1,26 +1,19 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsInt,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsBoolean, IsInt, IsNotEmpty, IsString, Max } from 'class-validator';
 
 export class UpdateProductDto {
   @ApiPropertyOptional({ description: 'Название', example: 'Футболка' })
   @IsString()
-  @IsOptional()
+  @IsNotEmpty({ message: 'Название не может быть пустым' })
   name?: string;
 
   @ApiPropertyOptional({ description: 'Описание' })
   @IsString()
-  @IsOptional()
   description?: string;
 
   @ApiPropertyOptional({ description: 'Информация об уходе' })
   @IsString()
-  @IsOptional()
   care?: string;
 
   @ApiPropertyOptional({
@@ -28,17 +21,16 @@ export class UpdateProductDto {
     type: Number,
     example: 1,
   })
-  @IsNumber()
-  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
   categoryId?: number;
 
   @ApiPropertyOptional({
     description: 'Активность товара',
-    type: Boolean,
     example: true,
   })
   @IsBoolean()
-  @IsOptional()
+  @Type(() => Boolean)
   isActive?: boolean;
 
   @ApiPropertyOptional({
@@ -47,7 +39,8 @@ export class UpdateProductDto {
     example: '1200.25',
   })
   @IsInt()
-  @IsOptional()
+  @Type(() => Number)
+  @IsNotEmpty({ message: 'Цена не может отсутствовать' })
   price?: number;
 
   @ApiPropertyOptional({
@@ -55,7 +48,8 @@ export class UpdateProductDto {
     type: Number,
     example: 20,
   })
-  @IsNumber()
-  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  @Max(99, { message: 'Скидка не может превышать 99%' })
   discount?: number;
 }

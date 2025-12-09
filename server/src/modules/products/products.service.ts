@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 import { CategoriesService } from '../categories/categories.service';
@@ -293,7 +297,20 @@ export class ProductsService {
       throw new NotFoundException('Товар не найден');
     }
 
-    await this.productsRepository.delete(id);
+    try {
+      await this.productsRepository.delete(id);
+    } catch (error) {
+      if (
+        error.name === 'QueryFailedError' &&
+        error.driverError &&
+        error.driverError.code === '23503'
+      ) {
+        throw new ConflictException(
+          'Невозможно удалить товар, так как у него есть связанные данные.',
+        );
+      }
+      throw error;
+    }
   }
 
   async incrementSold(productId: number, quantity = 1): Promise<void> {

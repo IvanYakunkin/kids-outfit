@@ -1,12 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import {
-  IsBoolean,
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsInt, IsNotEmpty, IsString, Max } from 'class-validator';
 
 export class CreateProductDto {
   @ApiProperty({ description: 'Название', example: 'Футболка' })
@@ -16,12 +10,10 @@ export class CreateProductDto {
 
   @ApiPropertyOptional({ description: 'Описание' })
   @IsString()
-  @IsOptional()
   description?: string;
 
   @ApiPropertyOptional({ description: 'Информация об уходе' })
   @IsString()
-  @IsOptional()
   care?: string;
 
   @ApiProperty({ description: 'Категория', type: Number, example: 1 })
@@ -36,11 +28,11 @@ export class CreateProductDto {
     example: true,
   })
   @IsBoolean({ message: 'Неверный формат активности товара' })
-  @IsOptional()
   isActive?: boolean;
 
-  @ApiProperty({ description: 'Цена', type: String, example: '1200.25' })
+  @ApiProperty({ description: 'Цена', type: Number, example: '1200.25' })
   @IsInt()
+  @Type(() => Number)
   @IsNotEmpty({ message: 'Цена не может отсутствовать' })
   price: number;
 
@@ -50,14 +42,7 @@ export class CreateProductDto {
     example: '20',
   })
   @IsInt()
-  @IsOptional()
   @Type(() => Number)
+  @Max(99, { message: 'Скидка не может превышать 99%' })
   discount?: number;
-
-  @ApiProperty({
-    type: 'array',
-    items: { type: 'string', format: 'binary' },
-    description: 'Изображения товара',
-  })
-  images: Express.Multer.File[];
 }
