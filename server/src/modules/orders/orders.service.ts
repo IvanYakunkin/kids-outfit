@@ -108,6 +108,7 @@ export class OrdersService {
     const order = await this.ordersRepository.findOne({
       where: { id },
       relations: [
+        'user',
         'status',
         'products',
         'products.productSize',
@@ -123,7 +124,14 @@ export class OrdersService {
   }
 
   async findAll(query: QueryOrdersDto): Promise<PaginatedOrdersDto> {
-    const { page = 1, limit = 20, statusId, userId, sort = 'DESC' } = query;
+    const {
+      page = 1,
+      limit = 20,
+      statusId,
+      userId,
+      sort = 'DESC',
+      search,
+    } = query;
 
     const qb = this.ordersRepository
       .createQueryBuilder('order')
@@ -139,6 +147,16 @@ export class OrdersService {
 
     if (userId) {
       qb.andWhere('order.userId = :userId', { userId });
+    }
+
+    if (search) {
+      qb.andWhere(
+        `(
+      CONCAT(user.firstname, ' ', user.middlename, ' ', user.lastname) ILIKE :search
+      OR order.id::text ILIKE :search
+    )`,
+        { search: `%${search}%` },
+      );
     }
 
     const [orders, total] = await qb.getManyAndCount();

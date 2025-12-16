@@ -1,21 +1,19 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsIn, IsNumber, IsOptional, Min } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsIn, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class QueryOrdersDto {
   @ApiPropertyOptional({ description: 'Номер страницы', example: 1 })
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
+  @IsInt()
+  @Type(() => Number)
   page?: number = 1;
 
   @ApiPropertyOptional({
     description: 'Количество заказов на странице',
     example: 20,
   })
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
+  @IsInt()
+  @Type(() => Number)
   limit?: number = 20;
 
   @ApiPropertyOptional({
@@ -23,19 +21,26 @@ export class QueryOrdersDto {
     example: '1',
   })
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   statusId?: number;
 
-  @ApiPropertyOptional({ description: 'Фильтр по пользователю', example: '5' })
+  @ApiPropertyOptional({
+    example: 'Иванов Иван Иванович',
+    description: 'Поиск заказа',
+  })
   @IsOptional()
-  @IsNumber()
+  @IsString()
+  search?: string;
+
+  @ApiPropertyOptional({ description: 'Фильтр по пользователю', example: '5' })
+  @IsInt()
+  @IsOptional()
   userId?: number;
 
   @ApiPropertyOptional({
     example: 'ASC',
     description: 'Порядок сортировки (ASC или DESC)',
   })
-  @IsOptional()
   @Transform(({ value }) =>
     typeof value === 'string' ? value.toUpperCase() : value,
   )

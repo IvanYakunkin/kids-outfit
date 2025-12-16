@@ -20,6 +20,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -89,6 +90,13 @@ export class OrdersController {
   @ApiCookieAuth()
   @ApiOperation({
     summary: 'Получить список всех заказов с пагинацией и фильтрами',
+  })
+  @ApiQuery({
+    name: 'query',
+    required: false,
+    style: 'deepObject',
+    explode: true,
+    type: QueryOrdersDto,
   })
   @ApiResponse({
     status: 200,
