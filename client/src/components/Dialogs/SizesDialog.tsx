@@ -92,6 +92,7 @@ export default function SizesDialog({
           initialValue={editRecord?.quantity.toString()}
           handleClose={() => setEditRecord(undefined)}
           onSave={editSave}
+          label="Управление размерами товара"
         />
       )}
       <Dialog

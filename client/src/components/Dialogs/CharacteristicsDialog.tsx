@@ -116,6 +116,7 @@ export default function CharacteristicsDialog({
           initialValue={editRecord?.value}
           handleClose={() => setIsFieldDialog(false)}
           onSave={editSave}
+          label="Управление характеристиками товара"
         />
       )}
       <Dialog

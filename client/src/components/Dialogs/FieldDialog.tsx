@@ -12,12 +12,14 @@ interface FieldDialogProps {
   handleClose: () => void;
   initialValue?: string;
   onSave: (value: string) => void;
+  label: string;
 }
 
 export default function FieldDialog({
   handleClose,
   initialValue,
   onSave,
+  label,
 }: FieldDialogProps) {
   const [value, setValue] = useState(initialValue);
 
@@ -38,7 +40,7 @@ export default function FieldDialog({
       PaperComponent={PaperComponent}
     >
       <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-        Управление характеристиками товара
+        {label}
       </DialogTitle>
       <DialogContent>
         <div>
