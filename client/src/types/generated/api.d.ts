@@ -234,7 +234,8 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /** Обновить данные размера товара */
+        patch: operations["ProductSizesController_update"];
         trace?: never;
     };
     "/api/product-sizes/{id}": {
@@ -252,8 +253,7 @@ export interface paths {
         delete: operations["ProductSizesController_delete"];
         options?: never;
         head?: never;
-        /** Обновить данные размера товара */
-        patch: operations["ProductSizesController_update"];
+        patch?: never;
         trace?: never;
     };
     "/api/product-sizes/product/{productId}": {
@@ -974,7 +974,7 @@ export interface components {
         };
         UpdateProductSizeDto: {
             /**
-             * @description ID размера товара. Если присутствует, значит данные у этого размера нужно обновить только поле quantity
+             * @description ID размера товара. Если присутствует, значит у этого размера нужно обновить только поле quantity
              * @example 2
              */
             id?: number;
@@ -1072,6 +1072,38 @@ export interface components {
              * @description Дата оформления заказа
              */
             createdAt: string;
+        };
+        QueryOrdersDto: {
+            /**
+             * @description Номер страницы
+             * @example 1
+             */
+            page?: number;
+            /**
+             * @description Количество заказов на странице
+             * @example 20
+             */
+            limit?: number;
+            /**
+             * @description Фильтр по статусу заказа
+             * @example 1
+             */
+            statusId?: number;
+            /**
+             * @description Поиск заказа
+             * @example Иванов Иван Иванович
+             */
+            search?: string;
+            /**
+             * @description Фильтр по пользователю
+             * @example 5
+             */
+            userId?: number;
+            /**
+             * @description Порядок сортировки (ASC или DESC)
+             * @example ASC
+             */
+            sort?: string;
         };
         OrderUserDto: {
             id: number;
@@ -1357,6 +1389,13 @@ export interface operations {
             };
             /** @description Товар не найден */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Этот товар уже связан с другими таблицами. */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1729,6 +1768,41 @@ export interface operations {
             };
         };
     };
+    ProductSizesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: number;
+                "ID \u0442\u043E\u0432\u0430\u0440\u0430": number;
+            };
+            cookie?: never;
+        };
+        /** @description Данные для обновления */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProductSizeDto"][];
+            };
+        };
+        responses: {
+            /** @description Данные размера товара изменены */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductSize"];
+                };
+            };
+            /** @description Размер товара не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     ProductSizesController_getById: {
         parameters: {
             query?: never;
@@ -1775,41 +1849,6 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
-            };
-            /** @description Размер товара не найден */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ProductSizesController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-                "ID \u0420\u0430\u0437\u043C\u0435\u0440\u0430 \u0442\u043E\u0432\u0430\u0440\u0430": number;
-            };
-            cookie?: never;
-        };
-        /** @description Данные для обновления */
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateProductSizeDto"];
-            };
-        };
-        responses: {
-            /** @description Данные размера товара изменены */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProductSize"];
-                };
             };
             /** @description Размер товара не найден */
             404: {
@@ -1993,10 +2032,13 @@ export interface operations {
                 limit?: number;
                 /** @description Фильтр по статусу заказа */
                 statusId?: number;
+                /** @description Поиск заказа */
+                search?: string;
                 /** @description Фильтр по пользователю */
                 userId?: number;
                 /** @description Порядок сортировки (ASC или DESC) */
                 sort?: string;
+                query?: components["schemas"]["QueryOrdersDto"];
             };
             header?: never;
             path?: never;

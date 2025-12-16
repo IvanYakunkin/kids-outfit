@@ -9,11 +9,11 @@ interface OrderProductProps {
 
 export default function OrderProduct({ orderProduct }: OrderProductProps) {
   return (
-    <div className={styles.product} key={orderProduct.productSize.id}>
+    <div className={styles.product}>
       <div className={styles.flexPart}>
         <Link
           href={`/product/${orderProduct.productSize.product.slug}-${orderProduct.productSize.product.id}`}
-          className={styles.product__image}
+          className={styles.image}
         >
           <Image
             src={
@@ -25,26 +25,25 @@ export default function OrderProduct({ orderProduct }: OrderProductProps) {
             alt="Product"
           />
         </Link>
-        <div className={styles.product__description}>
+        <div>
           <Link
             href={`/product/${orderProduct.productSize.product.slug}-${orderProduct.productSize.product.id}`}
-            className={styles.product__name}
+            className={styles.name}
           >
-            {orderProduct.productSize.product.name}
+            {orderProduct.productSize.product.name} - {orderProduct.quantity}{" "}
+            шт.
           </Link>
-          <div className={styles.product__additionalInfo}>
+          <div className={styles.additionalInfo}>
             Размер: <span>{orderProduct.productSize.size.name}</span>
           </div>
-          <div className={styles.product__additionalInfo}>
+          <div className={styles.additionalInfo}>
             Артикул: <span>{orderProduct.productSize.product.sku}</span>
           </div>
         </div>
       </div>
+
       <div className={styles.flexPart}>
-        <div className={styles.product__quantity}>
-          <label>Кол-во</label>
-          <input type="number" readOnly value={orderProduct.quantity} />
-        </div>
+        <div className={styles.price}>{orderProduct.price} Руб.</div>
       </div>
     </div>
   );
