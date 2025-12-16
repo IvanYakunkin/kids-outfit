@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-export default function Products() {
+export default function ProductsAdminPage() {
   const [rows, setRows] = useState<ProductResponseDto[]>([]);
   const [rowCount, setRowCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
