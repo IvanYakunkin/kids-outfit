@@ -1,22 +1,22 @@
-import { CharacteristicsDto } from "@/types/productCharacteristics";
+import { CategoryDto } from "@/types/categories";
 import { Box, Fab } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
-import { deleteCharacteristic } from "../api/productCharacteristics";
+import { deleteCategory } from "../api/categories";
 import { authRequestWrapper } from "../authRequestWrapper";
 
-export default function getCharacteristicsColumns(
-  openEditPage: (characteristicId: number) => void,
+export default function getCategoriesColumns(
+  openEditPage: (selectedCategory: CategoryDto) => void,
   router: AppRouterInstance
 ) {
   const handleDeleteBtn = async (
     e: React.MouseEvent<HTMLButtonElement>,
-    charId: number
+    categoryId: number
   ) => {
     e.stopPropagation();
     const errorRes = await authRequestWrapper(
-      () => deleteCharacteristic(charId),
+      () => deleteCategory(categoryId),
       router
     );
     if (!errorRes.ok) {
@@ -28,7 +28,8 @@ export default function getCharacteristicsColumns(
       alert("Запись удалена!");
     }
   };
-  const productColumns: GridColDef<CharacteristicsDto>[] = [
+
+  const productColumns: GridColDef<CategoryDto>[] = [
     {
       field: "id",
       headerName: "ID",
@@ -38,16 +39,32 @@ export default function getCharacteristicsColumns(
     },
     {
       field: "value",
-      headerName: "Название характеристики",
-      flex: 2,
+      headerName: "Название категории",
+      flex: 1,
       headerAlign: "center",
       align: "center",
-      valueGetter: (value, row) => row.value,
+      valueGetter: (value, row) => row.name,
+    },
+    {
+      field: "slug",
+      headerName: "slug",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (value, row) => row.slug,
+    },
+    {
+      field: "parentName",
+      headerName: "Родительская категория",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      valueGetter: (value, row) => row.parent?.name || " - ",
     },
     {
       field: "actions",
       headerName: "Действия",
-      flex: 2,
+      flex: 1,
       headerAlign: "center",
       filterable: false,
       align: "center",
@@ -68,7 +85,7 @@ export default function getCharacteristicsColumns(
             size="small"
             onClick={(e) => {
               e.stopPropagation();
-              openEditPage(params.row.id);
+              openEditPage(params.row);
             }}
           >
             <Image

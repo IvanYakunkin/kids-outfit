@@ -1,0 +1,9 @@
+.main {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2em;
+  font-weight: 600;
+}

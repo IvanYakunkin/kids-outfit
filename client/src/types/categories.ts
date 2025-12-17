@@ -1,4 +1,5 @@
-import { operations } from "./generated/api";
+import { components } from "./generated/api";
 
-export type CategoryDto =
-  operations["CategoriesController_findAll"]["responses"][200]["content"]["application/json"];
+export type CategoryDto = components["schemas"]["CategoryResponseDto"];
+
+export type CreateCategoryDto = components["schemas"]["CreateCategoryDto"];

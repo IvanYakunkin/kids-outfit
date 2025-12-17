@@ -167,6 +167,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/categories/plain": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Получить список всех категорий без иерархии */
+        get: operations["CategoriesController_findAllPlain"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/categories/{id}": {
         parameters: {
             query?: never;
@@ -676,6 +693,23 @@ export interface components {
             /** @description Информация о пагинации */
             meta: components["schemas"]["MetaProductsDto"];
         };
+        ParentCategoryDto: {
+            /**
+             * @description ID родительской категории
+             * @example 2
+             */
+            id: number;
+            /**
+             * @description Название родительской категории
+             * @example Брюки
+             */
+            name: string;
+            /**
+             * @description Slug родительской категории
+             * @example elektronika
+             */
+            slug: string;
+        };
         CategoryResponseDto: {
             /**
              * @description ID категории
@@ -692,13 +726,10 @@ export interface components {
              * @example Obuv
              */
             slug: string;
-            /**
-             * @description ID родительской категории (если есть)
-             * @example 2
-             */
-            parentId?: number;
+            /** @description ID родительской категории (если есть) */
+            parent?: components["schemas"]["ParentCategoryDto"];
             /** @description Список подкатегорий */
-            children: components["schemas"]["CategoryResponseDto"][];
+            children?: components["schemas"]["CategoryResponseDto"][];
         };
         SizeResponseDto: {
             /**
@@ -885,30 +916,14 @@ export interface components {
              */
             password: string;
         };
-        Category: Record<string, never>;
         CreateCategoryDto: {
             /**
              * @description Название категории
              * @example Брюки
              */
             name: string;
-            /**
-             * @description ID родительской категории
-             * @example 1
-             */
-            parent: components["schemas"]["Category"] | null;
-        };
-        UpdateCategoryDto: {
-            /**
-             * @description Название категории
-             * @example Обувь
-             */
-            name: string;
-            /**
-             * @description ID родительской категории
-             * @example 1
-             */
-            parent: components["schemas"]["Category"] | null;
+            /** @description Родительская категория */
+            parentId?: number | null;
         };
         CreateProductSizeDto: {
             /**
@@ -1583,7 +1598,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CategoryResponseDto"];
+                    "application/json": components["schemas"]["CategoryResponseDto"][];
                 };
             };
         };
@@ -1608,6 +1623,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CategoryResponseDto"];
+                };
+            };
+        };
+    };
+    CategoriesController_findAllPlain: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Получение всего списка категорий */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryResponseDto"][];
                 };
             };
         };
@@ -1667,7 +1702,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UpdateCategoryDto"];
+                "application/json": components["schemas"]["CreateCategoryDto"];
             };
         };
         responses: {
