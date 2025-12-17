@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 import { CategoryResponseDto } from './dto/category-response.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
 
 @Injectable()
@@ -59,7 +58,7 @@ export class CategoriesService {
     return category;
   }
 
-  async getFullHierarchy() {
+  async getFullHierarchy(): Promise<CategoryResponseDto[]> {
     const roots = await this.getRootCategories();
 
     for (const root of roots) {
@@ -116,12 +115,32 @@ export class CategoriesService {
     return category;
   }
 
-  async create(categoryDto: CreateCategoryDto): Promise<CategoryResponseDto> {
-    const category = this.categoryRepository.create(categoryDto);
-    return await this.categoryRepository.save(category);
+  // Find all categories without children
+  async getPlainCategories() {
+    const categories = await this.categoryRepository.find({
+      relations: ['parent'],
+    });
+    return categories;
   }
 
-  async update(categoryId: number, updateCategoryDto: UpdateCategoryDto) {
+  async create(
+    categoryDto: CreateCategoryDto,
+  ): Promise<CategoryResponseDto | undefined> {
+    const category = this.categoryRepository.create(categoryDto);
+    if (categoryDto.parentId && typeof categoryDto.parentId === 'number') {
+      category.parent = { id: categoryDto.parentId } as Category;
+    }
+    const createdCategory = await this.categoryRepository.save(category);
+    const categoryResponse = await this.categoryRepository.findOne({
+      where: { id: createdCategory.id },
+      relations: ['parent'],
+    });
+    if (categoryResponse) {
+      return categoryResponse;
+    }
+  }
+
+  async update(categoryId: number, updateCategoryDto: CreateCategoryDto) {
     const category = await this.categoryRepository.findOne({
       where: { id: categoryId },
     });
@@ -130,10 +149,19 @@ export class CategoriesService {
       throw new NotFoundException('Категория на найдена');
     }
 
-    category.name = updateCategoryDto.name;
-    category.parent = updateCategoryDto.parent;
+    category.parent = updateCategoryDto.parentId
+      ? ({ id: updateCategoryDto.parentId } as Category)
+      : null;
 
-    return await this.categoryRepository.save(category);
+    category.name = updateCategoryDto.name;
+    const updatedCategory = await this.categoryRepository.save(category);
+    const categoryResponse = await this.categoryRepository.findOne({
+      where: { id: updatedCategory.id },
+      relations: ['parent'],
+    });
+    if (categoryResponse) {
+      return categoryResponse;
+    }
   }
 
   async delete(id: number) {

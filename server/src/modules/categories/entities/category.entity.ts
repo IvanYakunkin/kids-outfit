@@ -2,6 +2,7 @@ import { Product } from 'src/modules/products/entities/product.entity';
 import { transliterate } from 'transliteration';
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   ManyToOne,
@@ -23,7 +24,7 @@ export class Category {
   @ManyToOne(() => Category, (category) => category.children, {
     nullable: true,
   })
-  parent?: Category;
+  parent?: Category | null;
 
   @OneToMany(() => Category, (category) => category.parent)
   children: Category[];
@@ -32,6 +33,7 @@ export class Category {
   products: Product[];
 
   @BeforeInsert()
+  @BeforeUpdate()
   generateSlug() {
     const transliterated = transliterate(this.name);
     this.slug = transliterated

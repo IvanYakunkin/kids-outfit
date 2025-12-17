@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ParentCategoryDto } from './parent-category.dto';
 
 export class CategoryResponseDto {
   @ApiProperty({ example: 3, description: 'ID категории' })
@@ -11,15 +12,15 @@ export class CategoryResponseDto {
   slug: string;
 
   @ApiPropertyOptional({
-    example: 2,
     description: 'ID родительской категории (если есть)',
+    type: ParentCategoryDto,
   })
-  parentId?: number;
+  parent?: ParentCategoryDto | null;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Список подкатегорий',
     type: () => CategoryResponseDto,
     isArray: true,
   })
-  children: CategoryResponseDto[];
+  children?: CategoryResponseDto[];
 }

@@ -25,7 +25,6 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CategoriesService } from './categories.service';
 import { CategoryResponseDto } from './dto/category-response.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -39,11 +38,23 @@ export class CategoriesController {
   @ApiResponse({
     status: 200,
     description: 'Получение всего списка категорий',
-    type: CategoryResponseDto,
+    type: [CategoryResponseDto],
   })
   async findAll() {
-    const categories = await this.categoriesService.getFullHierarchy();
-    return categories;
+    return await this.categoriesService.getFullHierarchy();
+  }
+
+  @Get('plain')
+  @ApiOperation({
+    summary: 'Получить список всех категорий без иерархии',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Получение всего списка категорий',
+    type: [CategoryResponseDto],
+  })
+  async findAllPlain() {
+    return await this.categoriesService.getPlainCategories();
   }
 
   @UseGuards(JwtAuthGuard, AdminGuard)
@@ -125,7 +136,7 @@ export class CategoriesController {
   @Patch(':id')
   @ApiOperation({ summary: 'Изменить данные категории' })
   @ApiParam({ name: 'id', type: Number, example: 1 })
-  @ApiBody({ type: UpdateCategoryDto })
+  @ApiBody({ type: CreateCategoryDto })
   @ApiResponse({
     status: 200,
     description: 'Данные категории изменены',
@@ -133,8 +144,8 @@ export class CategoriesController {
   })
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateCartDto: UpdateCategoryDto,
+    @Body() updateCategoryDto: CreateCategoryDto,
   ) {
-    return await this.categoriesService.update(id, updateCartDto);
+    return await this.categoriesService.update(id, updateCategoryDto);
   }
 }
