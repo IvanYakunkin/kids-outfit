@@ -64,7 +64,7 @@ export default function AdminMenu({ closeNavbar }: AdminMenuProps) {
           Категории
         </Link>
         <Link
-          href="/admin/cahracteristics"
+          href="/admin/characteristics"
           className={`${styles.authElement} ${styles.secondary}`}
           onClick={closeNavbar}
         >

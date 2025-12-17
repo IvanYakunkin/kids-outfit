@@ -85,3 +85,40 @@ export async function callUpdateProductChars(
 
   return true;
 }
+
+export async function deleteCharacteristic(characteristicId: number) {
+  return fetchJson(`characteristics/${characteristicId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+}
+
+export async function updateCharacteristic(
+  characteristicId: number,
+  value: string
+): Promise<FetchJsonResult<ProductCharacteristicDto[]>> {
+  return fetchJson<ProductCharacteristicDto[]>(
+    `characteristics/${characteristicId}`,
+    {
+      method: "PATCH",
+      credentials: "include",
+      body: JSON.stringify({ value }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+}
+
+export async function createCharacteristic(
+  value: string
+): Promise<FetchJsonResult<CharacteristicsDto>> {
+  return fetchJson<CharacteristicsDto>(`characteristics`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify({ value }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}

@@ -8,5 +8,3 @@ export type CharacteristicsDto =
 
 export type CreateProductCharsDto =
   components["schemas"]["CreateProductCharsDto"];
-
-export type UpdateProductChars = components["schemas"]["UpdateProductCharsDto"];
