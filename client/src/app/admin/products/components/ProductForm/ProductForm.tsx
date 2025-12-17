@@ -1,9 +1,9 @@
 "use client";
 
+import CategoryField from "@/components/CategoryField/CategoryField";
 import CharacteristicsDialog from "@/components/Dialogs/CharacteristicsDialog";
 import SizesDialog from "@/components/Dialogs/SizesDialog";
 import DropZone from "@/components/UI/DropZone/DropZone";
-import { getCategories } from "@/shared/api/categories";
 import {
   callCreateProductChars,
   callUpdateProductChars,
@@ -14,9 +14,7 @@ import {
   callUpdateProductSizes,
 } from "@/shared/api/productSizes";
 import { authRequestWrapper } from "@/shared/authRequestWrapper";
-import { flattenCategories } from "@/shared/flattenCategories";
 import { getDiscountedPrice } from "@/shared/getDiscountedPrice";
-import { CategoryDto } from "@/types/categories";
 import {
   CategorySelect,
   ICreatePCharacteristic,
@@ -27,7 +25,6 @@ import {
 import { ProductInfoDto } from "@/types/products";
 import {
   Alert,
-  Autocomplete,
   Box,
   Button,
   FormControl,
@@ -36,7 +33,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styles from "./ProductForm.module.css";
 
 interface ProductFormProps {
@@ -81,7 +78,6 @@ export default function ProductForm({
         : null
     );
 
-  const [categories, setCategories] = useState<CategoryDto[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<FileItem[]>(
     initialProduct?.images
       ? initialProduct?.images?.map((img) => ({ url: img.url, name: img.name }))
@@ -110,19 +106,6 @@ export default function ProductForm({
   const [successAlert, setSuccessAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-
-  useEffect(() => {
-    const getCategoriesFromDB = async () => {
-      const categoriesResponse = await getCategories();
-      if (categoriesResponse.ok && categoriesResponse.data) {
-        setCategories(categoriesResponse.data);
-      } else {
-        console.log("Не удалось получить категории", categoriesResponse.error);
-      }
-    };
-
-    getCategoriesFromDB();
-  }, []);
 
   const getResultPrice = (price: number, discount: number) => {
     if (price && discount) {
@@ -275,25 +258,11 @@ export default function ProductForm({
           </div>
           <div className={styles.form}>
             <FormControl fullWidth>
-              <Autocomplete
-                disablePortal
-                getOptionLabel={(option) => option.label}
-                value={selectedCategory}
-                onChange={(event, newValue) =>
-                  newValue && mode !== "view" && setSelectedCategory(newValue)
+              <CategoryField
+                selectedCategory={selectedCategory}
+                onChange={(selected: CategorySelect | null) =>
+                  setSelectedCategory(selected)
                 }
-                options={flattenCategories(categories).map((option, index) => ({
-                  ...option,
-                  key: option.id || index,
-                }))}
-                renderOption={(props, option) => (
-                  <li {...props} key={option.id}>
-                    {option.label}
-                  </li>
-                )}
-                renderInput={(params) => (
-                  <TextField {...params} label="Категория" fullWidth />
-                )}
               />
             </FormControl>
           </div>
