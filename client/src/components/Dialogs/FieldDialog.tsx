@@ -13,13 +13,22 @@ interface FieldDialogProps {
   initialValue?: string;
   onSave: (value: string) => void;
   label: string;
+  bgcolor?:
+    | "inherit"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "error"
+    | "info"
+    | "warning";
 }
 
 export default function FieldDialog({
   handleClose,
-  initialValue,
+  initialValue = "",
   onSave,
   label,
+  bgcolor,
 }: FieldDialogProps) {
   const [value, setValue] = useState(initialValue);
 
@@ -54,11 +63,12 @@ export default function FieldDialog({
           />
           <Button
             variant="contained"
-            sx={{ mt: 2 }}
+            sx={{ mt: 2, bgcolor }}
+            color={bgcolor || "primary"}
             onClick={saveValue}
             fullWidth
           >
-            Обновить
+            Сохранить
           </Button>
         </div>
       </DialogContent>
