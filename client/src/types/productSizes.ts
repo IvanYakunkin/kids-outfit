@@ -11,3 +11,5 @@ export type CreateProductSizeDto =
 
 export type UpdateProductSizesDto =
   components["schemas"]["UpdateProductSizeDto"];
+
+export type CreateSizeDto = components["schemas"]["CreateSizeDto"];

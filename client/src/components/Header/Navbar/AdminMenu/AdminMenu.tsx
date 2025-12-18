@@ -71,6 +71,13 @@ export default function AdminMenu({ closeNavbar }: AdminMenuProps) {
           Характеристики
         </Link>
         <Link
+          href="/admin/sizes"
+          className={`${styles.authElement} ${styles.secondary}`}
+          onClick={closeNavbar}
+        >
+          Размеры
+        </Link>
+        <Link
           href="/admin/statuses"
           className={`${styles.authElement} ${styles.secondary}`}
           onClick={closeNavbar}

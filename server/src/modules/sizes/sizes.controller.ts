@@ -13,6 +13,7 @@ import {
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -63,7 +64,8 @@ export class SizesController {
   @ApiOperation({ summary: 'Удалить размер по ID' })
   @ApiParam({ name: 'id', description: 'ID размера', required: true })
   @ApiResponse({ status: 204, description: 'Размер успешно удален.' })
-  async delete(@Param(':id', ParseIntPipe) id: number) {
+  @ApiNotFoundResponse({ description: 'Размер не найден' })
+  async delete(@Param('id', ParseIntPipe) id: number) {
     await this.sizesService.delete(id);
   }
 }

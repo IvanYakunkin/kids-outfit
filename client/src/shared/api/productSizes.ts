@@ -85,3 +85,21 @@ export async function callUpdateProductSizes(
 
   return true;
 }
+
+export async function deleteSize(sizeId: number) {
+  return fetchJson(`sizes/${sizeId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+}
+
+export async function createSize(name: string): Promise<FetchJsonResult<Size>> {
+  return fetchJson<Size>(`sizes`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify({ name }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
