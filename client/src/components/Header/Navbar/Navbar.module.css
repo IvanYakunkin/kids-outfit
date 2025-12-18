@@ -23,7 +23,7 @@
   box-sizing: border-box;
   transition: transform 0.2s ease-in;
   transform: translateX(-400px);
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .menu::-webkit-scrollbar {

@@ -50,13 +50,6 @@ export default function AdminMenu({ closeNavbar }: AdminMenuProps) {
           Заказы
         </Link>
         <Link
-          href="/admin/users"
-          className={`${styles.authElement} ${styles.secondary}`}
-          onClick={closeNavbar}
-        >
-          Пользователи
-        </Link>
-        <Link
           href="/admin/categories"
           className={`${styles.authElement} ${styles.secondary}`}
           onClick={closeNavbar}
