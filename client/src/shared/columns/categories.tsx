@@ -29,7 +29,7 @@ export default function getCategoriesColumns(
     }
   };
 
-  const productColumns: GridColDef<CategoryDto>[] = [
+  const categoriesColumns: GridColDef<CategoryDto>[] = [
     {
       field: "id",
       headerName: "ID",
@@ -112,5 +112,5 @@ export default function getCategoriesColumns(
       ),
     },
   ];
-  return productColumns;
+  return categoriesColumns;
 }

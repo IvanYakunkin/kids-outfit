@@ -96,8 +96,8 @@ export async function deleteCharacteristic(characteristicId: number) {
 export async function updateCharacteristic(
   characteristicId: number,
   value: string
-): Promise<FetchJsonResult<ProductCharacteristicDto[]>> {
-  return fetchJson<ProductCharacteristicDto[]>(
+): Promise<FetchJsonResult<ProductCharacteristicDto>> {
+  return fetchJson<ProductCharacteristicDto>(
     `characteristics/${characteristicId}`,
     {
       method: "PATCH",

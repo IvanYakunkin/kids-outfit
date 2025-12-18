@@ -28,7 +28,7 @@ export default function getCharacteristicsColumns(
       alert("Запись удалена!");
     }
   };
-  const productColumns: GridColDef<CharacteristicsDto>[] = [
+  const characteristicsColumns: GridColDef<CharacteristicsDto>[] = [
     {
       field: "id",
       headerName: "ID",
@@ -95,5 +95,5 @@ export default function getCharacteristicsColumns(
       ),
     },
   ];
-  return productColumns;
+  return characteristicsColumns;
 }
