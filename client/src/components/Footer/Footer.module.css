@@ -10,7 +10,6 @@
   width: 80%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  padding-left: 15px;
 }
 
 .title {
@@ -77,7 +76,7 @@
 
 @media (max-width: 768px) {
   .footer {
-    margin-top: 25px;
+    margin-top: 50px;
   }
   .info {
     grid-template-columns: 1fr;
