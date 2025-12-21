@@ -1,5 +1,6 @@
 "use client";
 
+import Breadcrumbs from "@/app/components/Breadcrumbs/Breadcrumbs";
 import FieldDialog from "@/components/Dialogs/FieldDialog";
 import {
   createCharacteristic,
@@ -9,7 +10,7 @@ import {
 import { authRequestWrapper } from "@/shared/authRequestWrapper";
 import getCharacteristicsColumns from "@/shared/columns/characteristics";
 import { CharacteristicsDto } from "@/types/productCharacteristics";
-import { Box, Fab, Paper } from "@mui/material";
+import { Box, Fab } from "@mui/material";
 import { DataGrid, GridFilterModel } from "@mui/x-data-grid";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -80,41 +81,52 @@ export default function AdminCharacteristicsPage() {
     setEditCharId(id);
   };
 
+  const pathParts = [
+    { name: "Админ-панель", url: "/admin/" },
+    { name: "Характеристики" },
+  ];
+
   return (
     <main className={styles.main}>
-      <div className={styles.title}>Характеристики</div>
+      <Breadcrumbs pathParts={pathParts} />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <div className={styles.title}>Характеристики</div>
+        <Fab
+          color="success"
+          sx={{ mr: 1 }}
+          onClick={() => setIsCreateOpen(true)}
+        >
+          <Image src="/images/add.png" width={20} height={20} alt="Add" />
+        </Fab>
+      </Box>
       <div>
-        <div style={{ width: "100%" }}>
-          <Paper sx={{ height: 600 }}>
-            <Box sx={{ textAlign: "right", marginBottom: 2 }}>
-              <Fab
-                color="success"
-                sx={{ mr: 1 }}
-                onClick={() => setIsCreateOpen(true)}
-              >
-                <Image src="/images/add.png" width={20} height={20} alt="Add" />
-              </Fab>
-            </Box>
-            <DataGrid
-              label="Характеристики"
-              rows={characteristics}
-              columns={getCharacteristicsColumns(openEditPage, router)}
-              autoPageSize
-              pagination
-              sortingOrder={["asc", "desc"]}
-              filterMode="client"
-              disableRowSelectionOnClick
-              showToolbar
-              loading={characteristics.length ? false : true}
-              filterModel={filterModel}
-              onFilterModelChange={(model) => setFilterModel(model)}
-              initialState={{
-                sorting: {
-                  sortModel: [{ field: "id", sort: "asc" }],
-                },
-              }}
-            />
-          </Paper>
+        <div style={{ width: "100%", height: 700 }}>
+          <DataGrid
+            label="Характеристики"
+            rows={characteristics}
+            columns={getCharacteristicsColumns(openEditPage, router)}
+            autoPageSize
+            pagination
+            sortingOrder={["asc", "desc"]}
+            filterMode="client"
+            disableRowSelectionOnClick
+            showToolbar
+            loading={characteristics.length ? false : true}
+            filterModel={filterModel}
+            onFilterModelChange={(model) => setFilterModel(model)}
+            initialState={{
+              sorting: {
+                sortModel: [{ field: "id", sort: "asc" }],
+              },
+            }}
+          />
         </div>
       </div>
 

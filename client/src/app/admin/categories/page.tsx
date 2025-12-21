@@ -1,5 +1,6 @@
 "use client";
 
+import Breadcrumbs from "@/app/components/Breadcrumbs/Breadcrumbs";
 import CategoryDialog from "@/components/Dialogs/CategoryDialog";
 import {
   createCategory,
@@ -9,7 +10,7 @@ import {
 import { authRequestWrapper } from "@/shared/authRequestWrapper";
 import getCategoriesColumns from "@/shared/columns/categories";
 import { CategoryDto, CreateCategoryDto } from "@/types/categories";
-import { Box, Fab, Paper } from "@mui/material";
+import { Box, Fab } from "@mui/material";
 import { DataGrid, GridFilterModel } from "@mui/x-data-grid";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -86,40 +87,51 @@ export default function CategdoriesAdminPage() {
     }
   };
 
+  const pathParts = [
+    { name: "Админ-панель", url: "/admin/" },
+    { name: "Категории" },
+  ];
+
   return (
     <main className={styles.main}>
-      <div className={styles.title}>Категории</div>
-      <div style={{ width: "100%" }}>
-        <Paper sx={{ height: 700 }}>
-          <Box sx={{ textAlign: "right", marginBottom: 2 }}>
-            <Fab
-              color="success"
-              sx={{ mr: 1 }}
-              onClick={() => setIsCreateOpen(true)}
-            >
-              <Image src="/images/add.png" width={20} height={20} alt="Add" />
-            </Fab>
-          </Box>
-          <DataGrid
-            label="Категории"
-            rows={categories}
-            columns={getCategoriesColumns(openEditPage, router)}
-            autoPageSize
-            pagination
-            sortingOrder={["asc", "desc"]}
-            filterMode="client"
-            disableRowSelectionOnClick
-            showToolbar
-            loading={categories.length ? false : true}
-            filterModel={filterModel}
-            onFilterModelChange={(model) => setFilterModel(model)}
-            initialState={{
-              sorting: {
-                sortModel: [{ field: "id", sort: "asc" }],
-              },
-            }}
-          />
-        </Paper>
+      <Breadcrumbs pathParts={pathParts} />
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 3,
+        }}
+      >
+        <div className={styles.title}>Категории</div>
+        <Fab
+          color="success"
+          sx={{ mr: 1 }}
+          onClick={() => setIsCreateOpen(true)}
+        >
+          <Image src="/images/add.png" width={20} height={20} alt="Add" />
+        </Fab>
+      </Box>
+      <div style={{ width: "100%", height: 700 }}>
+        <DataGrid
+          label="Категории"
+          rows={categories}
+          columns={getCategoriesColumns(openEditPage, router)}
+          autoPageSize
+          pagination
+          sortingOrder={["asc", "desc"]}
+          filterMode="client"
+          disableRowSelectionOnClick
+          showToolbar
+          loading={categories.length ? false : true}
+          filterModel={filterModel}
+          onFilterModelChange={(model) => setFilterModel(model)}
+          initialState={{
+            sorting: {
+              sortModel: [{ field: "id", sort: "asc" }],
+            },
+          }}
+        />
       </div>
       {isCreateOpen && (
         <CategoryDialog

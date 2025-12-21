@@ -18,6 +18,12 @@ export async function getCategoryById(
   return fetchJson<CategoryDto>(`categories/${id}`);
 }
 
+export async function getCategoryHierarchy(
+  categoryId: number
+): Promise<FetchJsonResult<CategoryDto[]>> {
+  return fetchJson<CategoryDto[]>(`categories/hierarchy/${categoryId}`);
+}
+
 // Find all categories without children
 export async function getPlainCategories(): Promise<
   FetchJsonResult<CategoryDto[]>

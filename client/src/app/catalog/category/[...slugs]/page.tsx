@@ -1,3 +1,4 @@
+import Breadcrumbs from "@/app/components/Breadcrumbs/Breadcrumbs";
 import Collection from "@/components/Collection/Collection";
 import { getCategoryBySlugs } from "@/shared/api/categories";
 import { getProductsByCategory } from "@/shared/api/products";
@@ -27,9 +28,16 @@ export default async function CategoryPage({
   }
   const products = productsRes.data;
 
+  const pathParts = [{ name: category.name }];
+
   return (
     <main className={styles.main}>
-      <Collection title={category.name} collection={products.data} />
+      <Breadcrumbs pathParts={pathParts} />
+      <Collection
+        title={category.name}
+        collection={products.data}
+        titleStyles={{ paddingTop: 0 }}
+      />
     </main>
   );
 }

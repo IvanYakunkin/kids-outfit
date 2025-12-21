@@ -1,8 +1,9 @@
 "use client";
+import Breadcrumbs from "@/app/components/Breadcrumbs/Breadcrumbs";
 import { getProducts } from "@/shared/api/products";
 import getProductColumns from "@/shared/columns/products";
 import { PaginatedProductsDto, ProductResponseDto } from "@/types/products";
-import { Box, Fab, Paper } from "@mui/material";
+import { Box, Fab } from "@mui/material";
 import { DataGrid, GridFilterModel, GridSortModel } from "@mui/x-data-grid";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -60,45 +61,54 @@ export default function ProductsAdminPage() {
     filterModel.quickFilterValues,
   ]);
 
+  const pathParts = [
+    { name: "Админ-панель", url: "/admin/" },
+    { name: "Товары" },
+  ];
+
   return (
     <main className={styles.admin}>
       <>
-        <div className={styles.options}>
+        <Breadcrumbs pathParts={pathParts} />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            mb: 3,
+            alignItems: "center",
+          }}
+        >
           <div className={styles.title}>Товары</div>
-        </div>
-        <div>
-          <Paper>
-            <Box sx={{ textAlign: "right", marginBottom: 2 }}>
-              <Fab color="success" sx={{ mr: 1 }} href="/admin/products/create">
-                <Image src="/images/add.png" width={20} height={20} alt="Add" />
-              </Fab>
-            </Box>
-            <DataGrid
-              label="Товары"
-              rows={rows}
-              columns={getProductColumns(router)}
-              rowCount={rowCount}
-              paginationMode="server"
-              sortingMode="server"
-              filterMode="server"
-              paginationModel={paginationModel}
-              onPaginationModelChange={setPaginationModel}
-              sortModel={sortModel}
-              onSortModelChange={setSortModel}
-              filterModel={filterModel}
-              onFilterModelChange={setFilterModel}
-              checkboxSelection
-              loading={isLoading}
-              showToolbar
-              pageSizeOptions={[10, 30, 50, 100]}
-              slotProps={{
-                loadingOverlay: {
-                  variant: "linear-progress",
-                  noRowsVariant: "skeleton",
-                },
-              }}
-            />
-          </Paper>
+          <Fab color="success" href="/admin/products/create">
+            <Image src="/images/add.png" width={20} height={20} alt="Add" />
+          </Fab>
+        </Box>
+        <div style={{ width: "100%", height: 700 }}>
+          <DataGrid
+            label="Товары"
+            rows={rows}
+            columns={getProductColumns(router)}
+            rowCount={rowCount}
+            paginationMode="server"
+            sortingMode="server"
+            filterMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            sortModel={sortModel}
+            onSortModelChange={setSortModel}
+            filterModel={filterModel}
+            onFilterModelChange={setFilterModel}
+            checkboxSelection
+            loading={isLoading}
+            showToolbar
+            pageSizeOptions={[10, 30, 50, 100]}
+            slotProps={{
+              loadingOverlay: {
+                variant: "linear-progress",
+                noRowsVariant: "skeleton",
+              },
+            }}
+          />
         </div>
       </>
     </main>

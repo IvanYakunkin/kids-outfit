@@ -5,12 +5,15 @@ import CollectionItem from "./CollectionItem";
 interface CollectionProps {
   collection: ProductResponseDto[];
   title?: string;
+  titleStyles?: React.CSSProperties;
 }
 
 export default function Collection(props: CollectionProps) {
   return (
     <div className={styles.collection}>
-      <div className="mainTitle">{props.title && props.title}</div>
+      <div className="mainTitle" style={props.titleStyles}>
+        {props.title && props.title}
+      </div>
       {props.collection.length === 0 && (
         <div className="center">Товары отсутствуют</div>
       )}

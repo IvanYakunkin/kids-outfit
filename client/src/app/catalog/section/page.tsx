@@ -1,3 +1,4 @@
+import Breadcrumbs from "@/app/components/Breadcrumbs/Breadcrumbs";
 import Collection from "@/components/Collection/Collection";
 import { getProducts } from "@/shared/api/products";
 import { PaginatedProductsDto, ProductQueryParams } from "@/types/products";
@@ -24,11 +25,11 @@ export default async function SectionPage({
       break;
     case "popular":
       params = { sort: "sold", order: "DESC" };
-      title = "Хиты продаж";
+      title = "Хиты";
       break;
     case "sale":
       params = { sort: "discount", order: "DESC" };
-      title = "Акции";
+      title = "Распродажа";
       break;
   }
 
@@ -43,9 +44,21 @@ export default async function SectionPage({
 
   const products: PaginatedProductsDto = productsRes.data;
 
+  const pathParts = [
+    {
+      name: title,
+      url: null,
+    },
+  ];
+
   return (
     <main className={styles.main}>
-      <Collection title={title} collection={products.data} />
+      <Breadcrumbs pathParts={pathParts} />
+      <Collection
+        title={title}
+        collection={products.data}
+        titleStyles={{ paddingTop: 0 }}
+      />
     </main>
   );
 }

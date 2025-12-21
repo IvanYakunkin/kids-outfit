@@ -1,4 +1,5 @@
 "use client";
+import Breadcrumbs from "@/app/components/Breadcrumbs/Breadcrumbs";
 import AutocompleteDialog, {
   AutocompleteOption,
 } from "@/components/Dialogs/AutocompleteDialog";
@@ -6,7 +7,6 @@ import { getOrders, getStatuses, updateOrder } from "@/shared/api/orders";
 import { authRequestWrapper } from "@/shared/authRequestWrapper";
 import getOrdersColumns from "@/shared/columns/orders";
 import { GetOrdersDto, PaginatedOrdersDto } from "@/types/order";
-import { Paper } from "@mui/material";
 import { DataGrid, GridFilterModel, GridSortModel } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -119,40 +119,44 @@ export default function OrdersAdminPage() {
     }
   };
 
+  const pathParts = [
+    { name: "Админ-панель", url: "/admin" },
+    { name: "Заказы" },
+  ];
+
   return (
     <main className={styles.admin}>
+      <Breadcrumbs pathParts={pathParts} />
       <>
         <div className={styles.options}>
           <div className={styles.title}>Заказы</div>
         </div>
-        <div>
-          <Paper>
-            <DataGrid
-              label="Заказы"
-              rows={rows}
-              columns={getOrdersColumns(openEditPage)}
-              rowCount={rowCount}
-              paginationMode="server"
-              sortingMode="server"
-              filterMode="server"
-              paginationModel={paginationModel}
-              onPaginationModelChange={setPaginationModel}
-              sortModel={sortModel}
-              onSortModelChange={setSortModel}
-              filterModel={filterModel}
-              onFilterModelChange={setFilterModel}
-              checkboxSelection
-              loading={isLoading}
-              showToolbar
-              pageSizeOptions={[10, 30, 50, 100]}
-              slotProps={{
-                loadingOverlay: {
-                  variant: "linear-progress",
-                  noRowsVariant: "skeleton",
-                },
-              }}
-            />
-          </Paper>
+        <div style={{ width: "100%", height: 700 }}>
+          <DataGrid
+            label="Заказы"
+            rows={rows}
+            columns={getOrdersColumns(openEditPage)}
+            rowCount={rowCount}
+            paginationMode="server"
+            sortingMode="server"
+            filterMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            sortModel={sortModel}
+            onSortModelChange={setSortModel}
+            filterModel={filterModel}
+            onFilterModelChange={setFilterModel}
+            checkboxSelection
+            loading={isLoading}
+            showToolbar
+            pageSizeOptions={[10, 30, 50, 100]}
+            slotProps={{
+              loadingOverlay: {
+                variant: "linear-progress",
+                noRowsVariant: "skeleton",
+              },
+            }}
+          />
         </div>
         {isStatusDialog && (
           <AutocompleteDialog

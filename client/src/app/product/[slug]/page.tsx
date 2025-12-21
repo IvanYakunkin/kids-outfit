@@ -1,4 +1,6 @@
+import Breadcrumbs from "@/app/components/Breadcrumbs/Breadcrumbs";
 import Collection from "@/components/Collection/Collection";
+import { getCategoryHierarchy } from "@/shared/api/categories";
 import { getProductById, getSimilarProducts } from "@/shared/api/products";
 import { ProductResponseDto } from "@/types/products";
 import { notFound } from "next/navigation";
@@ -6,6 +8,11 @@ import ProductInfo from "./components/ProductInfo/ProductInfo";
 import ProductItem from "./components/ProductItem/ProductItem";
 import ProductSummary from "./components/ProductSummary/ProductSummary";
 import styles from "./page.module.css";
+
+interface IPathParts {
+  name: string;
+  url?: string | null;
+}
 
 export default async function Product({
   params,
@@ -47,11 +54,27 @@ export default async function Product({
     similarProducts = similarProductsRes.data ?? [];
   }
 
+  // Get product's category with parent categories
+  const pathParts: IPathParts[] = [];
+  const categoriesRes = await getCategoryHierarchy(product.category.id);
+  if (categoriesRes.ok && categoriesRes.data) {
+    let urlPath = "catalog/category/";
+    categoriesRes.data.forEach((category) => {
+      urlPath += `${category.slug}/`;
+      pathParts.push({
+        name: category.name,
+        url: `/${urlPath}`,
+      });
+    });
+  }
+  pathParts.push({
+    name: product.name,
+    url: null,
+  });
+
   return (
     <main className={styles.product}>
-      {/* <nav className={styles.breadcrumbs}>
-        <Breadcrumbs categoryId={product.category.id} />
-      </nav> */}
+      <Breadcrumbs pathParts={pathParts} />
       <div className={styles.productContent}>
         <ProductItem images={product.images} discount={product.discount} />
         <ProductSummary
@@ -66,7 +89,9 @@ export default async function Product({
         description={product.description}
         characteristics={product.productCharacteristics}
       />
-      <Collection collection={similarProducts} title="Похожие товары" />
+      <div style={{ padding: "0 5px" }}>
+        <Collection collection={similarProducts} title="Похожие товары" />
+      </div>
     </main>
   );
 }

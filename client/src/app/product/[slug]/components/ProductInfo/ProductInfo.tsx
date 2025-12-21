@@ -30,14 +30,18 @@ export default function ProductInfo({
       </div>
       {characteristics && (
         <div className={styles.characteristics}>
-          {characteristics.map((char: ProductCharacteristicDto) => (
-            <div className={styles.characteristic} key={char.id}>
-              <div className={styles.characteristic__name}>
-                {char.characteristic.value}
+          <div className={styles.title}>Характеристики</div>
+
+          <div className={styles.characteristicsTable}>
+            {characteristics.map((char: ProductCharacteristicDto) => (
+              <div className={styles.characteristic} key={char.id}>
+                <div className={styles.characteristic__name}>
+                  {char.characteristic.value}
+                </div>
+                <div className={styles.characteristic__value}>{char.value}</div>
               </div>
-              <div className={styles.characteristic__value}>{char.value}</div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>

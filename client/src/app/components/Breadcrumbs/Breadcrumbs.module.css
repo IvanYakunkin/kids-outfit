@@ -1,0 +1,56 @@
+.breadcrumbs {
+  width: 90%;
+  margin: 20px 0;
+  padding-left: 5px;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.breadcrumbs-container::-webkit-scrollbar {
+  display: none;
+}
+
+.home {
+  display: flex;
+  align-items: center;
+}
+
+.home svg path {
+  transition: stroke 0.3s ease-out;
+}
+
+.home:hover svg path {
+  stroke: black;
+}
+
+.element {
+  color: rgb(97, 97, 97);
+  transition: color 0.3s ease-out;
+}
+
+.element:not(:last-child)::after {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url("/images/separator.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+}
+
+.element.link:hover {
+  color: black;
+}
+
+@media (max-width: 767px) {
+  .breadcrumbs {
+    margin-bottom: 10px;
+    margin-top: 0;
+  }
+}
