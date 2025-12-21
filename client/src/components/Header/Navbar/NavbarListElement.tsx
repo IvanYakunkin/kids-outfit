@@ -39,7 +39,7 @@ const NavbarListElement = ({
         >
           {category.name}
         </Link>
-        {category.children.length > 0 && (
+        {category.children && category.children.length > 0 && (
           <span
             className={`${styles.toggleIcon} ${
               openMenuIds.includes(category.id) ? styles.reverse : ""
@@ -48,7 +48,7 @@ const NavbarListElement = ({
           ></span>
         )}
       </div>
-      {category.children.length > 0 && (
+      {category.children && category.children.length > 0 && (
         <ul
           className={`${styles.list} ${styles.second} ${
             openMenuIds.includes(category.id) ? styles.show : ""

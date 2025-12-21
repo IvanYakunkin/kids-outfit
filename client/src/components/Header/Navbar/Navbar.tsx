@@ -116,7 +116,7 @@ export default function Navbar({ categories }: NavbarProps) {
                   href="/catalog/section?type=popular"
                   onClick={closeNavbar}
                 >
-                  Хиты продаж
+                  Хиты
                 </Link>
               </li>
               <li>

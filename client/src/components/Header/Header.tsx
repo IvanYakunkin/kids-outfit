@@ -33,7 +33,7 @@ export default async function Header({ hasRefresh }: { hasRefresh: boolean }) {
                 <Link href="/catalog/section?type=new">Новинки</Link>
               </li>
               <li>
-                <Link href="/catalog/section?type=popular">Хиты продаж</Link>
+                <Link href="/catalog/section?type=popular">Хиты</Link>
               </li>
               <li>
                 <Link href="/catalog/section?type=sale">Распродажа</Link>

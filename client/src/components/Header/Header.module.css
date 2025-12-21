@@ -4,6 +4,7 @@
 
 .header {
   width: 100vw;
+  box-sizing: border-box;
   padding: 15px;
   position: fixed;
   z-index: 1100;
@@ -81,5 +82,14 @@
 
   .title {
     gap: 10px;
+  }
+}
+
+@media (max-width: 479px) {
+  .logo {
+    display: none;
+  }
+  .headerElements {
+    justify-content: left;
   }
 }
