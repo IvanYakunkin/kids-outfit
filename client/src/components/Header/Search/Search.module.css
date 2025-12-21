@@ -1,6 +1,9 @@
 .search {
-  position: relative;
   width: 35%;
+}
+
+.fieldContainer {
+  position: relative;
 }
 
 .field {
@@ -20,12 +23,55 @@
   border: 1px solid rgb(160, 160, 160);
 }
 
-.search > svg {
+.fieldContainer > svg {
   position: absolute;
   right: 5px;
   top: 9px;
   color: rgb(92, 92, 92);
   cursor: pointer;
+}
+
+.searchBlur {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 83px;
+  left: 0;
+  background-color: #27272746;
+}
+
+.searchContainer {
+  position: absolute;
+  background: white;
+  color: rgb(49, 49, 49);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 15px 10px;
+  z-index: 999;
+  border-radius: 5px;
+  margin-top: 5px;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.element {
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  font-size: 1.2em;
+}
+
+.element:hover {
+  color: black;
+}
+
+.element > svg {
+  margin-top: 2px;
 }
 
 @media (max-width: 1200px) {
@@ -40,7 +86,7 @@
     width: 85%;
   }
 
-  .search > svg {
+  .fieldContainer > svg {
     top: 7px;
   }
 }
