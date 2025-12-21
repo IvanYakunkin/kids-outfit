@@ -107,20 +107,17 @@ export default function Navbar({ categories }: NavbarProps) {
           <div className={styles.categories}>
             <ul className={`${styles.list} ${styles.main}`}>
               <li>
-                <Link href="/catalog/section?type=new" onClick={closeNavbar}>
+                <Link href="/catalog?sort=created_at" onClick={closeNavbar}>
                   Новинки
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/catalog/section?type=popular"
-                  onClick={closeNavbar}
-                >
+                <Link href="/catalog?sort=sold" onClick={closeNavbar}>
                   Хиты
                 </Link>
               </li>
               <li>
-                <Link href="/catalog/section?type=sale" onClick={closeNavbar}>
+                <Link href="/catalog?sort=discount" onClick={closeNavbar}>
                   Распродажа
                 </Link>
               </li>

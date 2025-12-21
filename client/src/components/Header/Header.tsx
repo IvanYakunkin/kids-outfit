@@ -30,13 +30,13 @@ export default async function Header({ hasRefresh }: { hasRefresh: boolean }) {
           <div className={styles.categories}>
             <ul className={styles.categoriesList}>
               <li>
-                <Link href="/catalog/section?type=new">Новинки</Link>
+                <Link href="/catalog?sort=created_at">Новинки</Link>
               </li>
               <li>
-                <Link href="/catalog/section?type=popular">Хиты</Link>
+                <Link href="/catalog?sort=sold">Хиты</Link>
               </li>
               <li>
-                <Link href="/catalog/section?type=sale">Распродажа</Link>
+                <Link href="/catalog?sort=discount">Распродажа</Link>
               </li>
             </ul>
           </div>

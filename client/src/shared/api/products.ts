@@ -31,7 +31,7 @@ export async function getProducts<T>(
     Object.entries(params).map(([key, value]) => [key, String(value)])
   ).toString();
 
-  return fetchJson<T>(`products?${queryString}`);
+  return fetchJson<T>(`products?${queryString}`, { handle404: true });
 }
 
 export async function getSimilarProducts(
