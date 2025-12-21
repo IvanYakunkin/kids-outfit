@@ -57,7 +57,7 @@ export class ProductsService {
 
     if (search)
       qb.andWhere(
-        'product.name ILIKE :search OR product.sku ILIKE :search OR CAST(product.price AS TEXT) ILIKE :search OR CAST(product.id AS TEXT) ILIKE :search',
+        'product.name ILIKE :search OR product.sku ILIKE :search OR CAST(product.id AS TEXT) ILIKE :search',
         { search: `%${search}%` },
       );
 

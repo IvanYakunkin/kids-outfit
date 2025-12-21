@@ -58,5 +58,5 @@ export class QueryProductsDto {
     typeof value === 'string' ? value.toUpperCase() : value,
   )
   @IsIn(['ASC', 'DESC'], { message: 'Неверный формат сортировки' })
-  order: 'ASC' | 'DESC' = 'ASC';
+  order: 'ASC' | 'DESC' = 'DESC';
 }
