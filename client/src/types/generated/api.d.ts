@@ -522,6 +522,83 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/analytics/kpis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Получение ключевых показателей (KPI) */
+        get: operations["AnalyticsController_getKpis"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/analytics/hit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Регистрация посещения сайта
+         * @description Извлекает IP из заголовков или сокета и сохраняет уникальный визит в Redis
+         */
+        post: operations["AnalyticsController_logVisit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/analytics/sales-per-month": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Получить статистику продаж за последние 30 дней
+         * @description Возвращает массив данных сгруппированных по дням для построения графика.
+         */
+        get: operations["AnalyticsController_getSalesStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/analytics/sales-per-year": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Продажи за год (по месяцам)
+         * @description Массив данных для годового графика.
+         */
+        get: operations["AnalyticsController_getYearlyStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1257,6 +1334,98 @@ export interface components {
              * @example 134
              */
             name: string;
+        };
+        SimpleStatDto: {
+            /**
+             * @description Общее количество за все время
+             * @example 5
+             */
+            total: number;
+            /**
+             * @description Количество, добавленное за последний период
+             * @example 4
+             */
+            added: number;
+        };
+        RevenueStatDto: {
+            /**
+             * @description Общая выручка
+             * @example 50000
+             */
+            total: number;
+            /**
+             * @description Процент изменения по сравнению с прошлым периодом
+             * @example 15.5
+             */
+            trend: number;
+        };
+        VisitorHistoryDto: {
+            /**
+             * @description Дата в формате YYYY-MM-DD
+             * @example 2025-12-24
+             */
+            date: string;
+            /**
+             * @description Количество уникальных посетителей
+             * @example 10
+             */
+            count: number;
+        };
+        VisitorsStatDto: {
+            /**
+             * @description Количество посетителей сегодня (из Redis)
+             * @example 10
+             */
+            today: number;
+            /** @description История посещений за прошлые дни (из БД) */
+            history: components["schemas"]["VisitorHistoryDto"][];
+        };
+        DashboardKpisDto: {
+            customers: components["schemas"]["SimpleStatDto"];
+            orders: components["schemas"]["SimpleStatDto"];
+            revenue: components["schemas"]["RevenueStatDto"];
+            visitors: components["schemas"]["VisitorsStatDto"];
+        };
+        LogVisitResponseDto: {
+            /**
+             * @description Флаг успешного выполнения операции
+             * @example true
+             */
+            success: boolean;
+            /**
+             * @description Определенный сервером IP-адрес пользователя
+             * @example 192.168.1.1
+             */
+            yourIp: string;
+        };
+        MonthlySalesResponseDto: {
+            /**
+             * @description Дата дня
+             * @example 2023-12-24
+             */
+            date: string;
+            /**
+             * @description Сумма продаж за день
+             * @example 15400
+             */
+            sales: number;
+            /**
+             * @description Количество заказов за день
+             * @example 5
+             */
+            ordersCount: number;
+        };
+        YearlySalesResponseDto: {
+            /**
+             * @description Год и месяц в формате YYYY-MM
+             * @example 2025-01
+             */
+            month: string;
+            /**
+             * @description Общая сумма продаж за этот месяц
+             * @example 450000
+             */
+            sales: number;
         };
     };
     responses: never;
@@ -2577,9 +2746,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                ":id": number;
                 /** @description ID размера */
-                id: unknown;
+                id: number;
             };
             cookie?: never;
         };
@@ -2591,6 +2759,96 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Размер не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AnalyticsController_getKpis: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Возвращает статистику */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardKpisDto"];
+                };
+            };
+        };
+    };
+    AnalyticsController_logVisit: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description IP-адрес пользователя */
+                "x-forwarded-for"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Визит успешно засчитан */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LogVisitResponseDto"];
+                };
+            };
+        };
+    };
+    AnalyticsController_getSalesStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Успешное получение статистики */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MonthlySalesResponseDto"][];
+                };
+            };
+        };
+    };
+    AnalyticsController_getYearlyStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Успешное получение годовой статистики */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YearlySalesResponseDto"][];
+                };
             };
         };
     };

@@ -153,7 +153,11 @@ export default function Navbar({ categories }: NavbarProps) {
                   />
                   Корзина
                 </Link>
-                <Link href="/orders" className={styles.authElement}>
+                <Link
+                  href="/orders"
+                  className={styles.authElement}
+                  onClick={closeNavbar}
+                >
                   <Image
                     src="/images/cube-black.png"
                     width={24}

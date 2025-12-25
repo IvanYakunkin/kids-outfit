@@ -17,7 +17,11 @@ export default function AdminMenu({ closeNavbar }: AdminMenuProps) {
         onClick={() => setIsMenuOpen(!isMenuOpen)}
       >
         <div className={styles.adminToggler}>
-          <div className={styles.adminLabel}>
+          <Link
+            href="/admin/"
+            onClick={closeNavbar}
+            className={styles.adminLabel}
+          >
             <Image
               src="/images/settings-black.png"
               className={`${styles.rotator} ${isMenuOpen && styles.rotate}`}
@@ -26,7 +30,7 @@ export default function AdminMenu({ closeNavbar }: AdminMenuProps) {
               alt="Админ"
             />
             <span>Админ-панель</span>
-          </div>
+          </Link>
           <span
             className={`${styles.toggleIcon} ${
               isMenuOpen ? styles.reverse : ""

@@ -1,3 +1,5 @@
+import { YearlySalesResponseDto } from "../analytics";
+
 export default interface SwiperImage {
   src: string;
   alt?: string;
@@ -43,4 +45,21 @@ export interface LoadedImage {
 export interface ImageFromDB {
   url: string;
   name: string;
+}
+
+export type SalesStatsMonth = {
+  date: string;
+  sales: number;
+  ordersCount: number;
+};
+
+export interface IFormattedSalesChart extends SalesStatsMonth {
+  displayDate: string;
+  amount: number;
+  [key: string]: string | number | Date | undefined;
+}
+
+export interface IFormattedYearlySales extends YearlySalesResponseDto {
+  monthDisplay: string;
+  [key: string]: string | number | undefined;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/hooks/useAuth";
+import { useTracker } from "@/hooks/useTracker";
 
 export function AppClientWrapper({
   children,
@@ -10,6 +11,7 @@ export function AppClientWrapper({
   hasRefresh: boolean;
 }) {
   useAuth({ hasRefresh });
+  useTracker();
 
   return <>{children}</>;
 }

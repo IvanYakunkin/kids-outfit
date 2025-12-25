@@ -1,0 +1,15 @@
+.main {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
