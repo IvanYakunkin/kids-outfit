@@ -44,7 +44,7 @@ export default async function ViewOrderPage({
   return (
     <main className={styles.viewOrder}>
       <Breadcrumbs pathParts={pathParts} />
-      <OrdersViewer orders={order} />
+      <OrdersViewer orders={[order]} />
     </main>
   );
 }

@@ -14,7 +14,7 @@ export default async function Orders() {
 
   return (
     <main className={styles.orders}>
-      <OrdersViewer orders={ordersResponse.data} />
+      <OrdersViewer orders={ordersResponse.data} hideTitle={true} />
     </main>
   );
 }

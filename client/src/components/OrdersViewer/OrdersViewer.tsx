@@ -8,10 +8,11 @@ import { useState } from "react";
 import styles from "./OrdersViewer.module.css";
 
 interface OrdersViewerProps {
-  orders: OrderResponseDto[] | OrderResponseDto;
+  orders: OrderResponseDto[];
+  hideTitle?: boolean;
 }
 
-export default function OrdersViewer({ orders }: OrdersViewerProps) {
+export default function OrdersViewer({ orders, hideTitle }: OrdersViewerProps) {
   const [openedOrders, setOpenedOrders] = useState<number[]>([]);
 
   const handleShowOrderProducts = (orderId: number) => {
@@ -22,12 +23,6 @@ export default function OrdersViewer({ orders }: OrdersViewerProps) {
     }
   };
 
-  const ordersToRender = Array.isArray(orders)
-    ? orders
-    : orders
-    ? [orders]
-    : [];
-
   return (
     <>
       {!orders ? (
@@ -36,21 +31,33 @@ export default function OrdersViewer({ orders }: OrdersViewerProps) {
         </div>
       ) : (
         <>
-          {Array.isArray(orders) && (
+          {hideTitle && (
             <div className={styles.title}>
-              Заказы {Array.isArray(orders) && <span>({orders.length})</span>}
+              Заказы <span>({orders.length})</span>
             </div>
           )}
           <div className={styles.collection}>
-            {ordersToRender.map((order) => (
+            {orders.length === 0 && (
+              <div
+                className={styles.empty}
+                style={{ fontSize: "1.1em", paddingTop: 30 }}
+              >
+                В данный момент у вас нет заказов
+              </div>
+            )}
+            {orders.map((order) => (
               <div className={styles.order} key={order.id}>
                 <div className={styles.date}>
                   Заказ от {formatDate(order.createdAt)} на {order.total} рублей
                 </div>
+                <div className={styles.address}>
+                  Адрес доставки: <span>{order.address}</span>
+                </div>
                 <div className={styles.status}>
                   Статус заказа: <span>{order.status.name}</span>
                 </div>
-                {Array.isArray(orders) && (
+
+                {orders.length > 1 && (
                   <div
                     className={styles.showProductsBtn}
                     onClick={() => handleShowOrderProducts(order.id)}
@@ -63,17 +70,16 @@ export default function OrdersViewer({ orders }: OrdersViewerProps) {
                   </div>
                 )}
 
-                {openedOrders.includes(order.id) ||
-                  (!Array.isArray(orders) && (
-                    <div className={styles.products}>
-                      {order.products.map((orderProduct) => (
-                        <OrderProduct
-                          key={orderProduct.id}
-                          orderProduct={orderProduct}
-                        />
-                      ))}
-                    </div>
-                  ))}
+                {(orders.length === 1 || openedOrders.includes(order.id)) && (
+                  <div className={styles.products}>
+                    {order.products.map((orderProduct) => (
+                      <OrderProduct
+                        key={orderProduct.id}
+                        orderProduct={orderProduct}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
