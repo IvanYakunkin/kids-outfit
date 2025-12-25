@@ -22,6 +22,7 @@ export class QueryOrdersDto {
   })
   @IsOptional()
   @IsInt()
+  @Type(() => Number)
   statusId?: number;
 
   @ApiPropertyOptional({
@@ -34,6 +35,7 @@ export class QueryOrdersDto {
 
   @ApiPropertyOptional({ description: 'Фильтр по пользователю', example: '5' })
   @IsInt()
+  @Type(() => Number)
   @IsOptional()
   userId?: number;
 
