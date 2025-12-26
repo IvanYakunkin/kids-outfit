@@ -20,6 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { CsrfGuard } from '../auth/guards/csrf.guard';
 import { AdminGuard } from '../auth/guards/jwt-admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CategoriesService } from './categories.service';
@@ -57,7 +58,7 @@ export class CategoriesController {
     return await this.categoriesService.getPlainCategories();
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Post()
   @ApiOperation({ summary: 'Создать новую категорию (только администратор)' })
@@ -116,7 +117,7 @@ export class CategoriesController {
     return this.categoriesService.getCategoryHierarchy(categoryId);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Delete(':id')
   @ApiOperation({ summary: 'Удалить категорию по ID' })
@@ -131,7 +132,7 @@ export class CategoriesController {
     await this.categoriesService.delete(id);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Patch(':id')
   @ApiOperation({ summary: 'Изменить данные категории' })

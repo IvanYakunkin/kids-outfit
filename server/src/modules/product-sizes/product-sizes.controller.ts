@@ -20,6 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { CsrfGuard } from '../auth/guards/csrf.guard';
 import { AdminGuard } from '../auth/guards/jwt-admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateProductSizeDto } from './dto/create-product-size.dto';
@@ -34,7 +35,7 @@ import { ProductSizesService } from './product-sizes.service';
 export class ProductSizesController {
   constructor(private readonly productSizesService: ProductSizesService) {}
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Post(':productId')
   @ApiOperation({ summary: 'Создать размеры для товара' })
@@ -67,7 +68,7 @@ export class ProductSizesController {
     return await this.productSizesService.findById(id);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Patch(':productId')
   @ApiOperation({ summary: 'Обновить данные размера товара' })
@@ -91,7 +92,7 @@ export class ProductSizesController {
     );
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Delete(':id')
   @ApiOperation({ summary: 'Удалить размер товара по ID' })

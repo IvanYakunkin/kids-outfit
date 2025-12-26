@@ -20,6 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Request } from 'express';
+import { CsrfGuard } from '../auth/guards/csrf.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CartService } from './cart.service';
 import { CartResponseDto } from './dto/cart-response.dto';
@@ -31,7 +32,7 @@ import { UpdateCartDto } from './dto/update-cart.dto';
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, CsrfGuard)
   @ApiBearerAuth()
   @Post()
   @ApiOperation({ summary: 'Добавить товар выбранного размера в корзину' })
@@ -70,7 +71,7 @@ export class CartController {
     return await this.cartService.findProducts(+req.user['id']);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, CsrfGuard)
   @Patch(':productSizeId')
   @ApiOperation({ summary: 'Изменить количество товара в корзине' })
   @ApiParam({
@@ -101,7 +102,7 @@ export class CartController {
     );
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, CsrfGuard)
   @Delete(':productSizeId')
   @ApiOperation({ summary: 'Удалить товар из корзины' })
   @ApiParam({

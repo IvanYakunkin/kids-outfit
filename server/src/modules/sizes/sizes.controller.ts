@@ -19,6 +19,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { CsrfGuard } from '../auth/guards/csrf.guard';
 import { AdminGuard } from '../auth/guards/jwt-admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateSizeDto } from './dto/create-size.dto';
@@ -43,7 +44,7 @@ export class SizesController {
     return await this.sizesService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Post()
   @ApiOperation({ summary: 'Создать новый размер' })
@@ -57,7 +58,7 @@ export class SizesController {
     return await this.sizesService.create(createSizeDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)

@@ -20,6 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { CsrfGuard } from '../auth/guards/csrf.guard';
 import { AdminGuard } from '../auth/guards/jwt-admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateProductCharsDto } from './dto/create-product-chars.dto';
@@ -34,7 +35,7 @@ export class ProductCharsController {
 
   // TODO: create an endpoint to retrieve all characteristics for a specific product
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Post(':productId')
   @ApiOperation({ summary: 'Добавить характеристики для товара' })
@@ -51,7 +52,7 @@ export class ProductCharsController {
     return await this.productCharsService.createAll(productId, productCharsDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Put(':productId')
   @ApiOperation({ summary: 'Заменить все характеристики товара на новые' })
@@ -75,7 +76,7 @@ export class ProductCharsController {
     );
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)

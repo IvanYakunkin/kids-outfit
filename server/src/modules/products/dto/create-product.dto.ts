@@ -28,7 +28,7 @@ export class CreateProductDto {
     example: true,
   })
   @IsBoolean({ message: 'Неверный формат активности товара' })
-  isActive?: boolean;
+  isActive?: boolean = true;
 
   @ApiProperty({ description: 'Цена', type: Number, example: '1200.25' })
   @IsInt()

@@ -26,6 +26,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Request } from 'express';
+import { CsrfGuard } from '../auth/guards/csrf.guard';
 import { AdminGuard } from '../auth/guards/jwt-admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CartService } from '../cart/cart.service';
@@ -45,7 +46,7 @@ export class OrdersController {
     private readonly cartService: CartService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, CsrfGuard)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Оформить заказ' })
   @ApiBody({ description: 'Данные заказа', type: CreateOrderDto })
@@ -118,7 +119,7 @@ export class OrdersController {
     return await this.ordersService.findOrderById(id);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiCookieAuth()
   @ApiOperation({ summary: 'Изменить данные заказа' })
   @ApiParam({ name: 'ID заказа', type: Number, example: 2 })

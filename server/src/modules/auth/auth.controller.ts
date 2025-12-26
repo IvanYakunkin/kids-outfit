@@ -51,6 +51,7 @@ export class AuthController {
     const userData = await this.authService.registration(createUserDto, req);
     CookieService.setRefreshToken(res, userData.tokens.refreshToken);
     CookieService.setAccessToken(res, userData.tokens.accessToken);
+    CookieService.setCsrfToken(res);
 
     return userData.user;
   }
@@ -73,6 +74,7 @@ export class AuthController {
     const userData = await this.authService.login(loginDto, req);
     CookieService.setRefreshToken(res, userData.tokens.refreshToken);
     CookieService.setAccessToken(res, userData.tokens.accessToken);
+    CookieService.setCsrfToken(res);
 
     return userData.user;
   }
@@ -88,6 +90,7 @@ export class AuthController {
 
       CookieService.clearAccessToken(res);
       CookieService.clearRefreshToken(res);
+      CookieService.clearCsrfTokne(res);
 
       return resultMsg;
     }
@@ -110,6 +113,7 @@ export class AuthController {
 
     CookieService.setRefreshToken(res, newUserData.tokens.refreshToken);
     CookieService.setAccessToken(res, newUserData.tokens.accessToken);
+    CookieService.setCsrfToken(res);
 
     return newUserData.user;
   }

@@ -28,6 +28,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { CsrfGuard } from '../auth/guards/csrf.guard';
 import { AdminGuard } from '../auth/guards/jwt-admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ImageFilesInterceptor } from '../product-images/interceptors/product-image.interceptor';
@@ -44,7 +45,7 @@ import { ProductsService } from './products.service';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Post()
   @ApiOperation({ summary: 'Создать новый товар' })
@@ -111,7 +112,7 @@ export class ProductsController {
     return await this.productsService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Patch(':id')
   @ApiOperation({ summary: 'Изменить информацию о товаре' })
@@ -130,7 +131,7 @@ export class ProductsController {
     return await this.productsService.update(id, updateProductDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Delete(':id')
   @ApiOperation({ summary: 'Удалить товар по ID' })

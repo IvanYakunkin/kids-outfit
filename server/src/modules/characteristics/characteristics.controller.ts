@@ -20,6 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { CsrfGuard } from '../auth/guards/csrf.guard';
 import { AdminGuard } from '../auth/guards/jwt-admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CharacteristicsService } from './characteristics.service';
@@ -33,7 +34,7 @@ export class CharacteristicsController {
     private readonly characteristicsService: CharacteristicsService,
   ) {}
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Post()
   @ApiOperation({ summary: 'Создать характеристику' })
@@ -70,7 +71,7 @@ export class CharacteristicsController {
     return await this.characteristicsService.findById(id);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Patch(':id')
   @ApiOperation({ summary: 'Обновить характеристику' })
@@ -91,7 +92,7 @@ export class CharacteristicsController {
     return await this.characteristicsService.update(id, characteristicDto);
   }
 
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard, CsrfGuard)
   @ApiBearerAuth()
   @Delete(':id')
   @ApiOperation({ summary: 'Удаление характеристики' })
