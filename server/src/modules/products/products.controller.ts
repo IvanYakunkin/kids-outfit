@@ -92,7 +92,7 @@ export class ProductsController {
   })
   @ApiOkResponse({
     description: 'Список товаров получен',
-    type: ProductsResponseDto,
+    type: [ProductsResponseDto],
   })
   @ApiNotFoundResponse({ description: 'Категория не найдена' })
   @Get('similar/:categoryId/:limit')

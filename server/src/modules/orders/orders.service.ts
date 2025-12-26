@@ -177,6 +177,9 @@ export class OrdersService {
         'products.productSize.product',
         'products.productSize.product.images',
       ],
+      order: {
+        createdAt: 'DESC',
+      },
     });
 
     return orders.map(mapOrderToDto);

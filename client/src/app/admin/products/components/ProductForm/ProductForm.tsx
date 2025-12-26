@@ -156,7 +156,6 @@ export default function ProductForm({
     formData.append("price", price.toString());
     formData.append("discount", discount.toString());
     formData.append("categoryId", selectedCategory.id.toString());
-    formData.append("isActive", true.toString());
 
     let operationRes;
     if (mode === "edit" && initialProduct) {

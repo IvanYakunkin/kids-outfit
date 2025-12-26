@@ -90,7 +90,7 @@ export default function ProductSwiper({ images }: ProductSwiperProps) {
             }, 0);
           }}
         >
-          {images && images.length > 1 ? (
+          {images && images.length > 0 ? (
             images.map((image, index) => (
               <SwiperSlide key={index} onClick={() => changeSlide(index)}>
                 <div
@@ -151,7 +151,7 @@ export default function ProductSwiper({ images }: ProductSwiperProps) {
           watchSlidesProgress={true}
           onSlideChange={changeSelectedSlide}
         >
-          {images && images.length > 1 ? (
+          {images && images.length > 0 ? (
             images.map((image, index) => (
               <SwiperSlide key={image.id} id={index.toString()}>
                 <Image

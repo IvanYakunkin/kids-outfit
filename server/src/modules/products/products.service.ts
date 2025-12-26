@@ -138,8 +138,10 @@ export class ProductsService {
 
     await loadProductsFromCategory(category);
 
-    if (collectedProducts.length >= limit)
-      return collectedProducts.slice(0, limit);
+    if (collectedProducts.length >= limit) {
+      const products = collectedProducts.slice(0, limit);
+      return products.map((product) => ProductMapper.toResponseDto(product));
+    }
 
     if (category.parent) {
       const siblings = await this.categoryRepository.find({
@@ -152,8 +154,10 @@ export class ProductsService {
       }
     }
 
-    if (collectedProducts.length >= limit)
-      return collectedProducts.slice(0, limit);
+    if (collectedProducts.length >= limit) {
+      const products = collectedProducts.slice(0, limit);
+      return products.map((product) => ProductMapper.toResponseDto(product));
+    }
 
     let parent = category.parent;
     while (parent && collectedProducts.length < limit) {
