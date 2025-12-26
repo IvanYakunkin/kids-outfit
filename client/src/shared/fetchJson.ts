@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 export interface FetchJsonResult<T> {
   ok: boolean;
   status: number;
@@ -28,9 +30,14 @@ export async function fetchJson<T>(
   options: FetchJsonOptions = {}
 ): Promise<FetchJsonResult<T>> {
   const { handle404 = false, revalidate, ...fetchOptions } = options;
+  const csrfToken = Cookies.get("XSRF-TOKEN");
 
   const fetchParams: RequestInit = {
     ...fetchOptions,
+    headers: {
+      ...fetchOptions.headers,
+      "X-CSRF-Token": csrfToken || "",
+    },
     cache:
       fetchOptions.method && fetchOptions.method !== "GET"
         ? "no-store"
