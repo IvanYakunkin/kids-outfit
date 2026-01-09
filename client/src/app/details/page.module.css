@@ -1,0 +1,15 @@
+.main {
+  max-width: 1000px;
+  margin: 0 auto;
+  font-size: 1.2em;
+}
+
+.title {
+  font-size: 1.6em;
+  font-weight: bold;
+  padding: 15px 0;
+}
+
+.details {
+  text-align: justify;
+}
