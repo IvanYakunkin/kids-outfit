@@ -157,14 +157,14 @@ export default function Registration() {
             </Typography>
           </form>
           <Typography align="center" sx={{ mt: 2 }}>
-            Нет аккаунта?{" "}
+            Есть аккаунт?{" "}
             <MUILink
               component={NextLink}
               href="/auth/login"
               underline="hover"
               color="primary"
             >
-              Зарегистрироваться
+              Войти
             </MUILink>
           </Typography>
         </Box>
