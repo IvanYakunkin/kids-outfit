@@ -4,12 +4,12 @@ import { getProducts } from "@/shared/api/products";
 import { PaginatedProductsDto, ProductResponseDto } from "@/types/products";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./Search.module.css";
 
 export default function Search() {
   const router = useRouter();
-  const [showSearchContainer, setShowContainer] = useState(false);
+  const [showSearchContainer, setShowSearchContainer] = useState(false);
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState<ProductResponseDto[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -21,13 +21,13 @@ export default function Search() {
 
   const toCatalogPage = () => {
     router.push(`/catalog?search=${search}`);
-    setShowContainer(false);
+    setShowSearchContainer(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (value) {
-      setShowContainer(true);
+      setShowSearchContainer(true);
     }
     setSearch(value);
 
@@ -42,6 +42,9 @@ export default function Search() {
   };
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (search === "") {
+      setShowSearchContainer(false);
+    }
     if (e.key === "Enter") {
       toCatalogPage();
     }
@@ -59,23 +62,27 @@ export default function Search() {
     }
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      inputRef.current &&
-      !inputRef.current.contains(event.target as Node) &&
-      listRef.current &&
-      !listRef.current.contains(event.target as Node)
-    ) {
-      setShowContainer(false);
-    }
-  };
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
+      if (
+        search === "" ||
+        (inputRef.current &&
+          !inputRef.current.contains(event.target as Node) &&
+          listRef.current &&
+          !listRef.current.contains(event.target as Node))
+      ) {
+        setShowSearchContainer(false);
+      }
+    },
+    [search]
+  );
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
 
   return (
     <div className={styles.search}>
@@ -138,7 +145,7 @@ export default function Search() {
                     href={`/catalog?search=${product.name}`}
                     key={product.id}
                     className={styles.element}
-                    onClick={() => setShowContainer(false)}
+                    onClick={() => setShowSearchContainer(false)}
                   >
                     <svg
                       aria-hidden="true"
