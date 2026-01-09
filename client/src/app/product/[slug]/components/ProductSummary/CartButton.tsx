@@ -1,5 +1,6 @@
 "use client";
 
+import { RootState } from "@/redux/store";
 import {
   addProductToCart,
   getCart,
@@ -9,6 +10,7 @@ import { authRequestWrapper } from "@/shared/authRequestWrapper";
 import { Button, CircularProgress } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 interface AddToCartButtonProps {
   selectedSize: { id: number; quantity: number } | null;
@@ -17,13 +19,23 @@ interface AddToCartButtonProps {
 // Add / delete a product from the cart
 export default function CartButton({ selectedSize }: AddToCartButtonProps) {
   const router = useRouter();
+  const user = useSelector((state: RootState) => state.auth.user);
   // Cart item ids
   const [inCart, setInCart] = useState<number[]>([]);
   const [isButtonLoading, setIsButtonLoading] = useState(true);
 
   useEffect(() => {
     const getCartProducts = async () => {
-      const cartResponse = await authRequestWrapper(() => getCart(), router);
+      if (!user) {
+        setIsButtonLoading(false);
+        return;
+      }
+      const cartResponse = await authRequestWrapper(
+        () => getCart(),
+        router,
+        true
+      );
+
       setIsButtonLoading(false);
 
       if (cartResponse.ok && cartResponse.data) {
@@ -35,7 +47,7 @@ export default function CartButton({ selectedSize }: AddToCartButtonProps) {
     };
 
     getCartProducts();
-  }, [router]);
+  }, [router, user]);
 
   if (!selectedSize) return null;
 
@@ -61,6 +73,10 @@ export default function CartButton({ selectedSize }: AddToCartButtonProps) {
   }
 
   const addToCartBtnClick = async () => {
+    if (!user) {
+      router.push("/auth/login");
+      return;
+    }
     const addToCartResponse = await authRequestWrapper(
       () => addProductToCart(selectedSize.id),
       router

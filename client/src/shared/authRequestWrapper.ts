@@ -4,18 +4,17 @@ import { FetchJsonResult } from "./fetchJson";
 
 export async function authRequestWrapper<T>(
   requestFn: () => Promise<FetchJsonResult<T>>,
-  router: AppRouterInstance
+  router: AppRouterInstance,
+  cancelRedirect?: true
 ): Promise<FetchJsonResult<T>> {
   const authResponse = await checkAuthRequest();
   if (!authResponse.ok) {
+    if (cancelRedirect) {
+      return authResponse;
+    }
     router.push("/auth/login");
+    return authResponse;
   }
 
-  const response = await requestFn();
-
-  if (!response.ok) {
-    console.log("Ошибка выполнения запроса");
-  }
-
-  return response;
+  return await requestFn();
 }
