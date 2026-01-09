@@ -65,12 +65,18 @@ export default function ProductSummary({
             alt="Quantity"
           />
           <div>
-            В наличии:{" "}
-            <span>
-              {selectedSize && selectedSize.quantity
-                ? selectedSize.quantity
-                : "Товар закончился"}
-            </span>
+            {selectedSize ? (
+              <>
+                <span>В наличии: </span>{" "}
+                <span>
+                  {selectedSize.quantity
+                    ? selectedSize.quantity
+                    : "Товар закончился"}
+                </span>
+              </>
+            ) : (
+              <span>Товара нет в наличии</span>
+            )}
           </div>
         </div>
         <div className={styles.additional}>
