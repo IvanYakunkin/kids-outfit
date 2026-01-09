@@ -36,6 +36,16 @@ export default function Checkout() {
     getCartSummary(cartProducts);
 
   const createOrderBtn = async () => {
+    if (
+      !address.region.trim() ||
+      !address.city.trim() ||
+      !address.street.trim() ||
+      !address.house.trim() ||
+      !address.postalcode.trim()
+    ) {
+      alert("Заполните все поля адреса");
+      return;
+    }
     const addressString = getAddressFromArray(address);
     const orderProducts: OrderProductsDto[] = cartProducts.map(
       (cartProduct) => ({
