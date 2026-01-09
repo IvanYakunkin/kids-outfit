@@ -2,17 +2,13 @@ import Breadcrumbs from "@/app/components/Breadcrumbs/Breadcrumbs";
 import Collection from "@/components/Collection/Collection";
 import { getCategoryHierarchy } from "@/shared/api/categories";
 import { getProductById, getSimilarProducts } from "@/shared/api/products";
+import { IPathParts } from "@/types/common/common";
 import { ProductResponseDto } from "@/types/products";
 import { notFound } from "next/navigation";
 import ProductInfo from "./components/ProductInfo/ProductInfo";
 import ProductItem from "./components/ProductItem/ProductItem";
 import ProductSummary from "./components/ProductSummary/ProductSummary";
 import styles from "./page.module.css";
-
-interface IPathParts {
-  name: string;
-  url?: string | null;
-}
 
 export default async function Product({
   params,
@@ -42,7 +38,7 @@ export default async function Product({
   // Find similar products
   const product = productRes.data;
 
-  const similarProductsRes = await getSimilarProducts(product.category.id, 5);
+  const similarProductsRes = await getSimilarProducts(product.category.id, 15);
   let similarProducts: ProductResponseDto[] = [];
 
   if (!similarProductsRes.ok) {
