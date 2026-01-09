@@ -1,5 +1,9 @@
 import CollectionSwiper from "@/components/Collection/CollectionSwiper";
-import { getNewProducts, getPopularProducts } from "@/shared/api/products";
+import {
+  getDiscountedProducts,
+  getNewProducts,
+  getPopularProducts,
+} from "@/shared/api/products";
 import { CollectionSlide } from "@/types/common/common";
 import CollectionsSwiper from "./components/CollectionsSwiper/CollectionsSwiper";
 import FullStoreDescription from "./components/FullStoreDescription/FullStoreDescription";
@@ -42,10 +46,12 @@ export default async function MainPage() {
     },
   ];
 
-  const [popularProductsRes, newProductsRes] = await Promise.all([
-    getPopularProducts(),
-    getNewProducts(),
-  ]);
+  const [popularProductsRes, newProductsRes, discountedProductsRes] =
+    await Promise.all([
+      getPopularProducts(),
+      getNewProducts(),
+      getDiscountedProducts(),
+    ]);
 
   if (!popularProductsRes.ok) {
     console.log("Не удалось загрузить хиты продаж", popularProductsRes.error);
@@ -54,8 +60,13 @@ export default async function MainPage() {
     console.log("Не удалось загрузить новинки", newProductsRes.error);
   }
 
+  if (!discountedProductsRes.ok) {
+    console.log("Не удалось загрузить распродажи");
+  }
+
   const popularProducts = popularProductsRes.data?.data ?? [];
   const newProducts = newProductsRes.data?.data ?? [];
+  const discountedProducts = discountedProductsRes.data?.data ?? [];
 
   return (
     <main className={styles.main}>
@@ -75,6 +86,10 @@ export default async function MainPage() {
 
       <section>
         <CollectionSwiper title="Новинки" collection={newProducts} />
+      </section>
+
+      <section>
+        <CollectionSwiper title="Распродажи" collection={discountedProducts} />
       </section>
 
       <section>

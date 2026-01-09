@@ -24,6 +24,15 @@ export async function getPopularProducts(
   );
 }
 
+export async function getDiscountedProducts(
+  limit = 10
+): Promise<FetchJsonResult<PaginatedProductsDto>> {
+  return fetchJson<PaginatedProductsDto>(
+    `products?sort=discount&order=DESC&limit=${limit}`,
+    { handle404: true, revalidate: 120 }
+  );
+}
+
 export async function getProducts<T>(
   params: ProductQueryParams
 ): Promise<FetchJsonResult<T>> {
