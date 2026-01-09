@@ -15,10 +15,22 @@ export async function proxy(req: NextRequest) {
       cookie: cookieStore.toString(),
     },
   });
+  const isAuthPage =
+    req.nextUrl.pathname.startsWith("/auth/login") ||
+    req.nextUrl.pathname.startsWith("/auth/registration");
+
+  const isAdminPage = req.nextUrl.pathname.startsWith("/admin");
+
+  if (!meResponse.ok && isAuthPage) {
+    return NextResponse.next();
+  }
 
   if (meResponse.ok) {
+    if (isAuthPage) {
+      return NextResponse.redirect(new URL("/404", req.url));
+    }
     const meResponseData: AuthResponseDto = await meResponse.json();
-    if (req.nextUrl.pathname.startsWith("/admin") && !meResponseData.isAdmin) {
+    if (isAdminPage && !meResponseData.isAdmin) {
       return NextResponse.redirect(new URL("/404", req.url));
     }
     return response;
@@ -35,9 +47,12 @@ export async function proxy(req: NextRequest) {
     }
   );
 
+  if (!refreshResponse.ok && isAuthPage) {
+    return NextResponse.next();
+  }
   if (refreshResponse.ok) {
     const refreshData: AuthResponseDto = await refreshResponse.json();
-    if (req.nextUrl.pathname.startsWith("/admin") && !refreshData.isAdmin) {
+    if (isAdminPage && !refreshData.isAdmin) {
       return NextResponse.redirect(new URL("/404", req.url));
     }
     const setCookieHeader = refreshResponse.headers.get("set-cookie");
@@ -52,6 +67,10 @@ export async function proxy(req: NextRequest) {
         response.cookies.set(name, value, {});
       }
 
+      if (isAuthPage) {
+        return NextResponse.redirect(new URL("/404", req.url));
+      }
+
       return response;
     }
   }
@@ -60,5 +79,12 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/cart", "/orders", "/checkout", "/admin/:path*"],
+  matcher: [
+    "/cart",
+    "/orders",
+    "/checkout",
+    "/admin/:path*",
+    "/auth/registration",
+    "/auth/login",
+  ],
 };
