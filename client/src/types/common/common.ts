@@ -63,3 +63,8 @@ export interface IFormattedYearlySales extends YearlySalesResponseDto {
   monthDisplay: string;
   [key: string]: string | number | undefined;
 }
+
+export interface IPathParts {
+  name: string;
+  url?: string | null;
+}
