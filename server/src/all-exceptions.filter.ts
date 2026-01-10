@@ -22,8 +22,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       });
     }
 
-    console.error('Unexpected error:', exception);
-
     return response.status(500).json({
       statusCode: 500,
       message: 'Internal server error',

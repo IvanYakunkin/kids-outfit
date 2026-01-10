@@ -1,0 +1,24 @@
+services:
+  postgres_dev:
+    image: postgres:16-alpine
+    container_name: postgres_dev
+    restart: always
+    env_file: .env.docker.dev
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  redis_dev:
+    image: redis:7-alpine
+    container_name: redis_dev
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_dev_data:/data
+    restart: always
+volumes:
+  postgres_dev_data:
+  redis_dev_data:
+  server_node_modules:
+  client_node_modules:

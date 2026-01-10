@@ -1,22 +1,40 @@
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import * as path from 'path';
-import * as dotenv from 'dotenv';
-dotenv.config(); // ✅ добавь это!
+
+const isProd = process.env.NODE_ENV === 'production';
+
+dotenv.config({
+  path: path.resolve(
+    process.cwd(),
+    isProd ? '.env.production' : '.env.development',
+  ),
+});
+
+function required(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Environment variable ${name} is not set`);
+  }
+  return value;
+}
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: process.env.DATABASE_HOST,
-  port: +process.env.DATABASE_PORT! || 5432,
-  username: process.env.DATABASE_USERNAME,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
-  entities: [
-    path.resolve(__dirname, 'src/modules/**/entities/*.entity.{ts,js}'),
-  ],
-  migrations: [path.resolve(__dirname, 'src/migrations/*{.ts,.js}')],
+  host: required('DATABASE_HOST'),
+  port: Number(process.env.DATABASE_PORT) || 5432,
+  username: required('DATABASE_USERNAME'),
+  password: required('DATABASE_PASSWORD'),
+  database: required('DATABASE_NAME'),
+
+  entities: isProd
+    ? [path.resolve(__dirname, 'src/**/*.entity.js')]
+    : [path.resolve(__dirname, 'src/modules/**/entities/*.entity.ts')],
+
+  migrations: isProd
+    ? [path.resolve(__dirname, 'src/migrations/*.js')]
+    : [path.resolve(__dirname, 'src/migrations/*.ts')],
+
   synchronize: false,
 });
-
-// Command to create migrations:
-// npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d data-source.ts migration:generate src/migrations/Init

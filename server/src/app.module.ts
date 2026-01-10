@@ -21,7 +21,13 @@ import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath:
+        process.env.NODE_ENV === 'production'
+          ? '.env.production'
+          : '.env.development',
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
@@ -31,6 +37,7 @@ import { UsersModule } from './modules/users/users.module';
       database: process.env.DATABASE_NAME,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       migrations: [__dirname + 'src/migration/**/*.ts'],
+      logging: false,
     }),
     RedisModule.forRoot({
       type: 'single',
