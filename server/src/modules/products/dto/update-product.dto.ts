@@ -31,7 +31,7 @@ export class UpdateProductDto {
   })
   @IsBoolean()
   @Type(() => Boolean)
-  isActive?: boolean;
+  isActive?: boolean = true;
 
   @ApiPropertyOptional({
     description: 'Цена',
