@@ -45,8 +45,14 @@ import { UsersModule } from './modules/users/users.module';
     }),
     ThrottlerModule.forRoot([
       {
+        name: 'short',
+        ttl: 1000,
+        limit: 10, // Can be reduced to 3-5 for greater safety
+      },
+      {
+        name: 'long',
         ttl: 60000,
-        limit: 20,
+        limit: 100,
       },
     ]),
     ScheduleModule.forRoot(),
