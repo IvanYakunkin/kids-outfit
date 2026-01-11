@@ -20,7 +20,7 @@ export default function CheckoutProduct({ cartProduct }: CheckoutProductProps) {
           <Image
             src={product.image?.url || "/content/default.jpg"}
             width={90}
-            height={90}
+            height={120}
             alt="Product"
           />
         </Link>

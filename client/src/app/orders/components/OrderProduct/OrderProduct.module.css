@@ -15,11 +15,8 @@
   gap: 20px;
 }
 
-.image {
-  width: 60px;
-}
-
 .image > img {
+  border-radius: 3px;
   width: 100%;
 }
 

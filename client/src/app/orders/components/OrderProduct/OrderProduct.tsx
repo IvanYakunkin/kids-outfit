@@ -20,8 +20,8 @@ export default function OrderProduct({ orderProduct }: OrderProductProps) {
               orderProduct.productSize.product.image?.url ||
               "/content/default.jpg"
             }
-            width={60}
-            height={60}
+            width={90}
+            height={120}
             alt="Product"
           />
         </Link>

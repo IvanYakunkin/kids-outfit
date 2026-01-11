@@ -15,17 +15,19 @@ const CollectionItem = ({ item }: CollectionItemProps) => {
           {item.image ? (
             <Image
               className={styles.image}
-              width={300}
-              height={300}
+              fill
+              sizes="(max-width: 768px) 100vw, 300px"
               src={item.image.url}
+              priority={false}
               alt="Product Photo"
             />
           ) : (
             <Image
               className={styles.image}
-              width={300}
-              height={400}
+              fill
+              sizes="(max-width: 768px) 100vw, 300px"
               src="/images/content/default.jpg"
+              priority={false}
               alt="Product Photo"
             />
           )}
