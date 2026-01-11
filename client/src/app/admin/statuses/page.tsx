@@ -2,8 +2,7 @@
 
 import Breadcrumbs from "@/app/components/Breadcrumbs/Breadcrumbs";
 import FieldDialog from "@/components/Dialogs/FieldDialog";
-import { getStatuses } from "@/shared/api/orders";
-import { createSize } from "@/shared/api/productSizes";
+import { createStatus, getStatuses } from "@/shared/api/orders";
 import { authRequestWrapper } from "@/shared/authRequestWrapper";
 import getStatusesColumns from "@/shared/columns/statuses";
 import { StatusResponseDto } from "@/types/order";
@@ -40,7 +39,7 @@ export default function AdminStatusesPage() {
 
   const saveStatus = async (value: string) => {
     const createResponse = await authRequestWrapper(
-      () => createSize(value),
+      () => createStatus(value),
       router
     );
     if (!createResponse.ok || !createResponse.data) {

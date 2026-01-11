@@ -74,6 +74,15 @@ export async function getStatuses() {
   return fetchJson<StatusResponseDto[]>("statuses", { method: "GET" });
 }
 
+export async function createStatus(status: string) {
+  return fetchJson<StatusResponseDto>("statuses", {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: status }),
+  });
+}
+
 export async function updateOrder(
   orderId: number,
   updateOrderDto: UpdateOrderDto
