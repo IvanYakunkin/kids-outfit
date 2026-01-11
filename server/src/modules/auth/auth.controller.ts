@@ -97,10 +97,10 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @ApiOperation({ summary: 'Обновление токена' })
+  @ApiOperation({ summary: 'Обновление токенов авторизации' })
   @ApiResponse({
     status: 201,
-    description: 'Токен обновлен',
+    description: 'Токены обновлены',
     type: UserResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Пользователь не авторизован' })
