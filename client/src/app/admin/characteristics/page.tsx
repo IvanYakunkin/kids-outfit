@@ -71,7 +71,6 @@ export default function AdminCharacteristicsPage() {
       alert(`Не удалось создать характеристику: ${createRes.error}`);
       console.log("Не удалось создать характеристику", createRes.error);
     } else {
-      setIsCreateOpen(false);
       setCharacteristics([...characteristics, createRes.data]);
     }
   };
