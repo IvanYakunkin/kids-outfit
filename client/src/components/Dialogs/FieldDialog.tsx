@@ -3,9 +3,10 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  IconButton,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { KeyboardEvent, useState } from "react";
 import PaperComponent from "./PaperComponent";
 
 interface FieldDialogProps {
@@ -13,6 +14,7 @@ interface FieldDialogProps {
   initialValue?: string;
   onSave: (value: string) => void;
   label: string;
+  closeAfterSave?: boolean;
   bgcolor?:
     | "inherit"
     | "primary"
@@ -28,15 +30,25 @@ export default function FieldDialog({
   initialValue = "",
   onSave,
   label,
+  closeAfterSave,
   bgcolor,
 }: FieldDialogProps) {
   const [value, setValue] = useState(initialValue);
 
   const saveValue = () => {
-    if (value) {
+    if (value.trim()) {
       onSave(value);
-      handleClose();
       setValue("");
+      if (closeAfterSave) {
+        handleClose();
+      }
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      saveValue();
     }
   };
 
@@ -51,6 +63,18 @@ export default function FieldDialog({
       <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
         {label}
       </DialogTitle>
+      <IconButton
+        aria-label="close"
+        onClick={handleClose}
+        sx={(theme) => ({
+          position: "absolute",
+          right: 8,
+          top: 8,
+          color: theme.palette.grey[800],
+        })}
+      >
+        &times;
+      </IconButton>
       <DialogContent>
         <div>
           <TextField
@@ -60,6 +84,7 @@ export default function FieldDialog({
             required
             sx={{ mt: 1 }}
             onChange={(e) => setValue(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <Button
             variant="contained"

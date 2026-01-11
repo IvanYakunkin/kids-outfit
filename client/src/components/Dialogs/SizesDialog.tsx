@@ -17,39 +17,37 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  KeyboardEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import FieldDialog from "./FieldDialog";
 import PaperComponent from "./PaperComponent";
 
 interface SizesDialogProps {
   open: boolean;
-  initialPSizes: ICreateProductSize[];
-  setInitialPSizes: Dispatch<SetStateAction<ICreateProductSize[]>>;
+  productSizes: ICreateProductSize[];
+  setProductSizes: Dispatch<SetStateAction<ICreateProductSize[]>>;
   handleClose: () => void;
   readonly?: boolean;
 }
 
-export default function SizesDialog({
-  open,
-  initialPSizes,
-  handleClose,
-  setInitialPSizes,
-  readonly,
-}: SizesDialogProps) {
+export default function SizesDialog(props: SizesDialogProps) {
   const [sizes, setSizes] = useState<Size[]>([]);
   const [selectedSizeId, setSelectedSizeId] = useState<number | null>(null);
   const [quantity, setQuantity] = useState<string>();
-  const [localPSizes, setLocalPSizes] = useState(initialPSizes);
   const [editRecord, setEditRecord] = useState<ICreateProductSize>();
-
   const handleAddSize = () => {
     if (selectedSizeId && quantity) {
-      if (localPSizes.find((s) => s.sizeId === selectedSizeId)) {
+      if (props.productSizes.find((s) => s.sizeId === selectedSizeId)) {
         alert("Данный размер уже добавлен");
         return;
       }
-      setLocalPSizes([
-        ...localPSizes,
+      props.setProductSizes([
+        ...props.productSizes,
         { sizeId: selectedSizeId, quantity: +quantity },
       ]);
     }
@@ -57,19 +55,25 @@ export default function SizesDialog({
     setQuantity(undefined);
   };
 
-  const handleSave = () => {
-    setInitialPSizes(localPSizes);
-    handleClose();
-  };
-
   const editSave = (value: string) => {
-    setLocalPSizes((prev) =>
+    props.setProductSizes((prev) =>
       prev.map((s) =>
         s.sizeId === editRecord?.sizeId
           ? { id: s.id, sizeId: s.sizeId, quantity: +value }
           : s
       )
     );
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddSize();
+    }
+  };
+
+  const handleDelete = (index: number) => {
+    props.setProductSizes((prev) => prev.filter((_, idx) => index !== idx));
   };
 
   useEffect(() => {
@@ -92,13 +96,14 @@ export default function SizesDialog({
           initialValue={editRecord?.quantity.toString()}
           handleClose={() => setEditRecord(undefined)}
           onSave={editSave}
+          closeAfterSave={true}
           label="Управление размерами товара"
         />
       )}
       <Dialog
-        open={open}
+        open={props.open}
         PaperComponent={PaperComponent}
-        onClose={handleClose}
+        onClose={props.handleClose}
         fullWidth
         maxWidth="sm"
       >
@@ -106,7 +111,7 @@ export default function SizesDialog({
           Размеры товара
         </DialogTitle>
         <DialogContent>
-          {!readonly && (
+          {!props.readonly && (
             <>
               <FormControl fullWidth margin="normal">
                 <Autocomplete
@@ -133,6 +138,7 @@ export default function SizesDialog({
                 required
                 value={quantity ?? ""}
                 onChange={(e) => setQuantity(e.target.value)}
+                onKeyDown={handleKeyDown}
                 fullWidth
               />
               <Button
@@ -152,8 +158,8 @@ export default function SizesDialog({
             </>
           )}
           <List style={{ maxHeight: "300px" }}>
-            {localPSizes.length === 0 && <div>Размеры не добавлены</div>}
-            {localPSizes.map((item) => (
+            {props.productSizes.length === 0 && <div>Размеры не добавлены</div>}
+            {props.productSizes.map((item, index) => (
               <ListItem
                 key={item.sizeId}
                 sx={{
@@ -165,25 +171,38 @@ export default function SizesDialog({
                   },
                 }}
                 secondaryAction={
-                  <IconButton
-                    aria-label="редактировать"
-                    onClick={() => setEditRecord(item)}
-                    sx={{ ml: 2 }}
-                  >
-                    <Image
-                      src="/images/edit.png"
-                      width={20}
-                      height={20}
-                      alt="редактировать"
-                    />
-                  </IconButton>
+                  <>
+                    <IconButton
+                      aria-label="Редактировать"
+                      onClick={() => setEditRecord(item)}
+                      sx={{ ml: 2 }}
+                    >
+                      <Image
+                        src="/images/edit.png"
+                        width={20}
+                        height={20}
+                        alt="редактировать"
+                      />
+                    </IconButton>
+                    <IconButton
+                      aria-label="Удалить"
+                      onClick={() => handleDelete(index)}
+                    >
+                      <Image
+                        src="/images/delete-black.png"
+                        width={20}
+                        height={20}
+                        alt="Удалить"
+                      />
+                    </IconButton>
+                  </>
                 }
               >
                 <Box
                   display="flex"
-                  alignItems="center"
+                  alignItems="start"
                   justifyContent="space-between"
-                  width="100%"
+                  width="90%"
                 >
                   <Box
                     display="flex"
@@ -196,11 +215,12 @@ export default function SizesDialog({
                       display="flex"
                       flexDirection="column"
                       alignItems="center"
+                      width="45%"
                     >
                       <Typography variant="body2" color="textSecondary">
                         Размер:
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography variant="body1" textAlign="center">
                         {sizes.find((s) => s.id === item.sizeId)?.name}
                       </Typography>
                     </Box>
@@ -209,11 +229,14 @@ export default function SizesDialog({
                       display="flex"
                       flexDirection="column"
                       alignItems="center"
+                      width="45%"
                     >
                       <Typography variant="body2" color="textSecondary">
                         Количество:
                       </Typography>
-                      <Typography variant="body1">{item.quantity}</Typography>
+                      <Typography variant="body1" textAlign="center">
+                        {item.quantity}
+                      </Typography>
                     </Box>
                   </Box>
                 </Box>
@@ -222,12 +245,9 @@ export default function SizesDialog({
           </List>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Закрыть</Button>
-          {!readonly && (
-            <Button variant="contained" color="primary" onClick={handleSave}>
-              Сохранить
-            </Button>
-          )}
+          <Button variant="contained" onClick={props.handleClose}>
+            Закрыть
+          </Button>
         </DialogActions>
       </Dialog>
     </>

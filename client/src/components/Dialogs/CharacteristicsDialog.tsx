@@ -17,28 +17,27 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  KeyboardEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import FieldDialog from "./FieldDialog";
 import PaperComponent from "./PaperComponent";
 
 interface CharacteristicsDialogProps {
-  initialCharacteristics: ICreatePCharacteristic[];
-  setInitialCharacteristics: Dispatch<SetStateAction<ICreatePCharacteristic[]>>;
   open: boolean;
+  productChars: ICreatePCharacteristic[];
+  setProductChars: Dispatch<SetStateAction<ICreatePCharacteristic[]>>;
   handleClose: () => void;
   readonly: boolean;
 }
 
-export default function CharacteristicsDialog({
-  open,
-  handleClose,
-  initialCharacteristics = [],
-  setInitialCharacteristics,
-  readonly,
-}: CharacteristicsDialogProps) {
-  const [characteristics, setCharacteristics] = useState(
-    initialCharacteristics
-  );
+export default function CharacteristicsDialog(
+  props: CharacteristicsDialogProps
+) {
   const [selectedCharacteristicId, setSelectedCharacteristicId] = useState<
     number | null
   >(null);
@@ -47,7 +46,6 @@ export default function CharacteristicsDialog({
     CharacteristicsDto[]
   >([]);
   const [editRecord, setEditRecord] = useState<ICreatePCharacteristic>();
-
   const [isFieldDialog, setIsFieldDialog] = useState(false);
 
   useEffect(() => {
@@ -65,7 +63,7 @@ export default function CharacteristicsDialog({
   }, []);
 
   const handleAddCharacteristic = () => {
-    const findTheSame = characteristics.find(
+    const findTheSame = props.productChars.find(
       (c) => c.characteristicId === selectedCharacteristicId
     );
     if (findTheSame) {
@@ -73,8 +71,8 @@ export default function CharacteristicsDialog({
       return;
     }
     if (selectedCharacteristicId && characteristicValue) {
-      setCharacteristics([
-        ...characteristics,
+      props.setProductChars([
+        ...props.productChars,
         {
           characteristicId: selectedCharacteristicId,
           value: characteristicValue,
@@ -86,27 +84,29 @@ export default function CharacteristicsDialog({
   };
 
   const handleDelete = (index: number) => {
-    setCharacteristics(characteristics.filter((_, idx) => idx !== index));
+    props.setProductChars(props.productChars.filter((_, idx) => idx !== index));
   };
 
   const handleEdit = (index: number) => {
     setIsFieldDialog(true);
-    setEditRecord(characteristics[index]);
-  };
-
-  const handleSave = () => {
-    setInitialCharacteristics(characteristics);
-    handleClose();
+    setEditRecord(props.productChars[index]);
   };
 
   const editSave = (value: string) => {
-    setCharacteristics((prev) =>
+    props.setProductChars((prev) =>
       prev.map((c) =>
         c.characteristicId === editRecord?.characteristicId
           ? { characteristicId: c.characteristicId, value }
           : c
       )
     );
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddCharacteristic();
+    }
   };
 
   return (
@@ -116,12 +116,13 @@ export default function CharacteristicsDialog({
           initialValue={editRecord?.value}
           handleClose={() => setIsFieldDialog(false)}
           onSave={editSave}
+          closeAfterSave={true}
           label="Управление характеристиками товара"
         />
       )}
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={props.open}
+        onClose={props.handleClose}
         maxWidth="sm"
         fullWidth
         PaperComponent={PaperComponent}
@@ -130,7 +131,7 @@ export default function CharacteristicsDialog({
           Характеристики товара
         </DialogTitle>
         <DialogContent>
-          {!readonly && (
+          {!props.readonly && (
             <div>
               <FormControl fullWidth margin="normal">
                 <Autocomplete
@@ -159,6 +160,7 @@ export default function CharacteristicsDialog({
                 fullWidth
                 value={characteristicValue}
                 onChange={(e) => setCharacteristicValue(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
               <Button
                 variant="contained"
@@ -177,10 +179,10 @@ export default function CharacteristicsDialog({
             </div>
           )}
           <List style={{ maxHeight: "300px" }}>
-            {characteristics.length === 0 && (
+            {props.productChars.length === 0 && (
               <div>Характеристики не добавлены</div>
             )}
-            {characteristics.map((item, index) => (
+            {props.productChars.map((item, index) => (
               <ListItem
                 key={item.characteristicId}
                 sx={{
@@ -227,19 +229,20 @@ export default function CharacteristicsDialog({
                 >
                   <Box
                     display="flex"
-                    alignItems="center"
+                    alignItems="start"
                     justifyContent="space-between"
-                    width={"70%"}
+                    width="80%"
                   >
                     <Box
                       display="flex"
                       flexDirection="column"
                       alignItems="center"
+                      width="45%"
                     >
                       <Typography variant="body2" color="textSecondary">
                         Характеристика:
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography variant="body1" textAlign="center">
                         {
                           characteristicsOptions.find(
                             (s) => s.id === item.characteristicId
@@ -252,11 +255,14 @@ export default function CharacteristicsDialog({
                       display="flex"
                       flexDirection="column"
                       alignItems="center"
+                      width="45%"
                     >
                       <Typography variant="body2" color="textSecondary">
                         Значение:
                       </Typography>
-                      <Typography variant="body1">{item.value}</Typography>
+                      <Typography variant="body1" textAlign="center">
+                        {item.value}
+                      </Typography>
                     </Box>
                   </Box>
                 </Box>
@@ -265,12 +271,9 @@ export default function CharacteristicsDialog({
           </List>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Закрыть</Button>
-          {!readonly && (
-            <Button variant="contained" color="primary" onClick={handleSave}>
-              Сохранить
-            </Button>
-          )}
+          <Button variant="contained" onClick={props.handleClose}>
+            Закрыть
+          </Button>
         </DialogActions>
       </Dialog>
     </>

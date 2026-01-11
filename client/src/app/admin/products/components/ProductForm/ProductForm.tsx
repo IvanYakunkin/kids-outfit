@@ -27,6 +27,7 @@ import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   FormControl,
   InputLabel,
   Snackbar,
@@ -103,6 +104,7 @@ export default function ProductForm({
         }))
       : []
   );
+  const [isLoading, setIsLoading] = useState(false);
   const [successAlert, setSuccessAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -144,6 +146,8 @@ export default function ProductForm({
       alert("Выберите категорию");
       return;
     }
+
+    setIsLoading(true);
 
     selectedFiles.forEach((file) => {
       if ("file" in file) {
@@ -194,6 +198,8 @@ export default function ProductForm({
           operationRes.data.id,
           productSizes
         );
+
+        setProductSizes([]);
       }
 
       if (savePCharsStatus && savePSizesStatus) {
@@ -218,6 +224,8 @@ export default function ProductForm({
       setErrorMsg(operationRes.error || "");
       console.log("Не удалось выполнить операцию", operationRes.error);
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -348,8 +356,8 @@ export default function ProductForm({
             <SizesDialog
               readonly={mode === "view"}
               open={sizesDialogOpen}
-              initialPSizes={productSizes}
-              setInitialPSizes={setProductSizes}
+              productSizes={productSizes}
+              setProductSizes={setProductSizes}
               handleClose={() => setSizesDialogOpen(false)}
             />
           </div>
@@ -364,9 +372,9 @@ export default function ProductForm({
             <CharacteristicsDialog
               readonly={mode === "view"}
               open={charsDialogOpen}
+              productChars={productChars}
               handleClose={() => setCharsDialogOpen(false)}
-              initialCharacteristics={productChars}
-              setInitialCharacteristics={setProductChars}
+              setProductChars={setProductChars}
             />
           </div>
           {mode !== "view" && (
@@ -376,7 +384,11 @@ export default function ProductForm({
               onClick={saveProduct}
               fullWidth
             >
-              Сохранить
+              {isLoading ? (
+                <CircularProgress color="inherit" size={24} />
+              ) : (
+                "Сохранить"
+              )}
             </Button>
           )}
           {mode === "view" && (
@@ -404,7 +416,7 @@ export default function ProductForm({
           variant="filled"
           sx={{ width: "100%" }}
         >
-          Товар создан
+          Операция выполнена успешно
         </Alert>
       </Snackbar>
 
@@ -421,7 +433,7 @@ export default function ProductForm({
           variant="filled"
           sx={{ width: "100%" }}
         >
-          Ошибка создания товара. {errorMsg}
+          Ошибка выполнения операции. {errorMsg}
         </Alert>
       </Snackbar>
     </main>
