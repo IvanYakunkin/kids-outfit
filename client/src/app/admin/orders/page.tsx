@@ -84,7 +84,7 @@ export default function OrdersAdminPage() {
       }
     };
     getStatusesFromDB();
-  }, [statuses]);
+  }, []);
 
   const openEditPage = (orderId: number, status: AutocompleteOption) => {
     setStatusDefault(status);
