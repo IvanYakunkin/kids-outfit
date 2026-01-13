@@ -2,7 +2,7 @@ import { CategoryDto, CreateCategoryDto } from "@/types/categories";
 import { fetchJson, FetchJsonResult } from "../fetchJson";
 
 export async function getCategories(): Promise<FetchJsonResult<CategoryDto[]>> {
-  return fetchJson<CategoryDto[]>("categories");
+  return fetchJson<CategoryDto[]>("categories", { revalidate: 300 });
 }
 
 export async function getCategoryBySlugs(

@@ -23,28 +23,38 @@ export interface ServerError {
   statusCode: number;
 }
 
-const BASE_URL = process.env.API_URL || "http://localhost:5000/api";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL;
 
 export async function fetchJson<T>(
   path: string,
   options: FetchJsonOptions = {}
 ): Promise<FetchJsonResult<T>> {
   const { handle404 = false, revalidate, ...fetchOptions } = options;
-  const csrfToken = Cookies.get("XSRF-TOKEN");
 
-  const fetchParams: RequestInit = {
-    ...fetchOptions,
-    headers: {
-      ...fetchOptions.headers,
-      "X-CSRF-Token": csrfToken || "",
-    },
-    cache:
-      fetchOptions.method && fetchOptions.method !== "GET"
-        ? "no-store"
-        : revalidate
-        ? "force-cache"
-        : "no-store",
-  };
+  const isGet =
+    !fetchOptions.method || fetchOptions.method.toUpperCase() === "GET";
+
+  const fetchParams: RequestInit & { next?: { revalidate?: number | false } } =
+    {
+      ...fetchOptions,
+    };
+
+  if (!isGet) {
+    const csrfToken = Cookies.get("XSRF-TOKEN");
+    if (csrfToken) {
+      fetchParams.headers = {
+        ...fetchParams.headers,
+        "X-CSRF-Token": csrfToken,
+      };
+    }
+    fetchParams.cache = "no-store";
+  } else if (typeof revalidate === "number") {
+    fetchParams.next = { revalidate: revalidate };
+  } else if (revalidate === undefined) {
+    fetchParams.cache = "no-store";
+  } else {
+    fetchParams.cache = "force-cache";
+  }
 
   let response: Response;
 

@@ -11,7 +11,7 @@ export async function getNewProducts(
 ): Promise<FetchJsonResult<PaginatedProductsDto>> {
   return fetchJson<PaginatedProductsDto>(
     `products?sort=created_at&order=DESC&limit=${limit}`,
-    { handle404: true, revalidate: 60 }
+    { handle404: true, revalidate: 3600 }
   );
 }
 
@@ -20,7 +20,7 @@ export async function getPopularProducts(
 ): Promise<FetchJsonResult<PaginatedProductsDto>> {
   return fetchJson<PaginatedProductsDto>(
     `products?sort=sold&order=DESC&limit=${limit}`,
-    { handle404: true, revalidate: 120 }
+    { handle404: true, revalidate: 3600 }
   );
 }
 
@@ -29,7 +29,7 @@ export async function getDiscountedProducts(
 ): Promise<FetchJsonResult<PaginatedProductsDto>> {
   return fetchJson<PaginatedProductsDto>(
     `products?sort=discount&order=DESC&limit=${limit}`,
-    { handle404: true, revalidate: 120 }
+    { handle404: true, revalidate: 3600 }
   );
 }
 
@@ -40,7 +40,10 @@ export async function getProducts<T>(
     Object.entries(params).map(([key, value]) => [key, String(value)])
   ).toString();
 
-  return fetchJson<T>(`products?${queryString}`, { handle404: true });
+  return fetchJson<T>(`products?${queryString}`, {
+    handle404: true,
+    revalidate: 1000,
+  });
 }
 
 export async function getSimilarProducts(
@@ -49,7 +52,7 @@ export async function getSimilarProducts(
 ): Promise<FetchJsonResult<ProductResponseDto[]>> {
   return fetchJson<ProductResponseDto[]>(
     `products/similar/${categoryId}/${limit}`,
-    { handle404: true, revalidate: 60 }
+    { handle404: true, revalidate: 3600 }
   );
 }
 
@@ -58,13 +61,8 @@ export async function getProductById(
 ): Promise<FetchJsonResult<ProductInfoDto>> {
   return fetchJson<ProductInfoDto>(`products/${id}`, {
     handle404: true,
+    revalidate: 3600,
   });
-}
-
-export async function getProductsByCategory(
-  categoryId: number
-): Promise<FetchJsonResult<PaginatedProductsDto>> {
-  return fetchJson<PaginatedProductsDto>(`products?category=${categoryId}`);
 }
 
 export async function createProduct(
