@@ -29,7 +29,7 @@ export default function TopProductsChart() {
       }
       const transformed: IChartProduct[] = productsResponse.data.data.map(
         (item) => ({
-          name: item.name,
+          name: `${item.name}(#${item.id})`,
           sales: Number(item.sold),
         })
       );
