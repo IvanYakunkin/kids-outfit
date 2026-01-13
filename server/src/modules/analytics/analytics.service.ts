@@ -156,9 +156,9 @@ export class AnalyticsService {
       .addSelect('SUM(orders.total)', 'total')
       .addSelect('COUNT(orders.id)', 'count')
       .where('orders.createdAt >= :startDate', { startDate })
-      .andWhere('orders.status = :status', {
-        status: process.env.DELIVERED_ORDER_STATUS_ID,
-      })
+      // .andWhere('orders.status = :status', {
+      //   status: process.env.DELIVERED_ORDER_STATUS_ID,
+      // })
       .groupBy('DATE(orders.createdAt)')
       .orderBy('date', 'ASC')
       .getRawMany();
@@ -195,9 +195,9 @@ export class AnalyticsService {
       .select("DATE_TRUNC('month', orders.createdAt)", 'month')
       .addSelect('SUM(orders.total)', 'total')
       .where('orders.createdAt >= :startDate', { startDate })
-      .andWhere('orders.statusId = :statusId', {
-        statusId: process.env.DELIVERED_ORDER_STATUS_ID,
-      })
+      // .andWhere('orders.statusId = :statusId', {
+      //   statusId: process.env.DELIVERED_ORDER_STATUS_ID,
+      // })
       .groupBy("DATE_TRUNC('month', orders.createdAt)")
       .orderBy('month', 'ASC')
       .getRawMany();
