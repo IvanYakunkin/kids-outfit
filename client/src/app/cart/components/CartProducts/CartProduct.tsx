@@ -45,7 +45,7 @@ export default function CartProduct({
           <Image
             src={product.image?.url || "/content/default.jpg"}
             width={90}
-            height={90}
+            height={120}
             alt="Product"
           />
         </Link>
