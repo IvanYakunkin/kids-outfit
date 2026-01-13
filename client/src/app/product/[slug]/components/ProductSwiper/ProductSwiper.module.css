@@ -24,6 +24,7 @@
 .previewImage {
   height: 136px;
   width: 100px;
+  position: relative;
   cursor: pointer;
   border: 1px solid transparent;
 }

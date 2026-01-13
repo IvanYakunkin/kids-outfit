@@ -1,5 +1,6 @@
 "use client";
 
+import ImageViewer from "@/components/ImageViewer/ImageViewer";
 import { ImageFromDB, LoadedImage } from "@/types/common/common";
 import NextImage from "next/image";
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
@@ -176,19 +177,11 @@ export default function DropZone({ files, setFiles, readonly }: DropZoneProps) {
       )}
 
       {fullscreenImg && (
-        <div
-          onClick={() => setFullscreenImg(null)}
-          className={styles.fullscreen}
-        >
-          <div className={styles.fullscreenImgContainer}>
-            <NextImage
-              src={fullscreenImg.url}
-              alt="fullscreen"
-              fill
-              style={{ objectFit: "contain", borderRadius: "8px" }}
-            />
-          </div>
-        </div>
+        <ImageViewer
+          isOpen={!!fullscreenImg}
+          url={fullscreenImg.url}
+          onClose={() => setFullscreenImg(null)}
+        />
       )}
     </div>
   );

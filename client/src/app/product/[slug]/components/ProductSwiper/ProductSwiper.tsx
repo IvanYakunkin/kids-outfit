@@ -1,5 +1,6 @@
 "use client";
 
+import ImageViewer from "@/components/ImageViewer/ImageViewer";
 import { ProductImageDto } from "@/types/products";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
@@ -33,6 +34,8 @@ export default function ProductSwiper({ images }: ProductSwiperProps) {
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0);
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
+
+  const [fullscreenImg, setFullscreenImg] = useState("");
 
   // Initialize navigation buttons
   function initializeNavigation({
@@ -102,8 +105,8 @@ export default function ProductSwiper({ images }: ProductSwiperProps) {
                 >
                   <Image
                     src={image.url}
-                    width={100}
-                    height={136}
+                    width={136}
+                    height={100}
                     alt="Product Photo"
                   />
                 </div>
@@ -114,8 +117,8 @@ export default function ProductSwiper({ images }: ProductSwiperProps) {
               <div className={styles.previewImage + " " + styles.active}>
                 <Image
                   src="/images/content/default.jpg"
-                  width={100}
-                  height={136}
+                  fill
+                  sizes="(max-width: 100px) 100px, 100vw"
                   alt="Product Photo"
                 />
               </div>
@@ -153,7 +156,12 @@ export default function ProductSwiper({ images }: ProductSwiperProps) {
         >
           {images && images.length > 0 ? (
             images.map((image, index) => (
-              <SwiperSlide key={image.id} id={index.toString()}>
+              <SwiperSlide
+                key={image.id}
+                id={index.toString()}
+                onClick={() => setFullscreenImg(image.url)}
+                style={{ cursor: "zoom-in" }}
+              >
                 <Image
                   src={image.url}
                   className={styles.mainSlider__image}
@@ -180,6 +188,13 @@ export default function ProductSwiper({ images }: ProductSwiperProps) {
           className={styles.mainNavNext + " " + "swiper-button-next"}
         ></div>
       </div>
+      {fullscreenImg && (
+        <ImageViewer
+          isOpen={!!fullscreenImg}
+          url={fullscreenImg}
+          onClose={() => setFullscreenImg("")}
+        />
+      )}
     </div>
   );
 }

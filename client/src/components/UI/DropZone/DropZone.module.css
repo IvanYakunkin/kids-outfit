@@ -37,26 +37,6 @@
   cursor: pointer;
 }
 
-.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  cursor: zoom-out;
-}
-
-.fullscreenImgContainer {
-  position: relative;
-  width: 90vw;
-  height: 90vh;
-}
-
 .dragged {
   border-color: var(--templatePurple);
   background-color: rgb(231, 231, 231);
