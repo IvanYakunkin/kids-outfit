@@ -1,5 +1,6 @@
 .collection {
   position: relative;
+  padding: 0 10px;
 }
 
 .items {

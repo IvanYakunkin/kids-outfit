@@ -5,9 +5,10 @@ import styles from "./Collection.module.css";
 
 interface CollectionItemProps {
   item: ProductResponseDto;
+  isLoadingEager?: boolean;
 }
 
-const CollectionItem = ({ item }: CollectionItemProps) => {
+const CollectionItem = ({ item, isLoadingEager }: CollectionItemProps) => {
   return (
     <article className={styles.item}>
       <Link href={`/product/${item.slug}-${item.id}`}>
@@ -18,6 +19,7 @@ const CollectionItem = ({ item }: CollectionItemProps) => {
               fill
               sizes="(max-width: 768px) 100vw, 300px"
               src={item.image.url}
+              loading={isLoadingEager ? "eager" : "lazy"}
               priority={false}
               alt="Product Photo"
             />
@@ -41,7 +43,7 @@ const CollectionItem = ({ item }: CollectionItemProps) => {
           </div>
           <div className={styles.name}>{item.name}</div>
           <div className={styles.cost}>
-            {item.discount && (
+            {!!item.discount && (
               <div className={styles.costCurrent}>
                 <span>{item.price - (item.price / 100) * item.discount}</span>
                 <div className={styles.currency}>
@@ -50,13 +52,15 @@ const CollectionItem = ({ item }: CollectionItemProps) => {
                 </div>
               </div>
             )}
-            <div className={styles.costFull}>
-              <span>{item.price}</span>
-              <div className={styles.currency}>
-                <span className="desktop">руб.</span>
-                <span className="mobile">₽</span>
+            {!!item.discount && (
+              <div className={styles.costFull}>
+                <span>{item.price}</span>
+                <div className={styles.currency}>
+                  <span className="desktop">руб.</span>
+                  <span className="mobile">₽</span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </Link>

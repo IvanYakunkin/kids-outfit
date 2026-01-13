@@ -1,6 +1,5 @@
-import Collection from "@/components/Collection/Collection";
-import { getProducts } from "@/shared/api/products";
-import { PaginatedProductsDto, ProductQueryParams } from "@/types/products";
+import { CollectionLazy } from "@/components/Collection/CollectionLazy";
+import { ProductQueryParams } from "@/types/products";
 import Breadcrumbs from "../components/Breadcrumbs/Breadcrumbs";
 import styles from "./catalog.module.css";
 
@@ -10,21 +9,30 @@ export default async function CatalogPage({
   searchParams: Promise<{ [key: string]: string }>;
 }) {
   const paramsObject: ProductQueryParams = await searchParams;
-  //const searchParamsString = new URLSearchParams(paramsObject).toString();
-  const productsRes = await getProducts<PaginatedProductsDto>(paramsObject);
-  if (!productsRes.ok || !productsRes.data) {
-    console.log(productsRes.error);
-    return;
+  let title: string | undefined = "";
+  switch (paramsObject.sort) {
+    case "created_at":
+      title = "Новинки";
+      break;
+    case "sold":
+      title = "Хиты продаж";
+      break;
+    case "discount":
+      title = "Распродажи";
+      break;
+    default:
+      title = undefined;
   }
-  const products = productsRes.data.data;
 
-  const pathParts = [{ name: "Каталог", url: null }];
+  const pathParts = [
+    title ? { name: title, url: null } : { name: "Каталог", url: null },
+  ];
 
   return (
     <main className={styles.main}>
       <Breadcrumbs pathParts={pathParts} />
-      <div className={styles.title}>Каталог</div>
-      <Collection collection={products} />
+      <div className={styles.title}>{title}</div>
+      <CollectionLazy productQueryParams={paramsObject} />
     </main>
   );
 }

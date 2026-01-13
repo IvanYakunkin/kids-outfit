@@ -1,20 +1,23 @@
 import Breadcrumbs from "@/app/components/Breadcrumbs/Breadcrumbs";
-import Collection from "@/components/Collection/Collection";
+import { CollectionLazy } from "@/components/Collection/CollectionLazy";
 import {
   getCategoryBySlugs,
   getCategoryHierarchy,
 } from "@/shared/api/categories";
-import { getProductsByCategory } from "@/shared/api/products";
 import { IPathParts } from "@/types/common/common";
+import { ProductQueryParams } from "@/types/products";
 import { notFound } from "next/navigation";
 import styles from "../../catalog.module.css";
 
 export default async function CategoryPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slugs: string[] }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { slugs } = await params;
+  const sParams: ProductQueryParams = await searchParams;
 
   if (!slugs) {
     return notFound();
@@ -30,12 +33,6 @@ export default async function CategoryPage({
   if (!categoriesHierarchyRes.ok || !categoriesHierarchyRes.data) {
     return notFound();
   }
-
-  const productsRes = await getProductsByCategory(category.id);
-  if (!productsRes.ok || !productsRes.data) {
-    return notFound();
-  }
-  const products = productsRes.data;
 
   const pathParts: IPathParts[] = [];
   if (categoriesHierarchyRes.ok && categoriesHierarchyRes.data) {
@@ -53,15 +50,14 @@ export default async function CategoryPage({
     name: category.name,
     url: null,
   });
+  sParams.category = category.id;
+  const key = JSON.stringify({ sParams });
 
   return (
     <main className={styles.main}>
       <Breadcrumbs pathParts={pathParts} />
-      <Collection
-        title={category.name}
-        collection={products.data}
-        titleStyles={{ paddingTop: 0 }}
-      />
+      <div className={styles.title}>{category.name}</div>
+      <CollectionLazy key={key} productQueryParams={sParams} />
     </main>
   );
 }
