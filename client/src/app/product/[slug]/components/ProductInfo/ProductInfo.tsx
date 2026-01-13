@@ -28,7 +28,7 @@ export default function ProductInfo({
           </div>
         )}
       </div>
-      {characteristics && (
+      {characteristics && characteristics.length > 0 && (
         <div className={styles.characteristics}>
           <div className={styles.title}>Характеристики</div>
 

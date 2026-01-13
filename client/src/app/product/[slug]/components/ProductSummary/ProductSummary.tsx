@@ -40,7 +40,7 @@ export default function ProductSummary({
               <span>{productPrice} Руб.</span>
             )}
           </div>
-          {productDiscount && (
+          {!!productDiscount && (
             <div className={styles.oldCost}> {productPrice} Руб.</div>
           )}
         </div>

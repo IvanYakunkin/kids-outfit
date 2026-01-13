@@ -13,7 +13,7 @@ export default function ProductItem({ images, discount }: ProductItemProps) {
       <div className={styles.swiper}>
         <ProductSwiper images={images} />
       </div>
-      {discount && (
+      {!!discount && discount > 0 && (
         <div className={styles.additional}>
           <div className={`${styles.additional__block} ${styles.status}`}>
             Новинка
