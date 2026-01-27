@@ -3,9 +3,15 @@
 ![Project Status](https://img.shields.io/badge/status-live-success)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-**Full-stack E-commerce application** built with modern web technologies. This project demonstrates a scalable architecture using NestJS microservices principles, Next.js for SSR, and containerized deployment.
+**Full-stack E-commerce application** built with modern web technologies from scratch. This project demonstrates a scalable architecture using NestJS microservices principles, Next.js for SSR, and containerized deployment.
 
-🔗 **Live Demo:** [https://kids-outfit.ru](https://kids-outfit.ru)
+🔗 **Live Demo:** [https://kids-outfit.ru](https://kids-outfit.ru)    
+
+📄 **RU Version:** [https://github.com/IvanYakunkin/kids-outfit/blob/main/readme-russian.md](https://github.com/IvanYakunkin/kids-outfit/blob/main/readme-russian.md)
+
+👤 **Demo credentials:** 
+* **phone number:** +79201234567
+* **password:** 12345
 
 ---
 
@@ -24,7 +30,7 @@
 * **Scheduling:** Cron jobs (Data migration from Redis to Postgres)
 
 ### Frontend (Next.js)
-* **Framework:** Next.js (React)
+* **Framework:** Next.js (React), React compiler
 * **State Management:** Redux Toolkit
 * **UI Library:** Material UI (MUI)
 * **Language:** TypeScript
@@ -70,7 +76,7 @@ Instead of writing every page visit directly to the database (which is slow), th
 
 1.  **Clone the repository**
     ```bash
-    git clone [https://github.com/IvanYakunkin/kids-outfit.git](https://github.com/IvanYakunkin/kids-outfit.git)
+    git clone https://github.com/IvanYakunkin/kids-outfit.git
     cd kids-outfit
     ```
 
